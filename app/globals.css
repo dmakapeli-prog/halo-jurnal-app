@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* ============================================
+   Halo Jurnal — Global Styles
+   Design tokens from civic_trust_system/DESIGN.md
+   ============================================ */
+
+/* Material Symbols Outlined base config */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+/* Base body style */
+body {
+  background-color: #FAF7F2;
+  font-family: 'Public Sans', sans-serif;
+}
+
+/* Glass card effect (landing page) */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+/* Form transitions (login/register toggle) */
+.form-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hidden-form {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.active-form {
+  opacity: 1;
+  transform: translateX(0);
+  position: relative;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f6f3ee;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #debfbf;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b7171;
+}
+
+/* Focus ring for form inputs */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
