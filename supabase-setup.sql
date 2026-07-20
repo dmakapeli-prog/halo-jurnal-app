@@ -44,3 +44,35 @@ USING (
   bucket_id = 'ktp-photos'
   AND auth.uid()::text = (storage.foldername(name))[1]
 );
+
+-- ============================================
+-- Halo Jurnal - Supabase Setup (Tahap 2)
+-- ============================================
+
+-- 3. Buat Storage Bucket "laporan-lampiran" (private upload, public read)
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('laporan-lampiran', 'laporan-lampiran', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Policy: User bisa upload lampiran ke folder miliknya
+CREATE POLICY "Users can upload own attachments"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'laporan-lampiran'
+  AND auth.uid()::text = (storage.foldername(name))[1]
+);
+
+-- Policy: Publik bisa melihat lampiran
+CREATE POLICY "Public can view attachments"
+ON storage.objects FOR SELECT
+USING (
+  bucket_id = 'laporan-lampiran'
+);
+
+-- Policy: User bisa delete lampiran miliknya
+CREATE POLICY "Users can delete own attachments"
+ON storage.objects FOR DELETE
+USING (
+  bucket_id = 'laporan-lampiran'
+  AND auth.uid()::text = (storage.foldername(name))[1]
+);
