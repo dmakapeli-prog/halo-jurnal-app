@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 // TODO: [OTP_MODE] Set to true when custom SMTP (e.g. Resend) is configured
 // to switch from magic link to 6-digit OTP code flow
@@ -239,26 +240,7 @@ export default function DaftarPage() {
         </main>
 
         {/* Footer */}
-        <footer className="w-full py-12 px-[40px] flex flex-col items-center gap-4 bg-[#e5e2dd] border-t border-[#debfbf]">
-          <div className="flex flex-col md:flex-row justify-between w-full max-w-[1280px] items-center gap-8">
-            <div className="flex flex-col items-center md:items-start">
-              <span className="font-['Libre_Franklin'] text-[24px] leading-[32px] font-semibold text-[#6b0218] mb-2">Halo Jurnal</span>
-              <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] text-center md:text-left">
-                © 2024 Halo Jurnal. Portal Aspirasi Masyarakat.
-              </p>
-            </div>
-            <div className="flex flex-wrap justify-center gap-8">
-              <Link href="#" className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] hover:text-[#6b0218] transition-colors">Kebijakan Privasi</Link>
-              <Link href="#" className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] hover:text-[#6b0218] transition-colors">Syarat &amp; Ketentuan</Link>
-              <Link href="#" className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] hover:text-[#6b0218] transition-colors">Hubungi Kami</Link>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-[#debfbf] w-full max-w-[1280px] flex justify-center items-center gap-4 text-[#8b7171]">
-            <span className="material-symbols-outlined">face_nod</span>
-            <span className="material-symbols-outlined">language</span>
-            <span className="material-symbols-outlined">mail</span>
-          </div>
-        </footer>
+        <Footer />
       </>
     )
   }
@@ -519,26 +501,7 @@ export default function DaftarPage() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-12 px-[40px] flex flex-col items-center gap-4 bg-[#e5e2dd] border-t border-[#debfbf]">
-        <div className="flex flex-col md:flex-row justify-between w-full max-w-[1280px] items-center gap-8">
-          <div className="flex flex-col items-center md:items-start">
-            <span className="font-['Libre_Franklin'] text-[24px] leading-[32px] font-semibold text-[#6b0218] mb-2">Halo Jurnal</span>
-            <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] text-center md:text-left">
-              © 2024 Halo Jurnal. Portal Aspirasi Masyarakat.
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <Link href="#" className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] hover:text-[#6b0218] transition-colors">Kebijakan Privasi</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] hover:text-[#6b0218] transition-colors">Syarat &amp; Ketentuan</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] hover:text-[#6b0218] transition-colors">Hubungi Kami</Link>
-          </div>
-        </div>
-        <div className="mt-8 pt-8 border-t border-[#debfbf] w-full max-w-[1280px] flex justify-center items-center gap-4 text-[#8b7171]">
-          <span className="material-symbols-outlined">face_nod</span>
-          <span className="material-symbols-outlined">language</span>
-          <span className="material-symbols-outlined">mail</span>
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }

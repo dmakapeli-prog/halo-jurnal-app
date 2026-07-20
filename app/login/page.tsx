@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 // TODO: [OTP_MODE] Set to true when custom SMTP (e.g. Resend) is configured
 // to switch from magic link to 6-digit OTP code flow
@@ -264,15 +265,7 @@ function LoginPageContent() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-12 px-[40px] flex flex-col items-center gap-4 bg-[#e5e2dd] border-t border-[#debfbf]">
-        <span className="font-['Libre_Franklin'] text-[24px] leading-[32px] font-semibold text-[#6b0218]">Halo Jurnal</span>
-        <div className="flex flex-wrap justify-center gap-8">
-          <Link href="#" className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold">Kebijakan Privasi</Link>
-          <Link href="#" className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold">Syarat &amp; Ketentuan</Link>
-          <Link href="#" className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold">Hubungi Kami</Link>
-        </div>
-        <p className="text-[#574141] font-['Public_Sans'] text-sm mt-4 opacity-75">© 2024 Halo Jurnal. Portal Aspirasi Masyarakat.</p>
-      </footer>
+      <Footer />
     </>
   )
 }

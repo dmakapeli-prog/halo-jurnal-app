@@ -14,27 +14,33 @@ export default function Footer() {
         </div>
         <div className="flex flex-wrap justify-center gap-8">
           <Link
-            href="#"
+            href="/kebijakan-privasi"
             className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold"
           >
             Kebijakan Privasi
           </Link>
           <Link
-            href="#"
+            href="/syarat-ketentuan"
             className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold"
           >
             Syarat &amp; Ketentuan
           </Link>
           <Link
-            href="#"
+            href="/hubungi-kami"
             className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold"
           >
             Hubungi Kami
           </Link>
         </div>
       </div>
-      <div className="text-center">
-        <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141]">
+      <div className="text-center flex flex-col items-center gap-2">
+        <p className="font-['Public_Sans'] text-[14px] leading-[20px] text-[#574141]">
+          Halo Jurnal adalah inisiatif dari{' '}
+          <a href="https://jurnalsukabumi.com" target="_blank" rel="noreferrer" className="font-bold text-[#6b0218] hover:underline">
+            Jurnal Sukabumi
+          </a>
+        </p>
+        <p className="font-['Public_Sans'] text-[12px] leading-[16px] text-[#8b7171]">
           © 2024 Halo Jurnal. Portal Aspirasi Masyarakat.
         </p>
       </div>
