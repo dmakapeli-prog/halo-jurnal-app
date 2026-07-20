@@ -25,7 +25,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
     <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-[40px] h-[80px] shadow-md bg-[#8b1e2c]">
       <div className="flex items-center gap-4 md:gap-8">
         <Link href="/">
-          <h1 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-white">
+          <h1 className="font-['Libre_Franklin'] text-xl md:text-[32px] leading-tight md:leading-[40px] font-bold text-white whitespace-nowrap">
             Halo Jurnal
           </h1>
         </Link>

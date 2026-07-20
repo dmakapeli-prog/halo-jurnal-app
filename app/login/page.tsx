@@ -251,29 +251,6 @@ function LoginPageContent() {
                 </div>
               )}
 
-              <div className="relative py-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#debfbf]"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-[#fcf9f4] px-2 text-[#574141] font-['Public_Sans']">Atau masuk dengan</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="w-full flex items-center justify-center gap-3 bg-white border border-[#debfbf] py-3 rounded-[0.25rem] hover:bg-[#f6f3ee] transition-colors"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  alt="Google Logo"
-                  className="w-5 h-5"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKt2z6a7zZLulZ8ixbqvAX3OnmuHnGAerS6FpYfLRl8gSrP64IpXsPOUaT083moGWOY8J50kR-YqQoie6xRDFsdUu1r-NIuJEROiu1Mmjlnx8TNOh-oUFZf0Xs8ZrTV5ByV6swc7o1X57kky7Y6-BApxNJ3YrHuWiAgwHtcwMiZt_-ZW-d-7HMAqKCrDmLL9mIPK4Ba6sm0SxGKvDERYvEOCWr5dlZQGW6IHb8cs_kzoLYAvn1VhX02lpDPmFwQ0Nn2npNJ_9c88NI"
-                />
-                <span className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-[#1c1c19]">
-                  Lanjutkan dengan Google
-                </span>
-              </button>
             </form>
 
             <p className="mt-8 text-center text-[#574141] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">
