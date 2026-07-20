@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import Navbar from '@/components/Navbar'
 
 // TODO: [OTP_MODE] Set to true when custom SMTP (e.g. Resend) is configured
 // to switch from magic link to 6-digit OTP code flow
@@ -182,30 +183,9 @@ export default function DaftarPage() {
   if (registrationComplete) {
     return (
       <>
-        {/* TopNavBar */}
-        <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-[80px] bg-[#6b0218] shadow-md">
-          <div className="flex items-center gap-8">
-            <Link href="/">
-              <span className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-white">Halo Jurnal</span>
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Beranda</Link>
-              <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-              <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Lapor</Link>
-              <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Laporan Saya</Link>
-              <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Tentang</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <button className="bg-[#fed255] text-[#735a00] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold hover:opacity-90 transition-opacity">
-                Login
-              </button>
-            </Link>
-          </div>
-        </header>
+        <Navbar />
 
-        <main className="min-h-screen pt-[80px] flex flex-col md:flex-row">
+        <main className="min-h-screen pt-[80px] flex flex-col lg:flex-row">
           {/* Left Side: Branding */}
           <section className="relative w-full md:w-1/2 min-h-[400px] md:min-h-0 bg-[#8b1e2c] overflow-hidden flex items-center justify-center p-12">
             <div className="relative z-10 text-center max-w-lg">
@@ -285,30 +265,9 @@ export default function DaftarPage() {
 
   return (
     <>
-      {/* TopNavBar */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-[80px] bg-[#6b0218] shadow-md">
-        <div className="flex items-center gap-8">
-          <Link href="/">
-            <span className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-white">Halo Jurnal</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Beranda</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Lapor</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Laporan Saya</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Tentang</Link>
-          </nav>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/login">
-            <button className="bg-[#fed255] text-[#735a00] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold hover:opacity-90 transition-opacity">
-              Login
-            </button>
-          </Link>
-        </div>
-      </header>
+      <Navbar />
 
-      <main className="min-h-screen pt-[80px] flex flex-col md:flex-row">
+      <main className="min-h-screen pt-[80px] flex flex-col lg:flex-row">
         {/* Left Side: Branding/Illustration */}
         <section className="relative w-full md:w-1/2 min-h-[400px] md:min-h-0 bg-[#8b1e2c] overflow-hidden flex items-center justify-center p-12">
           <div className="relative z-10 text-center max-w-lg">

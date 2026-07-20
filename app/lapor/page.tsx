@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar'
 
 function LaporForm() {
   const router = useRouter()
@@ -153,38 +154,23 @@ function LaporForm() {
 
   return (
     <>
-      {/* TopNavBar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-[80px] bg-[#6b0218] shadow-md">
-        <div className="flex items-center gap-8">
-          <Link href="/beranda">
-            <span className="font-['Libre_Franklin'] text-[32px] font-bold text-white">Halo Jurnal</span>
-          </Link>
-          <div className="hidden md:flex gap-6">
-            <Link href="/beranda" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Beranda</Link>
-            <Link href="/feed-publik" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-            <Link href="/lapor" className="font-['Public_Sans'] text-[14px] font-semibold text-white border-b-2 border-[#ffe08e] transition-colors">Lapor</Link>
-            <Link href="/laporan-saya" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Laporan Saya</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Tentang</Link>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/beranda" className="bg-[#ffe08e] text-[#241a00] px-6 py-2 font-['Public_Sans'] text-[14px] font-semibold rounded-lg hover:opacity-90 transition-opacity">
-            Dashboard
-          </Link>
-        </div>
-      </nav>
+      <Navbar showLoginButton={false} actionButton={
+        <Link href="/beranda" className="bg-[#ffe08e] text-[#241a00] px-6 py-2 font-['Public_Sans'] text-[14px] font-semibold rounded-[0.25rem] hover:opacity-90 transition-opacity">
+          Dashboard
+        </Link>
+      } />
 
       {/* Content Canvas */}
-      <main className="pt-[110px] pb-20 px-[40px] max-w-[1280px] mx-auto bg-[#fcf9f4] min-h-screen">
+      <main className="pt-[110px] pb-20 px-4 md:px-[40px] max-w-[1280px] mx-auto bg-[#fcf9f4] min-h-screen">
         {/* Header Section */}
-        <header className="mb-12">
-          <h1 className="font-['Libre_Franklin'] text-[48px] font-bold text-[#6b0218] mb-2">Sampaikan Aspirasi Anda</h1>
-          <p className="font-['Public_Sans'] text-[18px] text-[#574141] max-w-2xl">Formulir resmi pelaporan masyarakat. Pastikan data yang Anda masukkan valid untuk mempercepat proses peninjauan.</p>
+        <header className="mb-8 md:mb-12">
+          <h1 className="font-['Libre_Franklin'] text-3xl md:text-[48px] font-bold text-[#6b0218] mb-2">Sampaikan Aspirasi Anda</h1>
+          <p className="font-['Public_Sans'] text-[16px] md:text-[18px] text-[#574141] max-w-2xl">Formulir resmi pelaporan masyarakat. Pastikan data yang Anda masukkan valid untuk mempercepat proses peninjauan.</p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-[24px] items-start">
           {/* Left Side: Form Fields */}
-          <div className="lg:col-span-8 bg-white border border-[#debfbf] p-8 rounded-xl shadow-sm">
+          <div className="lg:col-span-8 bg-white border border-[#debfbf] p-6 md:p-8 rounded-xl shadow-sm">
             <form className="space-y-8" onSubmit={handleSubmit}>
               {/* Jenis Laporan (Hidden visually but shown as read-only or just info) */}
               <div className="bg-[#f0ede9] p-4 rounded-lg border border-[#debfbf]">
@@ -296,9 +282,10 @@ function LaporForm() {
             </form>
           </div>
 
-          {/* Right Side: Sticky Summary Card */}
-          <aside className="lg:col-span-4 lg:sticky lg:top-28">
-            <div className="bg-[#ebe8e3] border border-[#debfbf] rounded-xl p-6 shadow-sm">
+          {/* Right Side: Tips / Verification */}
+          <div className="lg:col-span-4 flex flex-col gap-6 mt-8 lg:mt-0">
+            {/* Lampiran Upload */}
+            <div className="bg-white border border-[#debfbf] p-6 md:p-8 rounded-xl shadow-sm">
               <h3 className="font-['Libre_Franklin'] text-[24px] font-semibold text-[#6b0218] mb-6 flex items-center gap-2">
                 <span className="material-symbols-outlined">visibility</span>
                 Preview Laporan
@@ -346,7 +333,7 @@ function LaporForm() {
                 </div>
               </div>
             </div>
-          </aside>
+          </div>
         </div>
       </main>
 

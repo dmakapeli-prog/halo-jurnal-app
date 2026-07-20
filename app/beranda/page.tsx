@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,28 +33,11 @@ export default async function BerandaPage() {
 
   return (
     <>
-      {/* TopNavBar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-[80px] shadow-md bg-[#8b1e2c]">
-        <div className="flex items-center gap-8">
-          <Link href="/">
-            <h1 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-white">Halo Jurnal</h1>
-          </Link>
-          <div className="hidden md:flex gap-6">
-            <Link href="/beranda" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white border-b-2 border-[#ffe08e] transition-colors">Beranda</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Lapor</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Laporan Saya</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Tentang</Link>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <LogoutButton />
-        </div>
-      </nav>
+      <Navbar showLoginButton={false} actionButton={<LogoutButton />} />
 
       <main className="min-h-screen pt-[80px] bg-[#FAF7F2]">
         {/* Welcome Section */}
-        <section className="max-w-[1280px] mx-auto px-[40px] pt-12 pb-8">
+        <section className="max-w-[1280px] mx-auto px-4 md:px-[40px] pt-8 md:pt-12 pb-8">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-[#ffdad9] flex items-center justify-center">
               <span className="material-symbols-outlined text-[#6b0218] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -71,7 +56,7 @@ export default async function BerandaPage() {
         </section>
 
         {/* Hero Section */}
-        <section className="relative h-[400px] flex items-center justify-center overflow-hidden mx-[40px] rounded-[1rem] shadow-lg max-w-[1280px] xl:mx-auto">
+        <section className="relative h-[400px] flex items-center justify-center overflow-hidden mx-4 md:mx-[40px] rounded-[1rem] shadow-lg max-w-[1280px] xl:mx-auto">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[#6b0218]/40 mix-blend-multiply z-10"></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -106,7 +91,7 @@ export default async function BerandaPage() {
         </section>
 
         {/* Category Cards */}
-        <section className="max-w-[1280px] mx-auto px-[40px] -mt-16 relative z-30 pb-20">
+        <section className="max-w-[1280px] mx-auto px-4 md:px-[40px] -mt-16 relative z-30 pb-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
             {/* Card 1: Pengaduan */}
             <Link href="/lapor?type=pengaduan" className="bg-white border border-[#debfbf] p-8 rounded-[0.5rem] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer block">
@@ -151,18 +136,18 @@ export default async function BerandaPage() {
         </section>
 
         {/* Recent Reports Grid (Dynamic) */}
-        <section className="bg-[#f6f3ee] py-20 px-[40px]">
+        <section className="bg-[#f6f3ee] py-20 px-4 md:px-[40px]">
           <div className="max-w-[1280px] mx-auto">
-            <div className="flex justify-between items-end mb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
               <div>
-                <h2 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-[#1c1c19] mb-2">
+                <h2 className="font-['Libre_Franklin'] text-2xl md:text-[32px] md:leading-[40px] font-bold text-[#1c1c19] mb-2">
                   Laporan Publik Terkini
                 </h2>
                 <p className="text-[#574141] font-['Public_Sans'] text-[16px] leading-[24px]">
                   Transparansi dalam penanganan pengaduan masyarakat secara real-time.
                 </p>
               </div>
-              <Link href="/feed-publik" className="border border-[#6b0218] text-[#6b0218] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#6b0218] hover:text-white transition-all">
+              <Link href="/feed-publik" className="w-full md:w-auto text-center border border-[#6b0218] text-[#6b0218] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#6b0218] hover:text-white transition-all">
                 Lihat semua laporan publik
               </Link>
             </div>
@@ -231,25 +216,7 @@ export default async function BerandaPage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full py-12 px-[40px] flex flex-col items-center gap-4 bg-[#e5e2dd] border-t border-[#debfbf]">
-        <div className="w-full max-w-[1280px] flex flex-col md:flex-row justify-between items-center gap-8 mb-8 border-b border-[#debfbf] pb-8">
-          <div className="flex flex-col gap-2 items-center md:items-start text-center md:text-left">
-            <span className="font-['Libre_Franklin'] text-[24px] leading-[32px] font-semibold text-[#6b0218]">Halo Jurnal</span>
-            <p className="text-[#574141] max-w-sm font-['Public_Sans'] text-[16px] leading-[24px]">
-              Wadah aspirasi digital untuk mewujudkan tata kelola kota yang lebih baik, transparan, dan akuntabel.
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <Link href="#" className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">Kebijakan Privasi</Link>
-            <Link href="#" className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">Syarat &amp; Ketentuan</Link>
-            <Link href="#" className="text-[#574141] hover:text-[#6b0218] transition-colors font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">Hubungi Kami</Link>
-          </div>
-        </div>
-        <div className="text-center">
-          <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141]">© 2024 Halo Jurnal. Portal Aspirasi Masyarakat.</p>
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }

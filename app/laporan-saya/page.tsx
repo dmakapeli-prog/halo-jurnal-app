@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar'
 
 export default function LaporanSayaPage() {
   const supabase = createClient()
@@ -98,26 +99,11 @@ export default function LaporanSayaPage() {
 
   return (
     <div className="bg-[#fcf9f4] text-[#1c1c19] font-['Public_Sans'] overflow-x-hidden min-h-screen">
-      {/* TopNavBar */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-20 bg-[#8b1e2c] text-white shadow-md">
-        <div className="flex items-center gap-4">
-          <Link href="/beranda">
-            <span className="font-['Libre_Franklin'] text-[32px] font-bold text-white">Halo Jurnal</span>
-          </Link>
-        </div>
-        <nav className="hidden md:flex items-center gap-8">
-          <Link href="/beranda" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Beranda</Link>
-          <Link href="/feed-publik" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-          <Link href="/lapor" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Lapor</Link>
-          <Link href="/laporan-saya" className="font-['Public_Sans'] text-[14px] font-semibold text-white border-b-2 border-[#ffe08e] transition-colors">Laporan Saya</Link>
-          <Link href="#" className="font-['Public_Sans'] text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Tentang</Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <Link href="/beranda" className="bg-[#ffe08e] text-[#241a00] px-6 py-2 rounded-lg font-['Public_Sans'] text-[14px] font-semibold hover:opacity-90 transition-opacity">
-            Dashboard
-          </Link>
-        </div>
-      </header>
+      <Navbar showLoginButton={false} actionButton={
+        <Link href="/beranda" className="bg-[#ffe08e] text-[#241a00] px-6 py-2 rounded-lg font-['Public_Sans'] text-[14px] font-semibold hover:opacity-90 transition-opacity">
+          Dashboard
+        </Link>
+      } />
 
       <div className="flex pt-20 min-h-screen">
         {/* SideNavBar */}
@@ -155,17 +141,17 @@ export default function LaporanSayaPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="md:ml-[280px] flex-1 overflow-y-auto p-[40px] pb-24">
+        <main className="md:ml-[280px] flex-1 overflow-y-auto p-4 md:p-[40px] pb-24">
           <div className="max-w-6xl mx-auto">
             {/* Header & Stats */}
-            <div className="mb-10">
+            <div className="mb-6 md:mb-10 mt-4 md:mt-0">
               <h1 className="font-['Libre_Franklin'] text-[32px] font-bold text-[#1c1c19] mb-2">Laporan Saya</h1>
               <p className="text-[#574141] font-['Public_Sans'] text-[16px]">Pantau status aspirasi dan keluhan Anda secara real-time.</p>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-[24px] mb-10">
-              <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-[24px] mb-8 md:mb-10">
+              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
                 <div className="w-12 h-12 bg-[#8b1e2c]/10 rounded-full flex items-center justify-center text-[#6b0218]">
                   <span className="material-symbols-outlined">assignment</span>
                 </div>
@@ -204,9 +190,9 @@ export default function LaporanSayaPage() {
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-[#fcf9f4] p-4 rounded-xl border border-[#debfbf] shadow-sm mb-6 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex flex-wrap items-center gap-4 flex-1">
-                <div className="relative flex-1 min-w-[200px] max-w-xs">
+            <div className="bg-[#fcf9f4] p-4 rounded-xl border border-[#debfbf] shadow-sm mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+              <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-4 flex-1">
+                <div className="relative flex-1 min-w-[200px] md:max-w-xs">
                   <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#574141] text-sm">search</span>
                   <input 
                     className="w-full pl-10 pr-4 py-2 border-[1.5px] border-[#8b7171] rounded-lg focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] text-sm bg-[#fcf9f4] outline-none" 
@@ -239,7 +225,7 @@ export default function LaporanSayaPage() {
             </div>
 
             {/* Reports Table/List */}
-            <div className="bg-[#fcf9f4] border border-[#debfbf] rounded-xl overflow-x-auto shadow-sm">
+            <div className="hidden md:block bg-[#fcf9f4] border border-[#debfbf] rounded-xl overflow-x-auto shadow-sm">
               <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
                   <tr className="bg-[#f6f3ee] border-b border-[#debfbf]">
@@ -299,6 +285,48 @@ export default function LaporanSayaPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden flex flex-col gap-4">
+              {loading ? (
+                <div className="text-center py-8 text-[#574141]">Memuat...</div>
+              ) : reports.length > 0 ? (
+                reports.map(report => (
+                  <div key={report.id} className="bg-white border border-[#debfbf] rounded-xl p-4 shadow-sm flex flex-col gap-3 relative">
+                    <div className="flex justify-between items-start">
+                      <div className="flex flex-col">
+                        <Link href={`/laporan/${report.id}`} className="font-bold text-[16px] text-[#1c1c19] hover:text-[#6b0218] transition-colors line-clamp-2">
+                          {report.judul}
+                        </Link>
+                        <span className="text-[12px] text-[#574141] mt-1">{new Date(report.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs px-2 py-1 bg-[#ebe8e3] rounded text-[#574141] truncate max-w-[120px]">
+                        {report.kategori}
+                      </span>
+                      {getStatusBadge(report.status)}
+                    </div>
+                    <div className="mt-2 pt-3 border-t border-[#debfbf] flex items-center justify-between">
+                      <span className="text-[12px] text-[#574141]">ID: {report.ticket_number || report.id}</span>
+                      <div className="flex items-center gap-4">
+                        <Link href={`/laporan/${report.id}#komentar`} className="relative text-[#574141] hover:text-[#6b0218]">
+                          <span className="material-symbols-outlined text-[20px]">forum</span>
+                          {(report.komentar[0]?.count || 0) > 0 && (
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#ba1a1a] rounded-full"></span>
+                          )}
+                        </Link>
+                        <Link href={`/laporan/${report.id}`} className="material-symbols-outlined text-[20px] text-[#574141] hover:text-[#6b0218]">
+                          visibility
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-[#574141]">Tidak ada laporan.</div>
+              )}
             </div>
           </div>
         </main>

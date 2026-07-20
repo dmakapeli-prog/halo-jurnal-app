@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="w-full py-12 px-[40px] flex flex-col items-center gap-4 bg-[#e5e2dd] border-t border-[#debfbf]">
+    <footer className="w-full py-12 px-4 md:px-[40px] flex flex-col items-center gap-4 bg-[#e5e2dd] border-t border-[#debfbf]">
       <div className="w-full max-w-[1280px] flex flex-col md:flex-row justify-between items-center gap-8 mb-8 border-b border-[#debfbf] pb-8">
         <div className="flex flex-col gap-2 items-center md:items-start text-center md:text-left">
           <span className="font-['Libre_Franklin'] text-[24px] leading-[32px] font-semibold text-[#6b0218]">

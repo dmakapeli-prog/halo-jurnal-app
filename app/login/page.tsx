@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import Navbar from '@/components/Navbar'
 
 // TODO: [OTP_MODE] Set to true when custom SMTP (e.g. Resend) is configured
 // to switch from magic link to 6-digit OTP code flow
@@ -80,29 +81,10 @@ function LoginPageContent() {
 
   return (
     <>
-      {/* TopNavBar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-[80px] bg-[#6b0218] shadow-md">
-        <div className="flex items-center gap-8">
-          <Link href="/">
-            <span className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-white">Halo Jurnal</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Beranda</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Lapor</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Laporan Saya</Link>
-            <Link href="#" className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Tentang</Link>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white border border-white/30 px-6 py-2 rounded-[0.25rem] hover:bg-white/10 transition-all">
-            Login
-          </button>
-        </div>
-      </nav>
+      <Navbar showLoginButton={false} />
 
       {/* Main Content: Split Screen Layout */}
-      <main className="min-h-screen flex pt-[80px]">
+      <main className="min-h-screen flex flex-col lg:flex-row pt-[80px]">
         {/* Left Side: Branding/Illustration (Sticky) */}
         <div className="hidden lg:flex lg:w-1/2 relative bg-[#8b1e2c] overflow-hidden">
           <div className="absolute inset-0 z-0">

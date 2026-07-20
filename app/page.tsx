@@ -19,23 +19,23 @@ export default function LandingPage() {
             />
           </div>
           <div className="relative z-20 text-center px-4 max-w-[56rem]">
-            <h2 className="font-['Libre_Franklin'] text-[48px] leading-[56px] tracking-[-0.02em] font-bold text-white mb-4 drop-shadow-lg">
+            <h2 className="font-['Libre_Franklin'] text-3xl md:text-[48px] md:leading-[56px] tracking-[-0.02em] font-bold text-white mb-4 drop-shadow-lg">
               Suara Anda, Wadah Kami
             </h2>
             <p className="font-['Public_Sans'] text-[18px] leading-[28px] text-white/90 mb-12 drop-shadow-md">
               Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada instansi pemerintah yang berwenang.
             </p>
             {/* Search Bar */}
-            <div className="max-w-[42rem] mx-auto relative group">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <div className="max-w-[42rem] mx-auto relative group flex flex-col sm:block gap-2">
+              <div className="absolute inset-y-0 left-4 hidden sm:flex items-center pointer-events-none">
                 <span className="material-symbols-outlined text-[#8b7171]">search</span>
               </div>
               <input
-                className="w-full pl-12 pr-32 py-5 rounded-[0.5rem] border-none shadow-xl focus:ring-2 focus:ring-[#6b0218] text-[16px] leading-[24px] font-['Public_Sans'] placeholder:text-[#574141]/60"
-                placeholder="Cari laporan publik berdasarkan kata kunci atau lokasi..."
+                className="w-full pl-4 sm:pl-12 sm:pr-32 py-4 sm:py-5 rounded-[0.5rem] border-none shadow-xl focus:ring-2 focus:ring-[#6b0218] text-[16px] leading-[24px] font-['Public_Sans'] placeholder:text-[#574141]/60"
+                placeholder="Cari laporan publik..."
                 type="text"
               />
-              <button className="absolute right-2 top-2 bottom-2 bg-[#6b0218] text-white px-6 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#8b1e2c] transition-all">
+              <button className="sm:absolute sm:right-2 sm:top-2 sm:bottom-2 bg-[#6b0218] text-white px-6 py-3 sm:py-0 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#8b1e2c] transition-all w-full sm:w-auto mt-2 sm:mt-0">
                 Cari Laporan
               </button>
             </div>
@@ -43,7 +43,7 @@ export default function LandingPage() {
         </section>
 
         {/* Category Cards */}
-        <section className="max-w-[1280px] mx-auto px-[40px] -mt-24 relative z-30 pb-20">
+        <section className="max-w-[1280px] mx-auto px-4 md:px-[40px] -mt-16 md:-mt-24 relative z-30 pb-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
             {/* Card 1: Pengaduan */}
             <div className="bg-white border border-[#debfbf] p-8 rounded-[0.5rem] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer">
@@ -88,11 +88,11 @@ export default function LandingPage() {
         </section>
 
         {/* Recent Reports Grid */}
-        <section className="bg-[#f6f3ee] py-20 px-[40px]">
+        <section className="bg-[#f6f3ee] py-20 px-4 md:px-[40px]">
           <div className="max-w-[1280px] mx-auto">
-            <div className="flex justify-between items-end mb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
               <div>
-                <h2 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-[#1c1c19] mb-2">
+                <h2 className="font-['Libre_Franklin'] text-2xl md:text-[32px] md:leading-[40px] font-bold text-[#1c1c19] mb-2">
                   Laporan Publik Terkini
                 </h2>
                 <p className="text-[#574141] font-['Public_Sans'] text-[16px] leading-[24px]">

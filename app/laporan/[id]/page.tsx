@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
+import Navbar from '@/components/Navbar'
 
 export default function LaporanDetailPage() {
   const params = useParams()
@@ -205,20 +206,8 @@ export default function LaporanDetailPage() {
 
   return (
     <div className="font-['Public_Sans'] bg-[#fcf9f4] text-[#1c1c19] min-h-screen">
-      {/* TopNavBar */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-[40px] h-20 bg-[#6b0218] shadow-md text-white">
-        <div className="flex items-center gap-4">
-          <Link href="/beranda">
-            <span className="font-['Libre_Franklin'] text-[32px] font-bold text-white">Halo Jurnal</span>
-          </Link>
-        </div>
-        <div className="hidden md:flex gap-8 items-center">
-          <Link href="/beranda" className="text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Beranda</Link>
-          <Link href="/feed-publik" className="text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Feed Publik</Link>
-          <Link href="/lapor" className="text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Lapor</Link>
-          <Link href="/laporan-saya" className="text-[14px] font-semibold text-white/80 hover:text-[#ffe08e] transition-colors">Laporan Saya</Link>
-        </div>
-        {user ? (
+      <Navbar showLoginButton={false} actionButton={
+        user ? (
           <Link href="/beranda" className="bg-[#ffe08e] text-[#241a00] px-6 py-2 rounded-lg text-[14px] font-semibold hover:opacity-90 transition-opacity">
             Dashboard
           </Link>
@@ -226,13 +215,13 @@ export default function LaporanDetailPage() {
           <Link href="/login" className="bg-[#ffe08e] text-[#241a00] px-6 py-2 rounded-lg text-[14px] font-semibold hover:opacity-90 transition-opacity">
             Login
           </Link>
-        )}
-      </nav>
+        )
+      } />
 
       <main className="pt-20 min-h-screen">
-        <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]">
+        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-80px)] h-auto">
           {/* Left Column: Report Details */}
-          <section className="flex-grow overflow-y-auto p-[40px] max-w-4xl border-r border-[#debfbf] bg-[#fcf9f4] custom-scrollbar">
+          <section className="flex-grow overflow-y-auto p-4 md:p-[40px] max-w-4xl border-r border-[#debfbf] bg-[#fcf9f4] custom-scrollbar">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 mb-8 text-[#574141]">
               <Link href={isOwner ? "/laporan-saya" : "/feed-publik"} className="text-[14px] hover:underline">
@@ -307,7 +296,7 @@ export default function LaporanDetailPage() {
             {report.laporan_lampiran && report.laporan_lampiran.length > 0 && (
               <div className="mb-12">
                 <h2 className="font-['Libre_Franklin'] text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Lampiran Bukti</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {report.laporan_lampiran.map((lampiran: any) => (
                     <a key={lampiran.id} href={lampiran.file_url} target="_blank" rel="noreferrer" className="relative group aspect-square rounded-lg overflow-hidden border border-[#debfbf] cursor-zoom-in block">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -364,7 +353,7 @@ export default function LaporanDetailPage() {
           </section>
 
           {/* Right Column: Persistent Comment Panel */}
-          <section className="w-full lg:w-[450px] flex flex-col bg-[#ebe8e3] border-l border-[#debfbf] h-full overflow-hidden relative">
+          <section id="komentar" className="w-full lg:w-[450px] flex flex-col bg-[#ebe8e3] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[500px] lg:h-full overflow-hidden relative">
             {/* Panel Header */}
             <div className="p-4 bg-white border-b border-[#debfbf] flex items-center gap-3">
               <span className="material-symbols-outlined text-[#6b0218]">forum</span>
