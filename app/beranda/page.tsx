@@ -74,17 +74,17 @@ export default async function BerandaPage() {
               Buat laporan baru atau pantau status laporan yang sudah Anda kirimkan.
             </p>
             {/* Search Bar */}
-            <form action="/feed-publik" method="GET" className="max-w-[42rem] mx-auto relative group">
+            <form action="/feed-publik" method="GET" className="max-w-[42rem] mx-auto relative group mt-8">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <span className="material-symbols-outlined text-[#8b7171]">search</span>
+                <span className="material-symbols-outlined text-gray-500">search</span>
               </div>
               <input
                 name="search"
-                className="w-full pl-12 pr-32 py-4 rounded-[0.5rem] bg-white border-[1.5px] border-[#debfbf] shadow-xl focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none text-[16px] leading-[24px] font-['Public_Sans'] placeholder:text-[#574141]/60 text-[#1c1c19]"
+                className="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg pl-12 pr-36 py-4 shadow-lg w-full outline-none focus:ring-2 focus:ring-[#6b0218]"
                 placeholder="Cari laporan berdasarkan kata kunci atau lokasi..."
                 type="text"
               />
-              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-[#6b0218] text-white px-6 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#8b1e2c] transition-all">
+              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-[#6b0218] text-white px-6 rounded-md font-semibold hover:bg-[#8b1e2c] transition-all">
                 Cari Laporan
               </button>
             </form>
