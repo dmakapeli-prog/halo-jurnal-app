@@ -446,7 +446,7 @@ export default function DaftarPage() {
                     ) : (
                       <div className="px-4 py-3 text-green-700 font-['Public_Sans'] text-[14px] font-bold flex items-center gap-1">
                         <span className="material-symbols-outlined text-lg">check_circle</span>
-                        Terverifikasi
+                        Berhasil
                       </div>
                     )}
                   </div>

@@ -54,7 +54,7 @@ export default function LaporanSayaPage() {
         'Diterima': 'diterima',
         'Diproses': 'diproses',
         'Selesai': 'selesai',
-        'Ditolak': 'ditolak'
+        'Ditindaklanjuti': 'ditindaklanjuti'
       }
       query = query.eq('status', statusMap[statusFilter] || statusFilter.toLowerCase())
     }
@@ -83,8 +83,8 @@ export default function LaporanSayaPage() {
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-yellow-100 text-yellow-700">Diproses</span>
       case 'diterima':
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-gray-100 text-gray-700">Diterima</span>
-      case 'ditolak':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-red-100 text-red-700">Ditolak</span>
+      case 'ditindaklanjuti':
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-purple-100 text-purple-700">Ditindaklanjuti</span>
       default:
         return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-gray-100 text-gray-700 capitalize">{status}</span>
     }
@@ -211,7 +211,7 @@ export default function LaporanSayaPage() {
                   <option>Diterima</option>
                   <option>Diproses</option>
                   <option>Selesai</option>
-                  <option>Ditolak</option>
+                  <option>Ditindaklanjuti</option>
                 </select>
                 <select 
                   className="border-[1.5px] border-[#8b7171] rounded-lg px-4 py-2 text-sm bg-[#fcf9f4] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none"

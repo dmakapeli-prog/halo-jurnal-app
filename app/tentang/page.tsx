@@ -131,7 +131,7 @@ export default function TentangPage() {
                     <div>
                       <h4 className="font-['Libre_Franklin'] text-[24px] font-semibold text-[#1c1c19] mb-2">Respon Cepat</h4>
                       <p className="font-['Public_Sans'] text-[16px] text-[#574141]">
-                        Setiap laporan ditangani dan direspons secara profesional oleh admin terverifikasi dalam waktu yang terukur.
+                        Setiap laporan ditangani dan direspons secara profesional oleh admin berwenang dalam waktu yang terukur.
                       </p>
                     </div>
                   </div>

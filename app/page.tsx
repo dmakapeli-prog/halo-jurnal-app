@@ -1,8 +1,35 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 
-export default function LandingPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function LandingPage() {
+  const supabase = await createClient()
+
+  // Fetch recent public reports
+  const { data: recentReports } = await supabase
+    .from('laporan')
+    .select('*, laporan_lampiran(file_url)')
+    .eq('is_public', true)
+    .order('created_at', { ascending: false })
+    .limit(3)
+
+  const { count: totalLaporan } = await supabase
+    .from('laporan')
+    .select('*', { count: 'exact', head: true })
+
+  const { count: tuntasLaporan } = await supabase
+    .from('laporan')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'selesai')
+
+  const { count: prosesLaporan } = await supabase
+    .from('laporan')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'diproses')
+
   return (
     <>
       <Navbar />
@@ -98,104 +125,69 @@ export default function LandingPage() {
                   Transparansi dalam penanganan pengaduan masyarakat secara real-time.
                 </p>
               </div>
-              <button className="border border-[#6b0218] text-[#6b0218] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#6b0218] hover:text-white transition-all">
+              <Link href="/feed-publik" className="w-full md:w-auto text-center border-[1.5px] border-[#6b0218] text-[#6b0218] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#6b0218] hover:text-white transition-all cursor-pointer inline-block">
                 Lihat semua laporan publik
-              </button>
+              </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px]">
-              {/* Report Item 1 */}
-              <div className="bg-white border border-[#debfbf] rounded-[0.5rem] overflow-hidden hover:shadow-md transition-shadow group">
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 rounded-[0.75rem] bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider">
-                      Selesai
-                    </span>
-                    <span className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">calendar_today</span> 2 Jam Lalu
-                    </span>
+              {recentReports && recentReports.length > 0 ? (
+                recentReports.map((report) => (
+                  <div key={report.id} className="bg-white border border-[#debfbf] rounded-[0.5rem] overflow-hidden hover:shadow-md transition-shadow group flex flex-col">
+                    <div className="p-6 flex-grow">
+                      <div className="flex justify-between items-start mb-4">
+                        {report.status === 'selesai' && (
+                          <span className="px-3 py-1 rounded-[0.75rem] bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider">
+                            Selesai
+                          </span>
+                        )}
+                        {report.status === 'diproses' && (
+                          <span className="px-3 py-1 rounded-[0.75rem] bg-yellow-100 text-yellow-800 text-[10px] font-bold uppercase tracking-wider">
+                            Diproses
+                          </span>
+                        )}
+                        {report.status === 'diterima' && (
+                          <span className="px-3 py-1 rounded-[0.75rem] bg-blue-100 text-blue-800 text-[10px] font-bold uppercase tracking-wider">
+                            Diterima
+                          </span>
+                        )}
+                        {report.status === 'ditindaklanjuti' && (
+                          <span className="px-3 py-1 rounded-[0.75rem] bg-purple-100 text-purple-800 text-[10px] font-bold uppercase tracking-wider">
+                            Ditindaklanjuti
+                          </span>
+                        )}
+                        <span className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] flex items-center gap-1">
+                          <span className="material-symbols-outlined text-sm">calendar_today</span> 
+                          {new Date(report.created_at).toLocaleDateString('id-ID')}
+                        </span>
+                      </div>
+                      <h4 className="font-['Libre_Franklin'] text-[18px] font-semibold mb-3 line-clamp-2">
+                        {report.judul}
+                      </h4>
+                      <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] mb-4 line-clamp-3">
+                        {report.deskripsi}
+                      </p>
+                      <div className="flex items-center gap-2 font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-[#6b0218]">
+                        <span className="material-symbols-outlined text-sm">location_on</span>
+                        {report.lokasi}
+                      </div>
+                    </div>
+                    {report.laporan_lampiran && report.laporan_lampiran.length > 0 && report.laporan_lampiran[0].file_url && (
+                      <div className="h-48 relative overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          alt={report.judul}
+                          src={report.laporan_lampiran[0].file_url}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <h4 className="font-['Libre_Franklin'] text-[18px] font-semibold mb-3 line-clamp-2">
-                    Perbaikan Lampu Jalan di Area Pemukiman RW 04
-                  </h4>
-                  <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] mb-4 line-clamp-3">
-                    Lampu jalan sudah mati selama 3 hari berturut-turut, membuat warga khawatir akan keamanan saat malam hari...
-                  </p>
-                  <div className="flex items-center gap-2 font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-[#6b0218]">
-                    <span className="material-symbols-outlined text-sm">location_on</span>
-                    Kec. Menteng, Jakarta Pusat
-                  </div>
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-12 text-[#574141]">
+                  Belum ada laporan publik saat ini. Jadilah yang pertama melapor!
                 </div>
-                <div className="h-48 relative overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    alt="A newly installed modern LED street light at dusk"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWTm_BJDDTdYzd8zJghk2v_R537oI2Gk-P_9PHFRxe10UZTYONJmIwnCLjFQfY9I8kgOcYbMsIa1yMRPt9BEL9zZ8YO60MIQmq05cqCE4mb2TqyxdYAV0CoAq4mCyV1NViHQmNBB-bT9tSFxIxip41sqzJoVDx9-Szwkorglxx1IKdsL0VDw11QtyUvCEjexVMGx55s2xyzjhLMgMv3uRCz_z8iqhJOJ0-WdO9xgxOsS3QXl9LGeLeZNCDLUDy1PNuvi0B-P3Ms1PV"
-                  />
-                </div>
-              </div>
-              {/* Report Item 2 */}
-              <div className="bg-white border border-[#debfbf] rounded-[0.5rem] overflow-hidden hover:shadow-md transition-shadow group">
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 rounded-[0.75rem] bg-yellow-100 text-yellow-800 text-[10px] font-bold uppercase tracking-wider">
-                      Diproses
-                    </span>
-                    <span className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">calendar_today</span> 5 Jam Lalu
-                    </span>
-                  </div>
-                  <h4 className="font-['Libre_Franklin'] text-[18px] font-semibold mb-3 line-clamp-2">
-                    Tumpukan Sampah Liar di Pinggir Sungai
-                  </h4>
-                  <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] mb-4 line-clamp-3">
-                    Warga melaporkan adanya tumpukan sampah yang cukup banyak di bantaran sungai, dikhawatirkan menyumbat aliran air...
-                  </p>
-                  <div className="flex items-center gap-2 font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-[#6b0218]">
-                    <span className="material-symbols-outlined text-sm">location_on</span>
-                    Kec. Gambir, Jakarta Pusat
-                  </div>
-                </div>
-                <div className="h-48 relative overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    alt="A riverbank cleanup operation in progress"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuB12R_Up3klO6i3RVNK6BesMlHBVYiAEZ0VEk4yVucvGuqiCbYZ2m8f1WB2fMpLEzHO6tHMHkBg5fVV2hmmkLJwas84OvBJ2xTBCEpPECSwhLHB4pf-Z04PPinyyHmidt8v0o6uRcSbA0h8QBU0VU6AIT4SZq8l_eKpx-yYFQ9vnMva7_qB9H9jx8ZXSLzbuGr09pLned6s-TZbcNInhTLvKlIaFuYh3wjZ95mm8JVVuQMYT6PrAFRprRM3aBmi0U4V7GwS5Q0V_qA7"
-                  />
-                </div>
-              </div>
-              {/* Report Item 3 */}
-              <div className="bg-white border border-[#debfbf] rounded-[0.5rem] overflow-hidden hover:shadow-md transition-shadow group">
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <span className="px-3 py-1 rounded-[0.75rem] bg-blue-100 text-blue-800 text-[10px] font-bold uppercase tracking-wider">
-                      Terverifikasi
-                    </span>
-                    <span className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">calendar_today</span> 8 Jam Lalu
-                    </span>
-                  </div>
-                  <h4 className="font-['Libre_Franklin'] text-[18px] font-semibold mb-3 line-clamp-2">
-                    Lubang Jalan di Persimpangan Utama
-                  </h4>
-                  <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] mb-4 line-clamp-3">
-                    Terdapat lubang yang cukup dalam di tengah jalan raya yang membahayakan pengendara roda dua terutama saat hujan...
-                  </p>
-                  <div className="flex items-center gap-2 font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-[#6b0218]">
-                    <span className="material-symbols-outlined text-sm">location_on</span>
-                    Kec. Setiabudi, Jakarta Selatan
-                  </div>
-                </div>
-                <div className="h-48 relative overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    alt="An urban street with repair markings"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8dP76q7oKjW75NmX0e7y5a-z3yHMAoqksaGqdXqSyiaacHvn4lyl1oLjWpmGM6Ump05brqDZgivItrV7lTYxN-m-PECYH5w5ykjswbFvWTk6_ib1mF9VKii8A_DzTSEuO9mpNF3msGFIvGTBdx_2BukjwcUj8qWpBsQ38JwuCbU90Gmrlckufj-6RDkWkMg9Fup3m0ySpeF-c75azr0XDec7p-SHkIA41dHhyRE-oW325qTMZ69XoK2709LaZxDoaPc5JBeBoSrg4"
-                  />
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </section>
@@ -204,19 +196,19 @@ export default function LandingPage() {
         <section className="py-20 bg-[#6b0218] text-white">
           <div className="max-w-[1280px] mx-auto px-[40px] grid grid-cols-2 md:grid-cols-4 gap-[24px] text-center">
             <div>
-              <span className="block font-['Libre_Franklin'] text-4xl md:text-5xl font-bold mb-2">12.842</span>
+              <span className="block font-['Libre_Franklin'] text-4xl md:text-5xl font-bold mb-2">{totalLaporan || 0}</span>
               <span className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold opacity-80 uppercase tracking-widest">
                 Laporan Masuk
               </span>
             </div>
             <div>
-              <span className="block font-['Libre_Franklin'] text-4xl md:text-5xl font-bold mb-2">9.431</span>
+              <span className="block font-['Libre_Franklin'] text-4xl md:text-5xl font-bold mb-2">{tuntasLaporan || 0}</span>
               <span className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold opacity-80 uppercase tracking-widest">
                 Tuntas Ditangani
               </span>
             </div>
             <div>
-              <span className="block font-['Libre_Franklin'] text-4xl md:text-5xl font-bold mb-2">2.105</span>
+              <span className="block font-['Libre_Franklin'] text-4xl md:text-5xl font-bold mb-2">{prosesLaporan || 0}</span>
               <span className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold opacity-80 uppercase tracking-widest">
                 Sedang Diproses
               </span>

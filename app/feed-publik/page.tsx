@@ -287,10 +287,10 @@ function FeedPublikContent() {
                           Diterima
                         </span>
                       )}
-                      {report.status === 'ditolak' && (
-                        <span className="bg-red-100 text-red-800 px-4 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>cancel</span>
-                          Ditolak
+                      {report.status === 'ditindaklanjuti' && (
+                        <span className="bg-purple-100 text-purple-800 px-4 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>gavel</span>
+                          Ditindaklanjuti
                         </span>
                       )}
                     </div>

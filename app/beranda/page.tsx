@@ -171,9 +171,9 @@ export default async function BerandaPage() {
                             Diterima
                           </span>
                         )}
-                        {report.status === 'ditolak' && (
-                          <span className="px-3 py-1 rounded-[0.75rem] bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-wider">
-                            Ditolak
+                        {report.status === 'ditindaklanjuti' && (
+                          <span className="px-3 py-1 rounded-[0.75rem] bg-purple-100 text-purple-800 text-[10px] font-bold uppercase tracking-wider">
+                            Ditindaklanjuti
                           </span>
                         )}
                         <span className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] flex items-center gap-1">
