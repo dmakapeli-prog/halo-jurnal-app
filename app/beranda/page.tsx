@@ -68,10 +68,10 @@ export default async function BerandaPage() {
           </div>
           <div className="relative z-20 text-center px-4 max-w-[56rem]">
             <h2 className="font-['Libre_Franklin'] text-[40px] leading-[48px] tracking-[-0.02em] font-bold text-white mb-4 drop-shadow-lg">
-              Sampaikan Aspirasi Anda
+              Suara Anda, Wadah Kami
             </h2>
             <p className="font-['Public_Sans'] text-[18px] leading-[28px] text-white/90 mb-8 drop-shadow-md">
-              Buat laporan baru atau pantau status laporan yang sudah Anda kirimkan.
+              Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada instansi pemerintah yang berwenang.
             </p>
             {/* Search Bar */}
             <form action="/feed-publik" method="GET" className="bg-white rounded-lg md:rounded-lg shadow-xl flex items-center p-2 w-full max-w-2xl mx-auto mt-8 border border-gray-300 relative z-30">
