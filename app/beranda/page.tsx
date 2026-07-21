@@ -74,17 +74,15 @@ export default async function BerandaPage() {
               Buat laporan baru atau pantau status laporan yang sudah Anda kirimkan.
             </p>
             {/* Search Bar */}
-            <form action="/feed-publik" method="GET" className="max-w-[42rem] mx-auto relative group mt-8">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <span className="material-symbols-outlined text-gray-500">search</span>
-              </div>
+            <form action="/feed-publik" method="GET" className="bg-white rounded-lg md:rounded-lg shadow-xl flex items-center p-2 w-full max-w-2xl mx-auto mt-8 border border-gray-300 relative z-30">
+              <span className="material-symbols-outlined text-gray-400 ml-3">search</span>
               <input
                 name="search"
-                className="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 rounded-lg pl-12 pr-36 py-4 shadow-lg w-full outline-none focus:ring-2 focus:ring-[#6b0218]"
-                placeholder="Cari laporan berdasarkan kata kunci atau lokasi..."
+                className="flex-1 bg-transparent border-none outline-none px-4 py-2 text-gray-700 placeholder-gray-400 font-['Public_Sans'] focus:ring-0"
+                placeholder="Cari laporan publik berdasarkan kata kunci atau lokasi..."
                 type="text"
               />
-              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-[#6b0218] text-white px-6 rounded-md font-semibold hover:bg-[#8b1e2c] transition-all">
+              <button type="submit" className="bg-[#6b0218] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#8b1e2c] transition-all whitespace-nowrap">
                 Cari Laporan
               </button>
             </form>
