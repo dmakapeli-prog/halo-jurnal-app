@@ -26,19 +26,18 @@ export default function LandingPage() {
               Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada instansi pemerintah yang berwenang.
             </p>
             {/* Search Bar */}
-            <div className="max-w-[42rem] mx-auto relative group flex flex-col sm:block gap-2">
-              <div className="absolute inset-y-0 left-4 hidden sm:flex items-center pointer-events-none">
-                <span className="material-symbols-outlined text-[#8b7171]">search</span>
-              </div>
+            <form action="/feed-publik" method="GET" className="bg-white rounded-lg md:rounded-lg shadow-xl flex items-center p-2 w-full max-w-2xl mx-auto mt-8 border border-gray-300 relative z-30">
+              <span className="material-symbols-outlined text-gray-400 ml-3">search</span>
               <input
-                className="w-full pl-4 sm:pl-12 sm:pr-32 py-4 sm:py-5 rounded-[0.5rem] border-none shadow-xl focus:ring-2 focus:ring-[#6b0218] text-[16px] leading-[24px] font-['Public_Sans'] placeholder:text-[#574141]/60"
-                placeholder="Cari laporan publik..."
+                name="search"
+                className="flex-1 bg-transparent border-none outline-none px-4 py-2 text-gray-700 placeholder-gray-400 font-['Public_Sans'] focus:ring-0"
+                placeholder="Cari laporan publik berdasarkan kata kunci atau lokasi..."
                 type="text"
               />
-              <button className="sm:absolute sm:right-2 sm:top-2 sm:bottom-2 bg-[#6b0218] text-white px-6 py-3 sm:py-0 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#8b1e2c] transition-all w-full sm:w-auto mt-2 sm:mt-0">
+              <button type="submit" className="bg-[#6b0218] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#8b1e2c] transition-all whitespace-nowrap">
                 Cari Laporan
               </button>
-            </div>
+            </form>
           </div>
         </section>
 
