@@ -35,9 +35,13 @@ export async function GET(request: Request) {
     // (uploading KTP from localStorage, etc.)
     // The profile completion logic runs on the client side since
     // localStorage data is only accessible in the browser
-    return NextResponse.redirect(`${origin}/auth/complete-profile?next=${encodeURIComponent(next)}`)
+    const redirectUrl = new URL(`/auth/complete-profile`, request.url)
+    redirectUrl.searchParams.set('next', next)
+    return NextResponse.redirect(redirectUrl)
   }
 
   // Return the user to login with error
-  return NextResponse.redirect(`${origin}/login?error=auth`)
+  const errorUrl = new URL(`/login`, request.url)
+  errorUrl.searchParams.set('error', 'auth')
+  return NextResponse.redirect(errorUrl)
 }
