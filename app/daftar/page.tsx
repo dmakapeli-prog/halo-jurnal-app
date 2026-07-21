@@ -15,6 +15,9 @@ export default function DaftarPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [ktpFile, setKtpFile] = useState<File | null>(null)
@@ -118,6 +121,14 @@ export default function DaftarPage() {
       setError('Masukkan email Anda.')
       return
     }
+    if (!password || password.length < 8) {
+      setError('Password minimal 8 karakter.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('Konfirmasi password tidak cocok.')
+      return
+    }
     if (!ktpFile) {
       setError('Unggah foto KTP Anda.')
       return
@@ -133,12 +144,11 @@ export default function DaftarPage() {
     try {
       const sb = getSupabase()
 
-      // Step 1: Send magic link (signUp via OTP with shouldCreateUser: true)
-      // This creates the user account and sends a confirmation email
-      const { error: signUpError } = await sb.auth.signInWithOtp({
+      // Step 1: Register using email and password
+      const { error: signUpError } = await sb.auth.signUp({
         email,
+        password,
         options: {
-          shouldCreateUser: true,
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             full_name: fullName,
@@ -173,7 +183,7 @@ export default function DaftarPage() {
 
       // Show success
       setRegistrationComplete(true)
-      setSuccessMsg('Link konfirmasi telah dikirim ke email Anda.')
+      setSuccessMsg('Cek email Anda untuk konfirmasi akun.')
     } catch {
       setError('Terjadi kesalahan. Silakan coba lagi.')
     }
@@ -344,6 +354,53 @@ export default function DaftarPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
+                  Password
+                </label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8b7171]">
+                    lock
+                  </span>
+                  <input
+                    className="w-full pl-12 pr-12 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
+                    placeholder="Minimal 8 karakter"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8b7171] hover:text-[#6b0218]"
+                  >
+                    <span className="material-symbols-outlined">
+                      {showPassword ? 'visibility_off' : 'visibility'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Konfirmasi Password */}
+              <div>
+                <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
+                  Konfirmasi Password
+                </label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8b7171]">
+                    lock
+                  </span>
+                  <input
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
+                    placeholder="Ulangi password Anda"
+                    type={showPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
               </div>

@@ -17,40 +17,38 @@ function LoginPageContent() {
   const getSupabase = () => createClient()
 
   const [email, setEmail] = useState('')
-  const [linkSent, setLinkSent] = useState(false)
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(searchParams.get('error') === 'auth' ? 'Terjadi kesalahan saat verifikasi. Silakan coba lagi.' : '')
-  const [successMsg, setSuccessMsg] = useState('')
 
   // --- OTP CODE STATE (hidden for now, will be re-enabled with custom SMTP) ---
   // const [otp, setOtp] = useState('')
   // const [otpSent, setOtpSent] = useState(false)
 
-  const handleSendMagicLink = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email) {
-      setError('Masukkan email Anda terlebih dahulu.')
+    if (!email || !password) {
+      setError('Masukkan email dan password Anda.')
       return
     }
     setLoading(true)
     setError('')
-    setSuccessMsg('')
 
-    const { error: otpError } = await getSupabase().auth.signInWithOtp({
+    const { error: signInError } = await getSupabase().auth.signInWithPassword({
       email,
-      options: {
-        shouldCreateUser: false,
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
+      password,
     })
 
-    if (otpError) {
-      setError(otpError.message === 'Signups not allowed for otp'
-        ? 'Akun tidak ditemukan. Silakan daftar terlebih dahulu.'
-        : otpError.message)
+    if (signInError) {
+      if (signInError.message.includes('Email not confirmed')) {
+        setError('Email belum dikonfirmasi, silakan cek email Anda.')
+      } else {
+        setError('Email atau password salah.')
+      }
     } else {
-      setLinkSent(true)
-      setSuccessMsg('Link login telah dikirim ke email Anda. Silakan cek inbox (dan folder spam) lalu klik link tersebut untuk masuk.')
+      router.push('/beranda')
+      router.refresh()
     }
     setLoading(false)
   }
@@ -148,110 +146,74 @@ function LoginPageContent() {
             </div>
 
             {/* Login Form */}
-            <form className="space-y-6" onSubmit={handleSendMagicLink}>
-              {/* Error/Success messages */}
+            <form className="space-y-6" onSubmit={handleLogin}>
+              {/* Error message */}
               {error && (
                 <div className="p-3 bg-[#ffdad6] border border-[#ba1a1a] rounded-[0.25rem] text-[#93000a] font-['Public_Sans'] text-[14px]">
                   {error}
                 </div>
               )}
-              {successMsg && (
-                <div className="p-4 bg-green-50 border border-green-200 rounded-[0.25rem] text-green-800 font-['Public_Sans'] text-[14px]">
-                  <div className="flex items-start gap-3">
-                    <span className="material-symbols-outlined text-green-600 text-xl mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>mark_email_read</span>
-                    <div>
-                      <p className="font-semibold mb-1">Link Login Terkirim!</p>
-                      <p>{successMsg}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
 
-              {!linkSent ? (
-                <>
-                  <div className="space-y-1">
-                    <label className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold block text-[#574141]">
-                      Email
-                    </label>
-                    <div className="relative">
-                      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#574141]/50">
-                        person
-                      </span>
-                      <input
-                        className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
-                        placeholder="e.g. user@mail.com"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={loading}
-                      />
-                    </div>
-                  </div>
-
-                  {/* --- OTP CODE INPUT (hidden for now, will be re-enabled with custom SMTP) --- */}
-                  {/* {USE_OTP_CODE && (
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center">
-                        <label className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold block text-[#574141]">
-                          Kode OTP
-                        </label>
-                        <button
-                          type="button"
-                          onClick={handleSendOtp}
-                          disabled={loading}
-                          className="text-[#6b0218] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:underline disabled:opacity-50"
-                        >
-                          {loading && !otpSent ? 'Mengirim...' : 'Kirim Kode'}
-                        </button>
-                      </div>
-                      <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#574141]/50">
-                          lock
-                        </span>
-                        <input
-                          className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
-                          placeholder="6 Digit Kode"
-                          type="text"
-                          maxLength={6}
-                          value={otp}
-                          onChange={(e) => setOtp(e.target.value)}
-                        />
-                      </div>
-                      <p className="text-[12px] text-[#574141]/60 mt-1 italic font-['Public_Sans']">
-                        Kode OTP akan dikirimkan ke media yang Anda pilih.
-                      </p>
-                    </div>
-                  )} */}
-
-                  <button
-                    type="submit"
+              <div className="space-y-1">
+                <label className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold block text-[#574141]">
+                  Email
+                </label>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#574141]/50">
+                    person
+                  </span>
+                  <input
+                    className="w-full pl-10 pr-4 py-3 bg-white border-[1.5px] border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
+                    placeholder="e.g. user@mail.com"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
-                    className="w-full bg-[#6b0218] text-white py-4 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-lg hover:bg-[#8b1e2c] transition-all shadow-sm active:scale-95 duration-100 disabled:opacity-50"
-                  >
-                    {loading ? 'Mengirim link...' : 'Masuk Sekarang'}
-                  </button>
-                </>
-              ) : (
-                /* Post-submit state: show check email instruction */
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-[#ffdad9] flex items-center justify-center mx-auto">
-                    <span className="material-symbols-outlined text-[#6b0218] text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                      forward_to_inbox
-                    </span>
-                  </div>
-                  <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141]">
-                    Kami telah mengirim link login ke <strong className="text-[#1c1c19]">{email}</strong>. Buka email Anda dan klik link tersebut untuk langsung masuk.
-                  </p>
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <label className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold block text-[#574141]">
+                    Password
+                  </label>
+                  <Link href="/reset-password" className="text-[12px] text-[#6b0218] font-bold hover:underline">
+                    Lupa Password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#574141]/50">
+                    lock
+                  </span>
+                  <input
+                    className="w-full pl-10 pr-12 py-3 bg-white border-[1.5px] border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
+                    placeholder="Masukkan password Anda"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                  />
                   <button
                     type="button"
-                    onClick={() => { setLinkSent(false); setSuccessMsg(''); setError('') }}
-                    className="text-[#6b0218] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:underline"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#574141]/50 hover:text-[#6b0218]"
+                    disabled={loading}
                   >
-                    Gunakan email lain
+                    <span className="material-symbols-outlined">
+                      {showPassword ? 'visibility_off' : 'visibility'}
+                    </span>
                   </button>
                 </div>
-              )}
+              </div>
 
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#6b0218] text-white py-4 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-lg hover:bg-[#8b1e2c] transition-all shadow-sm active:scale-95 duration-100 disabled:opacity-50"
+              >
+                {loading ? 'Masuk...' : 'Masuk Sekarang'}
+              </button>
             </form>
 
             <p className="mt-8 text-center text-[#574141] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">
