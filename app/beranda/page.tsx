@@ -74,19 +74,20 @@ export default async function BerandaPage() {
               Buat laporan baru atau pantau status laporan yang sudah Anda kirimkan.
             </p>
             {/* Search Bar */}
-            <div className="max-w-[42rem] mx-auto relative group">
+            <form action="/feed-publik" method="GET" className="max-w-[42rem] mx-auto relative group">
               <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                 <span className="material-symbols-outlined text-[#8b7171]">search</span>
               </div>
               <input
-                className="w-full pl-12 pr-32 py-4 rounded-[0.5rem] border-none shadow-xl focus:ring-2 focus:ring-[#6b0218] text-[16px] leading-[24px] font-['Public_Sans'] placeholder:text-[#574141]/60"
-                placeholder="Cari laporan publik..."
+                name="search"
+                className="w-full pl-12 pr-32 py-4 rounded-[0.5rem] bg-white border-[1.5px] border-[#debfbf] shadow-xl focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none text-[16px] leading-[24px] font-['Public_Sans'] placeholder:text-[#574141]/60 text-[#1c1c19]"
+                placeholder="Cari laporan berdasarkan kata kunci atau lokasi..."
                 type="text"
               />
-              <button className="absolute right-2 top-2 bottom-2 bg-[#6b0218] text-white px-6 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#8b1e2c] transition-all">
-                Cari
+              <button type="submit" className="absolute right-2 top-2 bottom-2 bg-[#6b0218] text-white px-6 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#8b1e2c] transition-all">
+                Cari Laporan
               </button>
-            </div>
+            </form>
           </div>
         </section>
 
@@ -147,7 +148,7 @@ export default async function BerandaPage() {
                   Transparansi dalam penanganan pengaduan masyarakat secara real-time.
                 </p>
               </div>
-              <Link href="/feed-publik" className="w-full md:w-auto text-center border border-[#6b0218] text-[#6b0218] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#6b0218] hover:text-white transition-all">
+              <Link href="/feed-publik" className="w-full md:w-auto text-center border-[1.5px] border-[#6b0218] text-[#6b0218] px-6 py-2 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold hover:bg-[#6b0218] hover:text-white transition-all cursor-pointer inline-block">
                 Lihat semua laporan publik
               </Link>
             </div>

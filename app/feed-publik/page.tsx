@@ -1,20 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
-export default function FeedPublikPage() {
+function FeedPublikContent() {
   const supabase = createClient()
+  const searchParams = useSearchParams()
+  
   const [reports, setReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [selectedLocation, setSelectedLocation] = useState<string>('Seluruh Indonesia')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   useEffect(() => {
@@ -343,5 +346,17 @@ export default function FeedPublikPage() {
 
       <Footer />
     </>
+  )
+}
+
+export default function FeedPublikPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#fcf9f4] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6b0218]"></div>
+      </div>
+    }>
+      <FeedPublikContent />
+    </Suspense>
   )
 }
