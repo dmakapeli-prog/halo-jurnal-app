@@ -119,7 +119,7 @@ export default function LaporanSayaPage() {
                 )}
               </div>
               <div>
-                <p className="font-['Public_Sans'] text-[14px] font-bold text-[#1c1c19]">{profile?.full_name || 'Warga'}</p>
+                <p className="font-['Public_Sans'] text-[14px] font-bold text-[#1c1c19]">{profile?.full_name || user?.user_metadata?.full_name || 'Warga'}</p>
                 <p className="text-[12px] text-[#574141]">Portal Aspirasi Warga</p>
               </div>
             </div>

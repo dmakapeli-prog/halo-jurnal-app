@@ -31,8 +31,9 @@ export default async function BerandaPage() {
     .order('created_at', { ascending: false })
     .limit(3)
 
-  // Display name: use full_name, or truncate email if too long
-  const displayName = profile?.full_name || (user.email && user.email.length > 24 ? user.email.substring(0, 24) + '…' : user.email)
+  // Display name: use full_name from profile, then metadata, or truncate email if too long
+  const fallbackName = user.user_metadata?.full_name
+  const displayName = profile?.full_name || fallbackName || (user.email && user.email.length > 24 ? user.email.substring(0, 24) + '…' : user.email)
 
   return (
     <>
