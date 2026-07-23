@@ -52,6 +52,17 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       authenticated = true
+      
+      // Auto-create a basic profile to prevent orphaned users (violating foreign keys)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+          role: 'citizen',
+          ktp_verified: false
+        }, { onConflict: 'id', ignoreDuplicates: true })
+      }
     } else {
       console.error('exchangeCodeForSession error:', error.message)
     }
@@ -65,6 +76,17 @@ export async function GET(request: Request) {
     })
     if (!error) {
       authenticated = true
+      
+      // Auto-create a basic profile to prevent orphaned users (violating foreign keys)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('profiles').upsert({
+          id: user.id,
+          full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+          role: 'citizen',
+          ktp_verified: false
+        }, { onConflict: 'id', ignoreDuplicates: true })
+      }
     } else {
       console.error('verifyOtp error:', error.message)
     }

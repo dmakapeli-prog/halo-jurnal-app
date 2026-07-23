@@ -97,7 +97,7 @@ export default async function BerandaPage() {
         </section>
 
         {/* Category Cards */}
-        <section className="max-w-[1280px] mx-auto px-5 md:px-[40px] -mt-12 sm:-mt-16 relative z-30 pb-16 md:pb-20">
+        <section className="max-w-[1280px] mx-auto px-5 md:px-[40px] mt-8 md:-mt-16 relative z-30 pb-16 md:pb-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-[24px]">
             {/* Card 1: Pengaduan */}
             <Link href="/lapor?type=pengaduan" className="bg-white border border-[#debfbf] p-6 md:p-8 rounded-[0.5rem] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer block">

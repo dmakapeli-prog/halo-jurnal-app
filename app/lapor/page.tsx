@@ -74,6 +74,19 @@ function LaporForm() {
 
     setLoading(true)
     try {
+      // 0. Ensure user has a profile to satisfy foreign key constraints
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single()
+        
+      if (profileError || !profile) {
+        alert('Profil Anda belum lengkap. Silakan lengkapi profil terlebih dahulu sebelum membuat laporan.')
+        setLoading(false)
+        return
+      }
+
       // Generate ticket number: JS-YYYYMMDD-XXXX
       const date = new Date()
       const yyyy = date.getFullYear()
