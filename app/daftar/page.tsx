@@ -6,10 +6,6 @@ import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-// TODO: [OTP_MODE] Set to true when custom SMTP (e.g. Resend) is configured
-// to switch from magic link to 6-digit OTP code flow
-const USE_OTP_CODE = false
-
 export default function DaftarPage() {
   const getSupabase = () => createClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -28,61 +24,6 @@ export default function DaftarPage() {
   const [successMsg, setSuccessMsg] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [registrationComplete, setRegistrationComplete] = useState(false)
-
-  // --- OTP CODE STATE (hidden for now, will be re-enabled with custom SMTP) ---
-  // const [otp, setOtp] = useState('')
-  // const [otpSent, setOtpSent] = useState(false)
-  // const [otpVerified, setOtpVerified] = useState(false)
-
-  // --- OTP SEND HANDLER (hidden for now, will be re-enabled with custom SMTP) ---
-  // const handleSendOtp = async () => {
-  //   if (!email) {
-  //     setError('Masukkan email Anda terlebih dahulu.')
-  //     return
-  //   }
-  //   setLoading(true)
-  //   setError('')
-  //   setSuccessMsg('')
-  //
-  //   const { error: otpError } = await getSupabase().auth.signInWithOtp({
-  //     email,
-  //     options: {
-  //       shouldCreateUser: true,
-  //     },
-  //   })
-  //
-  //   if (otpError) {
-  //     setError(otpError.message)
-  //   } else {
-  //     setOtpSent(true)
-  //     setSuccessMsg('Kode OTP telah dikirim ke email Anda.')
-  //   }
-  //   setLoading(false)
-  // }
-
-  // --- OTP VERIFY HANDLER (hidden for now, will be re-enabled with custom SMTP) ---
-  // const handleVerifyOtp = async () => {
-  //   if (!otp) {
-  //     setError('Masukkan kode OTP.')
-  //     return
-  //   }
-  //   setLoading(true)
-  //   setError('')
-  //
-  //   const { error: verifyError } = await getSupabase().auth.verifyOtp({
-  //     email,
-  //     token: otp,
-  //     type: 'email',
-  //   })
-  //
-  //   if (verifyError) {
-  //     setError(verifyError.message)
-  //   } else {
-  //     setOtpVerified(true)
-  //     setSuccessMsg('Email berhasil diverifikasi!')
-  //   }
-  //   setLoading(false)
-  // }
 
   const handleFileChange = (file: File | null) => {
     if (file) {
@@ -196,9 +137,9 @@ export default function DaftarPage() {
       <>
         <Navbar />
 
-        <main className="min-h-screen pt-[80px] flex flex-col lg:flex-row">
-          {/* Left Side: Branding */}
-          <section className="relative w-full md:w-1/2 min-h-[400px] md:min-h-0 bg-[#8b1e2c] overflow-hidden flex items-center justify-center p-12">
+        <main className="min-h-screen pt-[64px] md:pt-[80px] flex flex-col lg:flex-row">
+          {/* Left Side: Branding — hidden on mobile */}
+          <section className="hidden lg:flex relative w-1/2 min-h-[400px] bg-[#8b1e2c] overflow-hidden items-center justify-center p-12">
             <div className="relative z-10 text-center max-w-lg">
               <div className="mb-8 flex justify-center">
                 <span className="material-symbols-outlined text-[#ff9da0] !text-8xl" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -215,22 +156,22 @@ export default function DaftarPage() {
           </section>
 
           {/* Right Side: Confirmation */}
-          <section className="w-full md:w-1/2 bg-[#fcf9f4] flex items-center justify-center p-8 md:p-20">
+          <section className="w-full lg:w-1/2 bg-[#fcf9f4] flex items-center justify-center p-6 sm:p-8 md:p-20">
             <div className="w-full max-w-md text-center">
               <div className="w-20 h-20 rounded-full bg-[#ffdad9] flex items-center justify-center mx-auto mb-6">
                 <span className="material-symbols-outlined text-[#6b0218] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>
                   mark_email_read
                 </span>
               </div>
-              <h2 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-[#6b0218] mb-4">
+              <h2 className="font-['Libre_Franklin'] text-[24px] sm:text-[32px] leading-[32px] sm:leading-[40px] font-bold text-[#6b0218] mb-4">
                 Cek Email Anda
               </h2>
-              <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141] mb-6">
+              <p className="font-['Public_Sans'] text-[14px] sm:text-[16px] leading-[22px] sm:leading-[24px] text-[#574141] mb-6">
                 Kami telah mengirim link konfirmasi ke <strong className="text-[#1c1c19]">{email}</strong>.
                 Klik link tersebut untuk menyelesaikan pendaftaran dan langsung masuk ke akun Anda.
               </p>
               <div className="bg-[#f6f3ee] border-l-4 border-[#ffe08e] p-4 text-left mb-8">
-                <p className="font-['Public_Sans'] text-[14px] text-[#574141]">
+                <p className="font-['Public_Sans'] text-[13px] sm:text-[14px] text-[#574141]">
                   <strong>Tips:</strong> Jika tidak menemukan email, periksa folder <strong>Spam</strong> atau <strong>Promosi</strong>.
                 </p>
               </div>
@@ -259,9 +200,9 @@ export default function DaftarPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen pt-[80px] flex flex-col lg:flex-row">
-        {/* Left Side: Branding/Illustration */}
-        <section className="relative w-full md:w-1/2 min-h-[400px] md:min-h-0 bg-[#8b1e2c] overflow-hidden flex items-center justify-center p-12">
+      <main className="min-h-screen pt-[64px] md:pt-[80px] flex flex-col lg:flex-row">
+        {/* Left Side: Branding/Illustration — hidden on mobile/tablet */}
+        <section className="hidden lg:flex relative w-1/2 min-h-[400px] bg-[#8b1e2c] overflow-hidden items-center justify-center p-12">
           <div className="relative z-10 text-center max-w-lg">
             <div className="mb-8 flex justify-center">
               <span className="material-symbols-outlined text-[#ff9da0] !text-8xl" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -301,18 +242,18 @@ export default function DaftarPage() {
         </section>
 
         {/* Right Side: Registration Form */}
-        <section className="w-full md:w-1/2 bg-[#fcf9f4] flex items-center justify-center p-8 md:p-20 overflow-y-auto">
+        <section className="w-full lg:w-1/2 bg-[#fcf9f4] flex items-start lg:items-center justify-center p-6 sm:p-8 md:p-12 lg:p-20 overflow-y-auto">
           <div className="w-full max-w-md">
-            <div className="mb-10">
-              <h2 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-[#6b0218] mb-2">
+            <div className="mb-8 md:mb-10">
+              <h2 className="font-['Libre_Franklin'] text-[24px] sm:text-[32px] leading-[32px] sm:leading-[40px] font-bold text-[#6b0218] mb-2">
                 Daftar Akun Baru
               </h2>
-              <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141]">
+              <p className="font-['Public_Sans'] text-[14px] sm:text-[16px] leading-[22px] sm:leading-[24px] text-[#574141]">
                 Lengkapi data diri Anda untuk mulai berkontribusi.
               </p>
             </div>
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
               {/* Error/Success messages */}
               {error && (
                 <div className="p-3 bg-[#ffdad6] border border-[#ba1a1a] rounded-[0.25rem] text-[#93000a] font-['Public_Sans'] text-[14px]">
@@ -405,54 +346,6 @@ export default function DaftarPage() {
                 </div>
               </div>
 
-              {/* --- OTP CODE INPUT (hidden for now, will be re-enabled with custom SMTP) --- */}
-              {/* {USE_OTP_CODE && (
-                <div className="flex gap-4">
-                  <div className="flex-grow">
-                    <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
-                      Kode OTP
-                    </label>
-                    <input
-                      className="w-full px-4 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] text-center tracking-[0.5em] font-bold focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
-                      maxLength={6}
-                      placeholder="000000"
-                      type="text"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      disabled={otpVerified}
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    {!otpVerified ? (
-                      !otpSent ? (
-                        <button
-                          type="button"
-                          onClick={handleSendOtp}
-                          disabled={loading}
-                          className="px-4 py-3 text-[#6b0218] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold hover:bg-[#6b0218]/5 rounded-[0.25rem] transition-colors disabled:opacity-50"
-                        >
-                          {loading ? 'Mengirim...' : 'Kirim Kode'}
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={handleVerifyOtp}
-                          disabled={loading}
-                          className="px-4 py-3 text-[#6b0218] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold hover:bg-[#6b0218]/5 rounded-[0.25rem] transition-colors disabled:opacity-50"
-                        >
-                          {loading ? 'Verifikasi...' : 'Verifikasi'}
-                        </button>
-                      )
-                    ) : (
-                      <div className="px-4 py-3 text-green-700 font-['Public_Sans'] text-[14px] font-bold flex items-center gap-1">
-                        <span className="material-symbols-outlined text-lg">check_circle</span>
-                        Berhasil
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )} */}
-
               {/* Phone field (contact only, not for auth) */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
@@ -469,24 +362,24 @@ export default function DaftarPage() {
 
               {/* KTP Upload */}
               <div
-                className={`p-6 bg-[#f0ede9] border border-[#debfbf] border-dashed rounded-[0.5rem] text-center ${dragOver ? 'bg-[#6b0218]/5' : ''}`}
+                className={`p-5 sm:p-6 bg-[#f0ede9] border border-[#debfbf] border-dashed rounded-[0.5rem] text-center ${dragOver ? 'bg-[#6b0218]/5' : ''}`}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
               >
-                <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-4 text-[#1c1c19]">
+                <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-3 sm:mb-4 text-[#1c1c19]">
                   Unggah KTP (Wajib)
                 </label>
                 <div
-                  className="flex flex-col items-center gap-4 cursor-pointer group"
+                  className="flex flex-col items-center gap-3 sm:gap-4 cursor-pointer group"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <div className="w-16 h-16 rounded-full bg-[#6b0218]/10 flex items-center justify-center group-hover:bg-[#6b0218]/20 transition-colors">
-                    <span className="material-symbols-outlined text-[#6b0218] text-3xl">upload_file</span>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#6b0218]/10 flex items-center justify-center group-hover:bg-[#6b0218]/20 transition-colors">
+                    <span className="material-symbols-outlined text-[#6b0218] text-2xl sm:text-3xl">upload_file</span>
                   </div>
                   <div className="text-[#574141]">
                     {ktpPreviewName ? (
-                      <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218]">
+                      <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218] break-all">
                         {ktpPreviewName}
                       </p>
                     ) : (
@@ -512,9 +405,9 @@ export default function DaftarPage() {
               </div>
 
               {/* Privacy Notice Box */}
-              <div className="bg-[#f6f3ee] border-l-4 border-[#ffe08e] p-4 flex gap-3">
-                <span className="material-symbols-outlined text-[#755b00] text-lg">verified_user</span>
-                <p className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] italic leading-relaxed">
+              <div className="bg-[#f6f3ee] border-l-4 border-[#ffe08e] p-3 sm:p-4 flex gap-3">
+                <span className="material-symbols-outlined text-[#755b00] text-lg shrink-0">verified_user</span>
+                <p className="font-['Public_Sans'] text-[11px] sm:text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] italic leading-relaxed">
                   Data KTP Anda hanya digunakan untuk verifikasi internal oleh petugas dan tidak akan pernah dipublikasikan atau dibagikan kepada pihak lain.
                 </p>
               </div>
@@ -522,16 +415,16 @@ export default function DaftarPage() {
               {/* Agreement */}
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
-                  className="mt-1 w-4 h-4 rounded text-[#6b0218] focus:ring-[#6b0218] border-[#8b7171]"
+                  className="mt-1 w-4 h-4 rounded text-[#6b0218] focus:ring-[#6b0218] border-[#8b7171] shrink-0"
                   type="checkbox"
                   checked={agreed}
                   onChange={(e) => setAgreed(e.target.checked)}
                 />
                 <span className="font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold text-[#574141] leading-snug">
                   Saya menyetujui{' '}
-                  <a className="text-[#6b0218] font-bold hover:underline" href="#">Syarat &amp; Ketentuan</a>
+                  <Link className="text-[#6b0218] font-bold hover:underline" href="/syarat-ketentuan">Syarat &amp; Ketentuan</Link>
                   {' '}serta{' '}
-                  <a className="text-[#6b0218] font-bold hover:underline" href="#">Kebijakan Privasi</a>
+                  <Link className="text-[#6b0218] font-bold hover:underline" href="/kebijakan-privasi">Kebijakan Privasi</Link>
                   {' '}yang berlaku.
                 </span>
               </label>
@@ -540,7 +433,7 @@ export default function DaftarPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#fed255] text-[#735a00] py-4 rounded-[0.5rem] font-['Libre_Franklin'] text-[24px] leading-[32px] font-semibold shadow-md hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                className="w-full bg-[#fed255] text-[#735a00] py-4 rounded-[0.5rem] font-['Libre_Franklin'] text-[18px] sm:text-[24px] leading-[28px] sm:leading-[32px] font-semibold shadow-md hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-h-[52px]"
               >
                 {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
                 <span className="material-symbols-outlined">arrow_forward</span>

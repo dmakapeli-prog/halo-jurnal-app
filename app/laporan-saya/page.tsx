@@ -105,9 +105,9 @@ export default function LaporanSayaPage() {
         </Link>
       } />
 
-      <div className="flex pt-20 min-h-screen">
+      <div className="flex pt-16 md:pt-20 min-h-screen">
         {/* SideNavBar */}
-        <aside className="fixed left-0 top-20 h-[calc(100vh-80px)] w-[280px] hidden md:flex flex-col p-[8px] bg-[#fcf9f4] border-r border-[#debfbf]">
+        <aside className="fixed left-0 top-16 md:top-20 h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] w-[280px] hidden lg:flex flex-col p-[8px] bg-[#fcf9f4] border-r border-[#debfbf]">
           <div className="p-4 mb-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#6b0218] bg-[#ffdad9] flex items-center justify-center text-[#6b0218]">
@@ -141,18 +141,18 @@ export default function LaporanSayaPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="md:ml-[280px] flex-1 overflow-y-auto p-4 md:p-[40px] pb-24">
+        <main className="lg:ml-[280px] flex-1 overflow-y-auto p-4 sm:p-5 md:p-[40px] pb-24">
           <div className="max-w-6xl mx-auto">
             {/* Header & Stats */}
             <div className="mb-6 md:mb-10 mt-4 md:mt-0">
-              <h1 className="font-['Libre_Franklin'] text-[32px] font-bold text-[#1c1c19] mb-2">Laporan Saya</h1>
+              <h1 className="font-['Libre_Franklin'] text-[24px] sm:text-[32px] font-bold text-[#1c1c19] mb-2">Laporan Saya</h1>
               <p className="text-[#574141] font-['Public_Sans'] text-[16px]">Pantau status aspirasi dan keluhan Anda secara real-time.</p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-[24px] mb-8 md:mb-10">
               <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
-                <div className="w-12 h-12 bg-[#8b1e2c]/10 rounded-full flex items-center justify-center text-[#6b0218]">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#8b1e2c]/10 rounded-full flex items-center justify-center text-[#6b0218] shrink-0">
                   <span className="material-symbols-outlined">assignment</span>
                 </div>
                 <div>
@@ -160,8 +160,8 @@ export default function LaporanSayaPage() {
                   <p className="text-2xl font-bold">{totalReports}</p>
                 </div>
               </div>
-              <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#fed255]/20 rounded-full flex items-center justify-center text-[#755b00]">
+              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#fed255]/20 rounded-full flex items-center justify-center text-[#755b00] shrink-0">
                   <span className="material-symbols-outlined">pending</span>
                 </div>
                 <div>
@@ -169,8 +169,8 @@ export default function LaporanSayaPage() {
                   <p className="text-2xl font-bold">{processingCount}</p>
                 </div>
               </div>
-              <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-700">
+              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center text-green-700 shrink-0">
                   <span className="material-symbols-outlined">check_circle</span>
                 </div>
                 <div>
@@ -178,8 +178,8 @@ export default function LaporanSayaPage() {
                   <p className="text-2xl font-bold">{completedCount}</p>
                 </div>
               </div>
-              <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#ffdad6]/30 rounded-full flex items-center justify-center text-[#ba1a1a]">
+              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#ffdad6]/30 rounded-full flex items-center justify-center text-[#ba1a1a] shrink-0">
                   <span className="material-symbols-outlined">chat</span>
                 </div>
                 <div>
@@ -225,7 +225,7 @@ export default function LaporanSayaPage() {
             </div>
 
             {/* Reports Table/List */}
-            <div className="hidden md:block bg-[#fcf9f4] border border-[#debfbf] rounded-xl overflow-x-auto shadow-sm">
+            <div className="hidden lg:block bg-[#fcf9f4] border border-[#debfbf] rounded-xl overflow-x-auto shadow-sm">
               <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
                   <tr className="bg-[#f6f3ee] border-b border-[#debfbf]">
@@ -288,7 +288,7 @@ export default function LaporanSayaPage() {
             </div>
 
             {/* Mobile Cards */}
-            <div className="md:hidden flex flex-col gap-4">
+            <div className="lg:hidden flex flex-col gap-4">
               {loading ? (
                 <div className="text-center py-8 text-[#574141]">Memuat...</div>
               ) : reports.length > 0 ? (

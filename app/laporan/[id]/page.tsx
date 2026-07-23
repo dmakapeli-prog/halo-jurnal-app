@@ -218,10 +218,10 @@ export default function LaporanDetailPage() {
         )
       } />
 
-      <main className="pt-20 min-h-screen">
+      <main className="pt-16 md:pt-20 min-h-screen">
         <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-80px)] h-auto">
           {/* Left Column: Report Details */}
-          <section className="flex-grow overflow-y-auto p-4 md:p-[40px] max-w-4xl border-r border-[#debfbf] bg-[#fcf9f4] custom-scrollbar">
+          <section className="flex-grow overflow-y-auto p-4 sm:p-5 md:p-[40px] max-w-4xl lg:border-r border-[#debfbf] bg-[#fcf9f4] custom-scrollbar">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 mb-8 text-[#574141]">
               <Link href={isOwner ? "/laporan-saya" : "/feed-publik"} className="text-[14px] hover:underline">
@@ -237,10 +237,10 @@ export default function LaporanDetailPage() {
                 <span className="px-3 py-1 bg-[#6b0218]/10 text-[#6b0218] rounded-full text-[12px] font-bold uppercase tracking-wider mb-2 inline-block">
                   {report.kategori}
                 </span>
-                <h1 className="font-['Libre_Franklin'] text-[32px] font-bold text-[#1c1c19] mt-2">
+                <h1 className="font-['Libre_Franklin'] text-[22px] sm:text-[28px] md:text-[32px] font-bold text-[#1c1c19] mt-2">
                   {report.judul}
                 </h1>
-                <p className="text-[#574141] mt-2 flex flex-wrap items-center gap-4">
+                <p className="text-[#574141] mt-2 flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4 text-[13px] sm:text-[14px]">
                   <span className="flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">calendar_today</span>
                     Dilaporkan pada {new Date(report.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -256,7 +256,7 @@ export default function LaporanDetailPage() {
                    </p>
                 )}
               </div>
-              <div className="flex flex-col items-end gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                 {getStatusBadge(report.status)}
                 
                 {/* Support Button (for public viewing) */}
@@ -286,7 +286,7 @@ export default function LaporanDetailPage() {
 
             {/* Description Section */}
             <div className="mb-12">
-              <h2 className="font-['Libre_Franklin'] text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Deskripsi Laporan</h2>
+              <h2 className="font-['Libre_Franklin'] text-[20px] md:text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Deskripsi Laporan</h2>
               <p className="text-[16px] text-[#1c1c19] leading-relaxed whitespace-pre-line">
                 {report.deskripsi}
               </p>
@@ -295,8 +295,8 @@ export default function LaporanDetailPage() {
             {/* Attachments Section */}
             {report.laporan_lampiran && report.laporan_lampiran.length > 0 && (
               <div className="mb-12">
-                <h2 className="font-['Libre_Franklin'] text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Lampiran Bukti</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <h2 className="font-['Libre_Franklin'] text-[20px] md:text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Lampiran Bukti</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                   {report.laporan_lampiran.map((lampiran: any) => (
                     <a key={lampiran.id} href={lampiran.file_url} target="_blank" rel="noreferrer" className="relative group aspect-square rounded-lg overflow-hidden border border-[#debfbf] cursor-zoom-in block">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -316,7 +316,7 @@ export default function LaporanDetailPage() {
 
             {/* Status Timeline */}
             <div className="mb-12">
-              <h2 className="font-['Libre_Franklin'] text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Riwayat Status</h2>
+              <h2 className="font-['Libre_Franklin'] text-[20px] md:text-[24px] font-semibold border-b border-[#debfbf] pb-3 mb-4 text-[#1c1c19]">Riwayat Status</h2>
               <div className="relative ml-4 space-y-8 py-4">
                 {/* Connecting line */}
                 <div className="absolute left-[15px] top-0 bottom-0 w-[2px] bg-[#e5e2dd] z-0"></div>
@@ -353,7 +353,7 @@ export default function LaporanDetailPage() {
           </section>
 
           {/* Right Column: Persistent Comment Panel */}
-          <section id="komentar" className="w-full lg:w-[450px] flex flex-col bg-[#ebe8e3] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[500px] lg:h-full overflow-hidden relative">
+          <section id="komentar" className="w-full lg:w-[450px] flex flex-col bg-[#ebe8e3] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[400px] lg:min-h-[500px] lg:h-full overflow-hidden relative">
             {/* Panel Header */}
             <div className="p-4 bg-white border-b border-[#debfbf] flex items-center gap-3">
               <span className="material-symbols-outlined text-[#6b0218]">forum</span>

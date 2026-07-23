@@ -40,7 +40,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <Navbar showLoginButton={false} />
-      <main className="min-h-screen pt-[80px] flex items-center justify-center bg-[#fcf9f4] p-4">
+      <main className="min-h-screen pt-[64px] md:pt-[80px] flex items-center justify-center bg-[#fcf9f4] p-4">
         <div className="w-full max-w-md p-8 bg-white border border-[#debfbf] rounded-[0.5rem] shadow-sm text-center">
           <span className="material-symbols-outlined text-5xl text-[#6b0218] mb-4">
             lock_reset
@@ -95,7 +95,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#6b0218] text-white py-4 rounded-[0.25rem] font-['Public_Sans'] text-[14px] font-semibold text-lg hover:bg-[#8b1e2c] transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                className="w-full bg-[#6b0218] text-white py-4 rounded-[0.25rem] font-['Public_Sans'] text-[14px] font-semibold text-lg hover:bg-[#8b1e2c] transition-all shadow-sm active:scale-95 disabled:opacity-50 min-h-[48px]"
               >
                 {loading ? 'Mengirim...' : 'Kirim Link Reset'}
               </button>

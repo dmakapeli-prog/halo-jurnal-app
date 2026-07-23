@@ -30,7 +30,7 @@ export default function HubungiKamiPage() {
     <div className="font-['Public_Sans'] bg-[#fcf9f4] text-[#1c1c19] min-h-screen flex flex-col">
       <Navbar showLoginButton={true} />
 
-      <main className="flex-grow pt-32 pb-20 px-4 md:px-[40px] max-w-5xl mx-auto w-full">
+      <main className="flex-grow pt-24 md:pt-32 pb-16 md:pb-20 px-5 md:px-[40px] max-w-5xl mx-auto w-full">
         <div className="text-center mb-12">
           <h1 className="font-['Libre_Franklin'] text-[32px] md:text-[48px] font-bold text-[#6b0218] leading-tight mb-4">
             Hubungi Kami
@@ -40,10 +40,10 @@ export default function HubungiKamiPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 items-start">
           
           {/* Contact Information */}
-          <section className="bg-[#6b0218] text-white rounded-xl p-8 shadow-md">
+          <section className="bg-[#6b0218] text-white rounded-xl p-6 md:p-8 shadow-md">
             <h2 className="font-['Libre_Franklin'] text-[24px] font-bold mb-6">Informasi Kontak</h2>
             <p className="text-white/80 mb-8 leading-relaxed text-sm">
               Formulir dan kontak di halaman ini dikhususkan untuk <strong>dukungan teknis dan pertanyaan seputar operasional aplikasi Halo Jurnal</strong>. Untuk keperluan redaksi berita, silakan kunjungi website utama Jurnal Sukabumi.
@@ -88,7 +88,7 @@ export default function HubungiKamiPage() {
           </section>
 
           {/* Contact Form */}
-          <section className="bg-white border border-[#debfbf] rounded-xl p-8 shadow-sm">
+          <section className="bg-white border border-[#debfbf] rounded-xl p-6 md:p-8 shadow-sm">
             <h2 className="font-['Libre_Franklin'] text-[24px] font-bold text-[#1c1c19] mb-6">Kirim Pesan</h2>
             
             {success ? (
@@ -143,7 +143,7 @@ export default function HubungiKamiPage() {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-[#6b0218] text-white py-3.5 rounded-lg font-bold text-sm hover:bg-[#8b1e2c] transition-colors shadow-sm disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="w-full bg-[#6b0218] text-white py-3.5 rounded-lg font-bold text-sm hover:bg-[#8b1e2c] transition-colors shadow-sm disabled:opacity-70 flex items-center justify-center gap-2 min-h-[48px]"
                 >
                   {loading ? (
                     <>

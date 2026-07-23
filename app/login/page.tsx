@@ -7,10 +7,6 @@ import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-// TODO: [OTP_MODE] Set to true when custom SMTP (e.g. Resend) is configured
-// to switch from magic link to 6-digit OTP code flow
-const USE_OTP_CODE = false
-
 function LoginPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -20,11 +16,16 @@ function LoginPageContent() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(searchParams.get('error') === 'auth' ? 'Terjadi kesalahan saat verifikasi. Silakan coba lagi.' : '')
-
-  // --- OTP CODE STATE (hidden for now, will be re-enabled with custom SMTP) ---
-  // const [otp, setOtp] = useState('')
-  // const [otpSent, setOtpSent] = useState(false)
+  const [error, setError] = useState(
+    searchParams.get('error') === 'auth'
+      ? 'Terjadi kesalahan saat verifikasi. Silakan coba lagi.'
+      : ''
+  )
+  const [successMsg] = useState(
+    searchParams.get('success') === 'confirmed'
+      ? 'Email berhasil dikonfirmasi! Silakan login dengan akun Anda.'
+      : ''
+  )
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,31 +53,6 @@ function LoginPageContent() {
     }
     setLoading(false)
   }
-
-  // --- OTP CODE VERIFY HANDLER (hidden for now, will be re-enabled with custom SMTP) ---
-  // const handleVerifyOtp = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   if (!otp) {
-  //     setError('Masukkan kode OTP.')
-  //     return
-  //   }
-  //   setLoading(true)
-  //   setError('')
-  //
-  //   const { error: verifyError } = await getSupabase().auth.verifyOtp({
-  //     email,
-  //     token: otp,
-  //     type: 'email',
-  //   })
-  //
-  //   if (verifyError) {
-  //     setError(verifyError.message)
-  //   } else {
-  //     router.push('/beranda')
-  //     router.refresh()
-  //   }
-  //   setLoading(false)
-  // }
 
   return (
     <>
@@ -133,20 +109,28 @@ function LoginPageContent() {
         </div>
 
         {/* Right Side: Interaction Forms */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 md:p-20 bg-[#fcf9f4]">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-8 md:p-20 bg-[#fcf9f4]">
           <div className="w-full max-w-md">
             {/* Header */}
-            <div className="mb-10 text-center lg:text-left">
-              <h2 className="font-['Libre_Franklin'] text-[32px] leading-[40px] font-bold text-[#6b0218] mb-2">
+            <div className="mb-8 sm:mb-10 text-center lg:text-left">
+              <h2 className="font-['Libre_Franklin'] text-[26px] sm:text-[32px] leading-[34px] sm:leading-[40px] font-bold text-[#6b0218] mb-2">
                 Selamat Datang Kembali
               </h2>
-              <p className="font-['Public_Sans'] text-[16px] leading-[24px] text-[#574141]">
+              <p className="font-['Public_Sans'] text-[14px] sm:text-[16px] leading-[22px] sm:leading-[24px] text-[#574141]">
                 Masuk untuk melihat status laporan Anda.
               </p>
             </div>
 
             {/* Login Form */}
-            <form className="space-y-6" onSubmit={handleLogin}>
+            <form className="space-y-5 sm:space-y-6" onSubmit={handleLogin}>
+              {/* Success message */}
+              {successMsg && (
+                <div className="p-3 bg-green-50 border border-green-300 rounded-[0.25rem] text-green-800 font-['Public_Sans'] text-[14px] flex items-center gap-2">
+                  <span className="material-symbols-outlined text-green-600 text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                  {successMsg}
+                </div>
+              )}
+
               {/* Error message */}
               {error && (
                 <div className="p-3 bg-[#ffdad6] border border-[#ba1a1a] rounded-[0.25rem] text-[#93000a] font-['Public_Sans'] text-[14px]">
@@ -210,13 +194,13 @@ function LoginPageContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#6b0218] text-white py-4 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-lg hover:bg-[#8b1e2c] transition-all shadow-sm active:scale-95 duration-100 disabled:opacity-50"
+                className="w-full bg-[#6b0218] text-white py-4 rounded-[0.25rem] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-lg hover:bg-[#8b1e2c] transition-all shadow-sm active:scale-95 duration-100 disabled:opacity-50 min-h-[48px]"
               >
                 {loading ? 'Masuk...' : 'Masuk Sekarang'}
               </button>
             </form>
 
-            <p className="mt-8 text-center text-[#574141] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">
+            <p className="mt-6 sm:mt-8 text-center text-[#574141] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold">
               Belum punya akun?{' '}
               <Link href="/daftar" className="text-[#6b0218] font-bold hover:underline">
                 Daftar Akun Baru

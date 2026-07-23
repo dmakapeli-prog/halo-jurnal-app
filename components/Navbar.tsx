@@ -22,10 +22,10 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
   ]
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-[40px] h-[80px] shadow-md bg-[#8b1e2c]">
-      <div className="flex items-center gap-4 md:gap-8">
-        <Link href="/">
-          <h1 className="font-['Libre_Franklin'] text-xl md:text-[32px] leading-tight md:leading-[40px] font-bold text-white whitespace-nowrap">
+    <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-[40px] h-[64px] md:h-[80px] shadow-md bg-[#8b1e2c]">
+      <div className="flex items-center gap-4 md:gap-8 min-w-0">
+        <Link href="/" className="shrink-0">
+          <h1 className="font-['Libre_Franklin'] text-lg md:text-[32px] leading-tight md:leading-[40px] font-bold text-white whitespace-nowrap">
             Halo Jurnal
           </h1>
         </Link>
@@ -34,7 +34,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
             <Link
               key={link.href}
               href={link.href}
-              className={`font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold transition-colors ${
+              className={`font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold transition-colors whitespace-nowrap ${
                 pathname === link.href
                   ? 'text-white border-b-2 border-[#ffe08e]'
                   : 'text-white/80 hover:text-[#ffe08e]'
@@ -45,20 +45,21 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4 shrink-0">
         {actionButton ? (
-          actionButton
+          <div className="hidden sm:block">{actionButton}</div>
         ) : showLoginButton ? (
-          <Link href="/login">
-            <button className="text-[#735a00] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold px-6 py-2 rounded-[0.25rem] hover:opacity-90 transition-all active:scale-95 bg-[#fed255]">
+          <Link href="/login" className="hidden sm:block">
+            <button className="text-[#735a00] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold px-4 md:px-6 py-2 rounded-[0.25rem] hover:opacity-90 transition-all active:scale-95 bg-[#fed255]">
               Login
             </button>
           </Link>
         ) : null}
         {/* Mobile hamburger */}
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
         >
           <span className="material-symbols-outlined text-[28px]">
             {mobileMenuOpen ? 'close' : 'menu'}
@@ -68,21 +69,33 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-[80px] left-0 w-full bg-[#8b1e2c] shadow-lg md:hidden flex flex-col py-4 px-4 gap-4">
+        <div className="absolute top-[64px] md:top-[80px] left-0 w-full bg-[#8b1e2c] shadow-lg md:hidden flex flex-col py-4 px-5 gap-1 z-50 border-t border-white/10">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className={`font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold py-2 transition-colors ${
+              className={`font-['Public_Sans'] text-[15px] leading-[20px] tracking-[0.01em] font-semibold py-3 px-3 rounded-lg transition-colors ${
                 pathname === link.href
-                  ? 'text-white border-b-2 border-[#ffe08e]'
-                  : 'text-white/80 hover:text-[#ffe08e]'
+                  ? 'text-white bg-white/10'
+                  : 'text-white/80 hover:text-[#ffe08e] hover:bg-white/5'
               }`}
             >
               {link.label}
             </Link>
           ))}
+          {/* Show action button / login in mobile menu too */}
+          <div className="mt-2 pt-3 border-t border-white/10">
+            {actionButton ? (
+              <div onClick={() => setMobileMenuOpen(false)}>{actionButton}</div>
+            ) : showLoginButton ? (
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                <button className="w-full text-[#735a00] font-['Public_Sans'] text-[14px] font-semibold px-4 py-3 rounded-[0.25rem] bg-[#fed255] min-h-[44px]">
+                  Login
+                </button>
+              </Link>
+            ) : null}
+          </div>
         </div>
       )}
     </nav>

@@ -81,9 +81,9 @@ function FeedPublikContent() {
     <>
       <Navbar />
       
-      <main className="pt-[80px] min-h-screen flex bg-[#fcf9f4]">
+      <main className="pt-[64px] md:pt-[80px] min-h-screen flex bg-[#fcf9f4]">
         {/* Sidebar Filters - Desktop */}
-        <aside className="hidden lg:flex flex-col w-[280px] fixed left-0 top-[80px] h-[calc(100vh-80px)] bg-[#fcf9f4] border-r border-[#debfbf] p-4 md:p-[40px] overflow-y-auto">
+        <aside className="hidden lg:flex flex-col w-[280px] fixed left-0 top-[64px] md:top-[80px] h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] bg-[#fcf9f4] border-r border-[#debfbf] p-4 md:p-[40px] overflow-y-auto">
           <div className="mb-8">
             <h2 className="font-['Libre_Franklin'] text-[24px] font-semibold text-[#6b0218] mb-6">Filter Laporan</h2>
             
@@ -220,12 +220,12 @@ function FeedPublikContent() {
         )}
 
         {/* Feed Canvas */}
-        <section className="flex-1 lg:ml-[280px] p-4 md:p-[40px] bg-[#fcf9f4]">
+        <section className="flex-1 lg:ml-[280px] p-4 sm:p-5 md:p-[40px] bg-[#fcf9f4]">
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
               <div>
-                <h1 className="font-['Libre_Franklin'] text-3xl md:text-[48px] md:leading-[56px] font-bold text-[#1c1c19] mb-2">Feed Publik</h1>
-                <p className="font-['Public_Sans'] text-[16px] md:text-[18px] text-[#574141] max-w-xl">Melihat transparansi dalam setiap aduan. Seluruh identitas pelapor telah disamarkan demi keamanan.</p>
+                <h1 className="font-['Libre_Franklin'] text-2xl sm:text-3xl md:text-[48px] md:leading-[56px] font-bold text-[#1c1c19] mb-2">Feed Publik</h1>
+                <p className="font-['Public_Sans'] text-[14px] md:text-[18px] text-[#574141] max-w-xl">Melihat transparansi dalam setiap aduan. Seluruh identitas pelapor telah disamarkan demi keamanan.</p>
               </div>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button 
@@ -314,7 +314,7 @@ function FeedPublikContent() {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-[#debfbf] pt-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#debfbf] pt-4">
                       <div className="flex gap-4">
                         <button className="flex items-center gap-1 text-[#574141] hover:text-[#6b0218] transition-colors">
                           <span className="material-symbols-outlined">thumb_up</span>

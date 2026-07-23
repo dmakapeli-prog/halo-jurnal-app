@@ -7,9 +7,9 @@ export default function KebijakanPrivasiPage() {
     <div className="font-['Public_Sans'] bg-[#fcf9f4] text-[#1c1c19] min-h-screen flex flex-col">
       <Navbar showLoginButton={true} />
 
-      <main className="flex-grow pt-32 pb-20 px-4 md:px-[40px] max-w-4xl mx-auto w-full">
+      <main className="flex-grow pt-24 md:pt-32 pb-16 md:pb-20 px-5 md:px-[40px] max-w-4xl mx-auto w-full">
         <div className="mb-8">
-          <h1 className="font-['Libre_Franklin'] text-[32px] md:text-[48px] font-bold text-[#6b0218] leading-tight mb-4">
+          <h1 className="font-['Libre_Franklin'] text-[28px] sm:text-[32px] md:text-[48px] font-bold text-[#6b0218] leading-tight mb-3 md:mb-4">
             Kebijakan Privasi
           </h1>
           <p className="text-[#574141] text-[16px] leading-[24px]">
