@@ -337,17 +337,13 @@ function FeedPublikContent() {
 
                     <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#debfbf] pt-4">
                       <div className="flex gap-4">
-                        <button className="flex items-center gap-1 text-[#574141] hover:text-[#6b0218] transition-colors">
+                        <div className="flex items-center gap-1 text-[#574141]">
                           <span className="material-symbols-outlined">thumb_up</span>
                           <span className="font-['Public_Sans'] text-[14px] font-semibold">{report.dukungan_count || 0} Dukungan</span>
-                        </button>
-                        <Link href={`/laporan/${report.id}#komentar`} className="flex items-center gap-1 text-[#574141] hover:text-[#6b0218] transition-colors">
-                          <span className="material-symbols-outlined">forum</span>
-                          <span className="font-['Public_Sans'] text-[14px] font-semibold">{report.komentar?.[0]?.count || 0} Komentar</span>
-                        </Link>
+                        </div>
                       </div>
                       <Link href={`/laporan/${report.id}`} className="text-[#6b0218] font-['Public_Sans'] text-[14px] font-semibold flex items-center gap-1 hover:underline">
-                        Lihat Detail
+                        Lihat Detail & Chat Admin
                         <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                       </Link>
                     </div>

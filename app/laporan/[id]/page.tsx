@@ -376,130 +376,150 @@ export default function LaporanDetailPage() {
             </div>
           </section>
 
-          {/* Right Column: Private Chat Panel */}
-          <section id="chat-admin" className="w-full lg:w-[450px] flex flex-col bg-[#f5f2ed] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[450px] lg:min-h-[500px] lg:h-full overflow-hidden relative">
-            {/* Panel Header */}
-            <div className="p-4 bg-white border-b border-[#debfbf] flex items-center justify-between shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#6b0218]/10 flex items-center justify-center text-[#6b0218]">
-                  <span className="material-symbols-outlined text-[20px]">forum</span>
+          {/* Right Column: Chat Panel for Owner OR Notice for Public */}
+          {isOwner ? (
+            <section id="chat-admin" className="w-full lg:w-[450px] flex flex-col bg-[#f5f2ed] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[450px] lg:min-h-[500px] lg:h-full overflow-hidden relative">
+              {/* Panel Header */}
+              <div className="p-4 bg-white border-b border-[#debfbf] flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#6b0218]/10 flex items-center justify-center text-[#6b0218]">
+                    <span className="material-symbols-outlined text-[22px]">support_agent</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[16px] text-[#1c1c19] leading-tight font-['Libre_Franklin']">Chat dengan Admin/Petugas</h3>
+                    <p className="text-[11px] text-[#574141]">Kanal komunikasi langsung & rahasia pelapor</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-[15px] text-[#1c1c19] leading-tight">Chat Privat dengan Admin</h3>
-                  <p className="text-[11px] text-[#574141]">Kanal komunikasi langsung & rahasia</p>
-                </div>
+                <span className="bg-[#ffe08e] text-[#241a00] text-xs font-bold px-2.5 py-1 rounded-full">
+                  {messages.length} pesan
+                </span>
               </div>
-              <span className="bg-[#ffe08e] text-[#241a00] text-xs font-bold px-2.5 py-1 rounded-full">
-                {messages.length} pesan
-              </span>
-            </div>
 
-            {/* Chat Thread List */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-4 custom-scrollbar">
-              {messages && messages.length > 0 ? (
-                messages.map((msg: any) => {
-                  const isMyMessage = user && user.id === msg.sender_id
-                  const isAdmin = msg.profiles?.role === 'admin' || msg.profiles?.role === 'petugas' || (!isMyMessage && msg.sender_id !== report.user_id)
+              {/* Chat Thread List */}
+              <div className="flex-grow overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                {messages && messages.length > 0 ? (
+                  messages.map((msg: any) => {
+                    const isMyMessage = user && user.id === msg.sender_id
+                    const isAdmin = msg.profiles?.role === 'admin' || msg.profiles?.role === 'petugas' || (!isMyMessage && msg.sender_id !== report.user_id)
 
-                  return (
-                    <div key={msg.id} className={`flex flex-col ${isMyMessage ? 'items-end' : 'items-start'}`}>
-                      <div className="flex items-center gap-1.5 mb-1 px-1">
-                        <span className="text-[12px] font-bold text-[#574141] flex items-center gap-1">
-                          {isMyMessage ? (
-                            'Anda'
-                          ) : isAdmin ? (
-                            <span className="flex items-center gap-1 text-[#6b0218]">
-                              <span className="material-symbols-outlined text-xs">verified</span> Petugas Instansi
-                            </span>
-                          ) : (
-                            'Pelapor'
+                    return (
+                      <div key={msg.id} className={`flex flex-col ${isMyMessage ? 'items-end' : 'items-start'}`}>
+                        <div className="flex items-center gap-1.5 mb-1 px-1">
+                          <span className="text-[12px] font-bold text-[#574141] flex items-center gap-1">
+                            {isMyMessage ? (
+                              'Anda (Pelapor)'
+                            ) : isAdmin ? (
+                              <span className="flex items-center gap-1 text-[#6b0218]">
+                                <span className="material-symbols-outlined text-xs">verified</span> Petugas Instansi
+                              </span>
+                            ) : (
+                              'Pelapor'
+                            )}
+                          </span>
+                          <span className="text-[10px] text-[#8b7171]">
+                            {new Date(msg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+
+                        <div className={`p-3.5 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-sm ${
+                          isMyMessage
+                            ? 'bg-[#6b0218] text-white rounded-tr-none'
+                            : 'bg-white text-[#1c1c19] border border-[#debfbf] rounded-tl-none'
+                        }`}>
+                          {msg.message}
+
+                          {msg.attachment_url && (
+                            <div className="mt-2 pt-2 border-t border-white/20">
+                              <a
+                                href={msg.attachment_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={`text-xs flex items-center gap-1 font-bold underline ${isMyMessage ? 'text-[#ffe08e]' : 'text-[#6b0218]'}`}
+                              >
+                                <span className="material-symbols-outlined text-sm">attach_file</span> Lihat Lampiran Pesan
+                              </a>
+                            </div>
                           )}
-                        </span>
-                        <span className="text-[10px] text-[#8b7171]">
-                          {new Date(msg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                        </div>
                       </div>
-
-                      <div className={`p-3.5 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-sm ${
-                        isMyMessage
-                          ? 'bg-[#6b0218] text-white rounded-tr-none'
-                          : 'bg-white text-[#1c1c19] border border-[#debfbf] rounded-tl-none'
-                      }`}>
-                        {msg.message}
-
-                        {msg.attachment_url && (
-                          <div className="mt-2 pt-2 border-t border-white/20">
-                            <a
-                              href={msg.attachment_url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className={`text-xs flex items-center gap-1 font-bold underline ${isMyMessage ? 'text-[#ffe08e]' : 'text-[#6b0218]'}`}
-                            >
-                              <span className="material-symbols-outlined text-sm">attach_file</span> Lihat Lampiran Pesan
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                    )
+                  })
+                ) : (
+                  <div className="h-full min-h-[280px] flex flex-col items-center justify-center text-[#574141] p-6 text-center">
+                    <div className="w-14 h-14 rounded-full bg-[#6b0218]/10 flex items-center justify-center text-[#6b0218] mb-3">
+                      <span className="material-symbols-outlined text-3xl">forum</span>
                     </div>
-                  )
-                })
-              ) : (
-                <div className="h-full min-h-[250px] flex flex-col items-center justify-center text-[#574141] opacity-70 p-6 text-center">
-                  <span className="material-symbols-outlined text-5xl mb-3 text-[#6b0218]">chat</span>
-                  <h4 className="font-bold text-sm text-[#1c1c19] mb-1">Belum Ada Percakapan</h4>
-                  <p className="text-xs text-[#574141] max-w-xs">
-                    Gunakan panel ini untuk berkomunikasi secara privat dengan petugas instansi mengenai laporan Anda.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Chat Input */}
-            <div className="p-4 bg-white border-t border-[#debfbf]">
-              <form onSubmit={handleSendChat} className="space-y-2">
-                {chatFile && (
-                  <div className="flex items-center justify-between bg-[#ffe08e]/30 border border-[#ffe08e] p-2 rounded-lg text-xs font-semibold text-[#241a00]">
-                    <span className="truncate flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">attach_file</span> {chatFile.name}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setChatFile(null)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <span className="material-symbols-outlined text-sm">close</span>
-                    </button>
+                    <h4 className="font-bold text-base text-[#1c1c19] mb-1 font-['Libre_Franklin']">Belum Ada Percakapan</h4>
+                    <p className="text-xs text-[#574141] max-w-xs leading-relaxed font-['Public_Sans']">
+                      Belum ada percakapan. Kirim pesan untuk memulai diskusi dengan admin terkait laporan ini.
+                    </p>
                   </div>
                 )}
+              </div>
 
-                <div className="flex items-end gap-2 bg-[#fcf9f4] border border-[#debfbf] rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#6b0218] focus-within:border-transparent transition-all">
-                  <textarea
-                    className="flex-grow bg-transparent border-none focus:ring-0 text-sm py-1.5 resize-none outline-none min-h-[40px] max-h-[100px]"
-                    placeholder={user ? "Tulis pesan ke petugas..." : "Login untuk mengirim pesan..."}
-                    rows={2}
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    disabled={!user || isSendingChat}
-                  ></textarea>
+              {/* Chat Input */}
+              <div className="p-4 bg-white border-t border-[#debfbf]">
+                <form onSubmit={handleSendChat} className="space-y-2">
+                  {chatFile && (
+                    <div className="flex items-center justify-between bg-[#ffe08e]/30 border border-[#ffe08e] p-2 rounded-lg text-xs font-semibold text-[#241a00]">
+                      <span className="truncate flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">attach_file</span> {chatFile.name}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setChatFile(null)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <span className="material-symbols-outlined text-sm">close</span>
+                      </button>
+                    </div>
+                  )}
 
-                  <button
-                    type="submit"
-                    disabled={!user || isSendingChat || (!chatMessage.trim() && !chatFile)}
-                    className="bg-[#6b0218] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md hover:bg-[#8b1e2c] transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
-                  >
-                    {isSendingChat ? (
-                      <span className="material-symbols-outlined animate-spin text-[20px]">sync</span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
-                    )}
-                  </button>
+                  <div className="flex items-end gap-2 bg-[#fcf9f4] border border-[#debfbf] rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#6b0218] focus-within:border-transparent transition-all">
+                    <textarea
+                      className="flex-grow bg-transparent border-none focus:ring-0 text-sm py-1.5 resize-none outline-none min-h-[40px] max-h-[100px]"
+                      placeholder="Tulis pesan privat ke petugas admin..."
+                      rows={2}
+                      value={chatMessage}
+                      onChange={(e) => setChatMessage(e.target.value)}
+                      disabled={isSendingChat}
+                    ></textarea>
+
+                    <button
+                      type="submit"
+                      disabled={isSendingChat || (!chatMessage.trim() && !chatFile)}
+                      className="bg-[#6b0218] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md hover:bg-[#8b1e2c] transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
+                    >
+                      {isSendingChat ? (
+                        <span className="material-symbols-outlined animate-spin text-[20px]">sync</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-center text-[#8b7171]">
+                    Pesan bersifat rahasia dan hanya dapat dilihat oleh Anda dan petugas instansi.
+                  </p>
+                </form>
+              </div>
+            </section>
+          ) : (
+            <section className="w-full lg:w-[400px] flex flex-col justify-start p-6 bg-[#f5f2ed] border-t lg:border-t-0 lg:border-l border-[#debfbf]">
+              <div className="bg-white border border-[#debfbf] p-6 rounded-2xl shadow-sm text-center">
+                <div className="w-12 h-12 rounded-full bg-[#6b0218]/10 text-[#6b0218] flex items-center justify-center mx-auto mb-3">
+                  <span className="material-symbols-outlined text-2xl">lock</span>
                 </div>
-                <p className="text-[10px] text-center text-[#8b7171]">
-                  Pesan bersifat rahasia dan hanya dapat dilihat oleh pelapor dan petugas instansi.
+                <h4 className="font-bold text-base text-[#1c1c19] mb-2 font-['Libre_Franklin']">Chat Admin Terbatas</h4>
+                <p className="text-sm text-[#574141] leading-relaxed font-['Public_Sans'] mb-4">
+                  Ini adalah laporan publik. Chat dengan admin hanya tersedia untuk pelapor yang bersangkutan.
                 </p>
-              </form>
-            </div>
-          </section>
+                <div className="p-3 bg-[#f6f3ee] rounded-lg border border-[#debfbf] text-xs text-[#574141] flex items-center gap-2 justify-center">
+                  <span className="material-symbols-outlined text-sm text-[#6b0218]">shield</span>
+                  Kerahasiaan komunikasi pelapor terjamin
+                </div>
+              </div>
+            </section>
+          )}
         </div>
       </main>
       

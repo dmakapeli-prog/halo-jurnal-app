@@ -30,7 +30,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
   }, [])
 
   const navLinks = [
-    { href: '/', label: 'Beranda' },
+    { href: user ? '/beranda' : '/', label: 'Beranda' },
     { href: '/feed-publik', label: 'Feed Publik' },
     { href: '/lapor', label: 'Lapor' },
     { href: '/laporan-saya', label: 'Laporan Saya' },

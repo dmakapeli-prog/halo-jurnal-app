@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import CategoryCards from '@/components/CategoryCards'
 
@@ -8,6 +9,14 @@ export const dynamic = 'force-dynamic'
 
 export default async function LandingPage() {
   const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user) {
+    redirect('/beranda')
+  }
 
   // Fetch recent public reports
   const { data: recentReports } = await supabase

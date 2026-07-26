@@ -48,7 +48,7 @@ export default function LaporanSayaPage() {
     setLoading(true)
     let query = supabase
       .from('laporan')
-      .select('*, komentar(count)')
+      .select('*, chat_messages(count)')
       .eq('user_id', user.id)
 
     if (statusFilter !== 'Semua Status') {
@@ -96,8 +96,7 @@ export default function LaporanSayaPage() {
   const totalReports = reports.length
   const processingCount = reports.filter(r => r.status === 'diproses').length
   const completedCount = reports.filter(r => r.status === 'selesai').length
-  // Example unread comment logic (simplification)
-  const unreadCount = reports.reduce((acc, curr) => acc + (curr.komentar[0]?.count || 0), 0)
+  const chatCount = reports.reduce((acc, curr) => acc + (curr.chat_messages?.[0]?.count || 0), 0)
 
   return (
     <div className="bg-[#fcf9f4] text-[#1c1c19] font-['Public_Sans'] overflow-x-hidden min-h-screen">
@@ -181,12 +180,12 @@ export default function LaporanSayaPage() {
                 </div>
               </div>
               <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#ffdad6]/30 rounded-full flex items-center justify-center text-[#ba1a1a] shrink-0">
-                  <span className="material-symbols-outlined">chat</span>
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#6b0218]/10 rounded-full flex items-center justify-center text-[#6b0218] shrink-0">
+                  <span className="material-symbols-outlined">forum</span>
                 </div>
                 <div>
-                  <p className="text-[12px] font-bold text-[#574141] uppercase tracking-wider">Komentar</p>
-                  <p className="text-2xl font-bold">{unreadCount}</p>
+                  <p className="text-[12px] font-bold text-[#574141] uppercase tracking-wider">Chat Admin</p>
+                  <p className="text-2xl font-bold">{chatCount}</p>
                 </div>
               </div>
             </div>
@@ -267,13 +266,13 @@ export default function LaporanSayaPage() {
                         </td>
                         <td className="px-6 py-5 text-center">
                           <div className="flex items-center justify-center gap-4">
-                            <Link href={`/laporan/${report.id}#komentar`} className="relative text-[#574141] hover:text-[#6b0218]">
+                            <Link href={`/laporan/${report.id}`} title="Chat Admin" className="relative text-[#574141] hover:text-[#6b0218]">
                               <span className="material-symbols-outlined text-[20px]">forum</span>
-                              {(report.komentar[0]?.count || 0) > 0 && (
-                                <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#ba1a1a] rounded-full"></span>
+                              {(report.chat_messages?.[0]?.count || 0) > 0 && (
+                                <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#6b0218] rounded-full"></span>
                               )}
                             </Link>
-                            <Link href={`/laporan/${report.id}`} className="material-symbols-outlined text-[20px] text-[#574141] hover:text-[#6b0218]">
+                            <Link href={`/laporan/${report.id}`} title="Detail Laporan" className="material-symbols-outlined text-[20px] text-[#574141] hover:text-[#6b0218]">
                               visibility
                             </Link>
                           </div>
@@ -313,13 +312,13 @@ export default function LaporanSayaPage() {
                     <div className="mt-2 pt-3 border-t border-[#debfbf] flex items-center justify-between">
                       <span className="text-[12px] text-[#574141]">ID: {report.ticket_number || report.id}</span>
                       <div className="flex items-center gap-4">
-                        <Link href={`/laporan/${report.id}#komentar`} className="relative text-[#574141] hover:text-[#6b0218]">
+                        <Link href={`/laporan/${report.id}`} title="Chat Admin" className="relative text-[#574141] hover:text-[#6b0218]">
                           <span className="material-symbols-outlined text-[20px]">forum</span>
-                          {(report.komentar[0]?.count || 0) > 0 && (
-                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#ba1a1a] rounded-full"></span>
+                          {(report.chat_messages?.[0]?.count || 0) > 0 && (
+                            <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#6b0218] rounded-full"></span>
                           )}
                         </Link>
-                        <Link href={`/laporan/${report.id}`} className="material-symbols-outlined text-[20px] text-[#574141] hover:text-[#6b0218]">
+                        <Link href={`/laporan/${report.id}`} title="Detail Laporan" className="material-symbols-outlined text-[20px] text-[#574141] hover:text-[#6b0218]">
                           visibility
                         </Link>
                       </div>
