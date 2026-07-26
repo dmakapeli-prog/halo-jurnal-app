@@ -15,10 +15,12 @@ export default function CategoryCards({ isLoggedIn: initialIsLoggedIn }: Categor
   useEffect(() => {
     if (initialIsLoggedIn !== undefined) return
 
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => {
-      setIsLoggedIn(!!data.user)
-    })
+    const checkUser = async () => {
+      const supabase = createClient()
+      const { data } = await supabase.auth.getUser()
+      setIsLoggedIn(!!data?.user)
+    }
+    checkUser()
   }, [initialIsLoggedIn])
 
   const handleCategoryClick = (type: 'pengaduan' | 'aspirasi' | 'informasi') => {
