@@ -84,7 +84,7 @@ const jenisInformasiList = [
 function LaporForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClient()
+  const [supabase] = useState(() => createClient())
 
   const rawType = searchParams.get('type') || 'pengaduan'
   const reportType: ReportType = ['pengaduan', 'aspirasi', 'informasi'].includes(rawType) 
@@ -115,9 +115,15 @@ function LaporForm() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setUser(data.user)
+      if (data.user) {
+        setUser(data.user)
+      } else {
+        // If unauthenticated user lands on /lapor directly, alert and redirect to login
+        alert('Silakan login terlebih dahulu untuk membuat laporan.')
+        router.push('/login')
+      }
     })
-  }, [])
+  }, [supabase, router])
 
   const handleTabChange = (newType: ReportType) => {
     router.push(`/lapor?type=${newType}`)

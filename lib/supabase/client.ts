@@ -1,5 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr'
 
+let client: ReturnType<typeof createBrowserClient> | undefined
+
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -10,5 +12,25 @@ export function createClient() {
     )
   }
 
-  return createBrowserClient(supabaseUrl, supabaseAnonKey)
+  if (typeof window === 'undefined') {
+    return createBrowserClient(supabaseUrl, supabaseAnonKey, {
+      cookieOptions: {
+        maxAge: 60 * 60 * 24 * 14,
+        path: '/',
+        sameSite: 'lax',
+      },
+    })
+  }
+
+  if (!client) {
+    client = createBrowserClient(supabaseUrl, supabaseAnonKey, {
+      cookieOptions: {
+        maxAge: 60 * 60 * 24 * 14,
+        path: '/',
+        sameSite: 'lax',
+      },
+    })
+  }
+
+  return client
 }
