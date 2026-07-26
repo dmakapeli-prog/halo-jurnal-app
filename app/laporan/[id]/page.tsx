@@ -26,11 +26,13 @@ export default function LaporanDetailPage() {
   const [isLiking, setIsLiking] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser()
+      if (data?.user) {
         setUser(data.user)
       }
-    })
+    }
+    checkUser()
   }, [])
 
   useEffect(() => {

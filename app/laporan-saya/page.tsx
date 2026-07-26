@@ -19,12 +19,14 @@ export default function LaporanSayaPage() {
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser()
+      if (data?.user) {
         setUser(data.user)
         fetchProfile(data.user.id)
       }
-    })
+    }
+    checkUser()
   }, [])
 
   useEffect(() => {
