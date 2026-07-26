@@ -113,19 +113,20 @@ export default function LaporanDetailPage() {
           user_id: user.id
         })
 
-      if (error) throw error
-
-      const newCount = (report.dukungan_count || 0) + 1
-      await supabase
-        .from('laporan')
-        .update({ dukungan_count: newCount })
-        .eq('id', id)
-
-      setReport({ ...report, dukungan_count: newCount })
-      setHasLiked(true)
-    } catch (err) {
-      console.error(err)
-      alert("Gagal memberikan dukungan.")
+      if (error) {
+        if (error.code === '23505' || error.message?.includes('duplicate')) {
+          setHasLiked(true)
+        } else {
+          throw error
+        }
+      } else {
+        const newCount = (report?.dukungan_count || 0) + 1
+        setHasLiked(true)
+        setReport((prev: any) => prev ? { ...prev, dukungan_count: newCount } : prev)
+      }
+    } catch (err: any) {
+      console.error('Error giving support:', err)
+      alert(`Gagal memberikan dukungan: ${err.message || 'Terjadi kesalahan'}`)
     } finally {
       setIsLiking(false)
     }
