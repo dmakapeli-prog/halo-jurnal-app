@@ -114,15 +114,17 @@ function LaporForm() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser()
+      if (data?.user) {
         setUser(data.user)
       } else {
         // If unauthenticated user lands on /lapor directly, alert and redirect to login
         alert('Silakan login terlebih dahulu untuk membuat laporan.')
         router.push('/login')
       }
-    })
+    }
+    checkUser()
   }, [supabase, router])
 
   const handleTabChange = (newType: ReportType) => {
