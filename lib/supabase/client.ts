@@ -12,24 +12,19 @@ export function createClient() {
     )
   }
 
+  const cookieOptions = {
+    maxAge: 60 * 60 * 24 * 14,
+    path: '/',
+    sameSite: 'lax' as const,
+    secure: process.env.NODE_ENV === 'production',
+  }
+
   if (typeof window === 'undefined') {
-    return createBrowserClient(supabaseUrl, supabaseAnonKey, {
-      cookieOptions: {
-        maxAge: 60 * 60 * 24 * 14,
-        path: '/',
-        sameSite: 'lax',
-      },
-    })
+    return createBrowserClient(supabaseUrl, supabaseAnonKey, { cookieOptions })
   }
 
   if (!client) {
-    client = createBrowserClient(supabaseUrl, supabaseAnonKey, {
-      cookieOptions: {
-        maxAge: 60 * 60 * 24 * 14,
-        path: '/',
-        sameSite: 'lax',
-      },
-    })
+    client = createBrowserClient(supabaseUrl, supabaseAnonKey, { cookieOptions })
   }
 
   return client

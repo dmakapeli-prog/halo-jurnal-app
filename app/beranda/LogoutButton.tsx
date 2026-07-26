@@ -28,10 +28,10 @@ export default function LogoutButton() {
       {loading ? (
         <>
           <span className="material-symbols-outlined text-sm animate-spin">sync</span>
-          Keluar...
+          Logging out...
         </>
       ) : (
-        'Keluar'
+        'Logout'
       )}
     </button>
   )

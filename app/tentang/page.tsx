@@ -1,12 +1,26 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { createClient } from '@/lib/supabase/server'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Tentang - Halo Jurnal',
   description: 'Tentang platform aspirasi dan pengaduan publik Halo Jurnal.',
 }
 
-export default function TentangPage() {
+export default async function TentangPage() {
+  const supabase = await createClient()
+
+  const { count: ditindaklanjutiCount } = await supabase
+    .from('laporan')
+    .select('*', { count: 'exact', head: true })
+    .in('status', ['ditindaklanjuti', 'selesai'])
+
+  const { count: totalLaporanCount } = await supabase
+    .from('laporan')
+    .select('*', { count: 'exact', head: true })
+
   return (
     <>
       <Navbar showLoginButton={true} />
@@ -163,16 +177,16 @@ export default function TentangPage() {
           <div className="max-w-[1280px] mx-auto px-5 md:px-[40px]">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12">
               <div className="text-center text-white">
-                <div className="font-['Libre_Franklin'] text-[32px] sm:text-[40px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold mb-2 tracking-[-0.02em]">1.240+</div>
-                <p className="font-['Public_Sans'] text-[14px] font-semibold opacity-80 uppercase tracking-widest">Laporan Ditindaklanjuti</p>
+                <div className="font-['Libre_Franklin'] text-[32px] sm:text-[40px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold mb-2 tracking-[-0.02em]">{ditindaklanjutiCount || 0}</div>
+                <p className="font-['Public_Sans'] text-[14px] font-semibold opacity-80 uppercase tracking-widest">Laporan Ditindaklanjuti & Selesai</p>
               </div>
               <div className="text-center text-white">
-                <div className="font-['Libre_Franklin'] text-[32px] sm:text-[40px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold mb-2 tracking-[-0.02em]">98%</div>
-                <p className="font-['Public_Sans'] text-[14px] font-semibold opacity-80 uppercase tracking-widest">Tingkat Kepuasan Warga</p>
+                <div className="font-['Libre_Franklin'] text-[32px] sm:text-[40px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold mb-2 tracking-[-0.02em]">{totalLaporanCount || 0}</div>
+                <p className="font-['Public_Sans'] text-[14px] font-semibold opacity-80 uppercase tracking-widest">Total Laporan Masuk</p>
               </div>
               <div className="text-center text-white">
                 <div className="font-['Libre_Franklin'] text-[32px] sm:text-[40px] md:text-[48px] leading-[40px] md:leading-[56px] font-bold mb-2 tracking-[-0.02em]">24/7</div>
-                <p className="font-['Public_Sans'] text-[14px] font-semibold opacity-80 uppercase tracking-widest">Layanan Aspirasi</p>
+                <p className="font-['Public_Sans'] text-[14px] font-semibold opacity-80 uppercase tracking-widest">Layanan Aspirasi Digital</p>
               </div>
             </div>
           </div>

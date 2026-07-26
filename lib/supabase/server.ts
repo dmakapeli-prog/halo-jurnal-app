@@ -12,6 +12,7 @@ export async function createClient() {
         maxAge: 60 * 60 * 24 * 14,
         path: '/',
         sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
       },
       cookies: {
         getAll() {
@@ -19,16 +20,20 @@ export async function createClient() {
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) =>
+            cookiesToSet.forEach(({ name, value, options }) => {
+              const maxAge = (options && typeof options.maxAge === 'number' && options.maxAge > 0)
+                ? options.maxAge
+                : 60 * 60 * 24 * 14
               cookieStore.set({
                 name,
                 value,
-                maxAge: options?.maxAge ?? 60 * 60 * 24 * 14,
-                path: options?.path ?? '/',
-                sameSite: options?.sameSite ?? 'lax',
                 ...options,
+                maxAge,
+                path: options?.path || '/',
+                sameSite: options?.sameSite || 'lax',
+                secure: process.env.NODE_ENV === 'production',
               })
-            )
+            })
           } catch {
             // The `setAll` method was called from a Server Component.
             // This can be ignored if you have middleware refreshing user sessions.

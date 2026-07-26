@@ -14,6 +14,7 @@ export async function updateSession(request: NextRequest) {
         maxAge: 60 * 60 * 24 * 14,
         path: '/',
         sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
       },
       cookies: {
         getAll() {
@@ -21,11 +22,15 @@ export async function updateSession(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
+            const maxAge = (options && typeof options.maxAge === 'number' && options.maxAge > 0)
+              ? options.maxAge
+              : 60 * 60 * 24 * 14
             const opts = {
-              maxAge: options?.maxAge ?? 60 * 60 * 24 * 14,
-              path: options?.path ?? '/',
-              sameSite: options?.sameSite ?? 'lax',
               ...options,
+              maxAge,
+              path: options?.path || '/',
+              sameSite: options?.sameSite || 'lax',
+              secure: process.env.NODE_ENV === 'production',
             }
             request.cookies.set({ name, value, ...opts })
           })
@@ -33,11 +38,15 @@ export async function updateSession(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) => {
+            const maxAge = (options && typeof options.maxAge === 'number' && options.maxAge > 0)
+              ? options.maxAge
+              : 60 * 60 * 24 * 14
             const opts = {
-              maxAge: options?.maxAge ?? 60 * 60 * 24 * 14,
-              path: options?.path ?? '/',
-              sameSite: options?.sameSite ?? 'lax',
               ...options,
+              maxAge,
+              path: options?.path || '/',
+              sameSite: options?.sameSite || 'lax',
+              secure: process.env.NODE_ENV === 'production',
             }
             supabaseResponse.cookies.set({ name, value, ...opts })
           })

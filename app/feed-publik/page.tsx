@@ -17,18 +17,19 @@ function FeedPublikContent() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [selectedLocation, setSelectedLocation] = useState<string>('Seluruh Indonesia')
+  const [customLocation, setCustomLocation] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   useEffect(() => {
     fetchReports()
-  }, [selectedCategories, selectedStatus, selectedLocation, searchQuery])
+  }, [selectedCategories, selectedStatus, selectedLocation, customLocation, searchQuery])
 
   const fetchReports = async () => {
     setLoading(true)
     let query = supabase
       .from('laporan')
-      .select('*, laporan_lampiran(file_url), komentar(count)')
+      .select('*, laporan_lampiran(file_url), chat_messages(count)')
       .eq('is_public', true)
       .order('created_at', { ascending: false })
 
@@ -37,7 +38,6 @@ function FeedPublikContent() {
     }
 
     if (selectedStatus && selectedStatus !== 'Semua Laporan') {
-      // Map display name to db value
       const statusMap: Record<string, string> = {
         'Diterima': 'diterima',
         'Diproses': 'diproses',
@@ -46,8 +46,9 @@ function FeedPublikContent() {
       query = query.eq('status', statusMap[selectedStatus])
     }
 
-    if (selectedLocation && selectedLocation !== 'Seluruh Indonesia') {
-      query = query.ilike('lokasi', `%${selectedLocation}%`)
+    const activeLoc = selectedLocation === 'Lainnya' ? customLocation : selectedLocation
+    if (activeLoc && activeLoc !== 'Seluruh Indonesia' && activeLoc.trim()) {
+      query = query.ilike('lokasi', `%${activeLoc.trim()}%`)
     }
 
     if (searchQuery) {
@@ -137,7 +138,17 @@ function FeedPublikContent() {
                 <option>Bandung</option>
                 <option>Surabaya</option>
                 <option>Medan</option>
+                <option>Lainnya</option>
               </select>
+              {selectedLocation === 'Lainnya' && (
+                <input
+                  type="text"
+                  placeholder="Ketik wilayah manual..."
+                  className="mt-2.5 w-full bg-white border-[1.5px] border-[#debfbf] rounded-lg p-2 font-['Public_Sans'] text-sm focus:border-[#6b0218] outline-none"
+                  value={customLocation}
+                  onChange={(e) => setCustomLocation(e.target.value)}
+                />
+              )}
             </div>
           </div>
         </aside>
@@ -206,7 +217,17 @@ function FeedPublikContent() {
                   <option>Bandung</option>
                   <option>Surabaya</option>
                   <option>Medan</option>
+                  <option>Lainnya</option>
                 </select>
+                {selectedLocation === 'Lainnya' && (
+                  <input
+                    type="text"
+                    placeholder="Ketik wilayah manual..."
+                    className="mt-2.5 w-full bg-white border-[1.5px] border-[#debfbf] rounded-lg p-3 font-['Public_Sans'] text-sm focus:border-[#6b0218] outline-none"
+                    value={customLocation}
+                    onChange={(e) => setCustomLocation(e.target.value)}
+                  />
+                )}
               </div>
 
               <button 

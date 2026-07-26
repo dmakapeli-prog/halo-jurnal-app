@@ -290,28 +290,21 @@ export default function LaporanDetailPage() {
               <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                 {getStatusBadge(report.status)}
                 
-                {/* Support Button (for public viewing) */}
-                {!isOwner && report.is_public && (
-                  <button 
-                    onClick={handleLike}
-                    disabled={isLiking || hasLiked}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border font-semibold text-sm transition-all ${
-                      hasLiked 
-                        ? 'bg-[#ffe08e] border-[#ffe08e] text-[#241a00]' 
-                        : 'border-[#6b0218] text-[#6b0218] hover:bg-[#6b0218]/10'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined" style={{ fontVariationSettings: hasLiked ? "'FILL' 1" : "'FILL' 0" }}>
-                      thumb_up
-                    </span>
-                    {hasLiked ? 'Didukung' : 'Dukung Laporan'} ({report.dukungan_count || 0})
-                  </button>
-                )}
-                {isOwner && (
-                  <span className="text-sm font-semibold text-[#574141] flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">thumb_up</span> {report.dukungan_count || 0} Dukungan
+                {/* Support Button (available for all authenticated users) */}
+                <button 
+                  onClick={handleLike}
+                  disabled={isLiking || hasLiked}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border font-semibold text-sm transition-all cursor-pointer disabled:cursor-default ${
+                    hasLiked 
+                      ? 'bg-[#ffe08e] border-[#ffe08e] text-[#241a00] shadow-sm font-bold' 
+                      : 'border-[#6b0218] text-[#6b0218] hover:bg-[#6b0218]/10'
+                  }`}
+                >
+                  <span className="material-symbols-outlined" style={{ fontVariationSettings: hasLiked ? "'FILL' 1" : "'FILL' 0" }}>
+                    thumb_up
                   </span>
-                )}
+                  {hasLiked ? 'Didukung' : 'Dukung Laporan'} ({report.dukungan_count || 0})
+                </button>
               </div>
             </div>
 

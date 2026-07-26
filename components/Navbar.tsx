@@ -2,7 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import LogoutButton from '@/app/beranda/LogoutButton'
 
 interface NavbarProps {
   showLoginButton?: boolean
@@ -12,6 +14,20 @@ interface NavbarProps {
 export default function Navbar({ showLoginButton = true, actionButton }: NavbarProps) {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [checkedAuth, setCheckedAuth] = useState(false)
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient()
+      const { data } = await supabase.auth.getUser()
+      if (data?.user) {
+        setUser(data.user)
+      }
+      setCheckedAuth(true)
+    }
+    checkUser()
+  }, [])
 
   const navLinks = [
     { href: '/', label: 'Beranda' },
@@ -20,6 +36,37 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
     { href: '/laporan-saya', label: 'Laporan Saya' },
     { href: '/tentang', label: 'Tentang' },
   ]
+
+  const renderAuthButtons = (isMobile = false) => {
+    if (actionButton) {
+      return actionButton
+    }
+
+    if (user) {
+      return (
+        <div className={`flex items-center gap-2 ${isMobile ? 'flex-col w-full' : ''}`}>
+          <Link href="/beranda" className={isMobile ? 'w-full' : ''}>
+            <button className="bg-[#ffe08e] text-[#241a00] font-['Public_Sans'] text-[14px] font-semibold px-4 md:px-5 py-2 rounded-[0.25rem] hover:opacity-90 transition-all w-full min-h-[38px]">
+              Dashboard
+            </button>
+          </Link>
+          <LogoutButton />
+        </div>
+      )
+    }
+
+    if (showLoginButton) {
+      return (
+        <Link href="/login" className={isMobile ? 'w-full' : ''}>
+          <button className="text-[#735a00] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold px-4 md:px-6 py-2 rounded-[0.25rem] hover:opacity-90 transition-all active:scale-95 bg-[#fed255] w-full min-h-[38px]">
+            Login
+          </button>
+        </Link>
+      )
+    }
+
+    return null
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-[40px] h-[64px] md:h-[80px] shadow-md bg-[#8b1e2c]">
@@ -46,15 +93,10 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
         </div>
       </div>
       <div className="flex items-center gap-2 md:gap-4 shrink-0">
-        {actionButton ? (
-          <div className="hidden sm:block">{actionButton}</div>
-        ) : showLoginButton ? (
-          <Link href="/login" className="hidden sm:block">
-            <button className="text-[#735a00] font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold px-4 md:px-6 py-2 rounded-[0.25rem] hover:opacity-90 transition-all active:scale-95 bg-[#fed255]">
-              Login
-            </button>
-          </Link>
-        ) : null}
+        <div className="hidden sm:flex items-center gap-2">
+          {checkedAuth ? renderAuthButtons(false) : null}
+        </div>
+
         {/* Mobile hamburger */}
         <button
           className="md:hidden text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -84,17 +126,10 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
               {link.label}
             </Link>
           ))}
-          {/* Show action button / login in mobile menu too */}
           <div className="mt-2 pt-3 border-t border-white/10">
-            {actionButton ? (
-              <div onClick={() => setMobileMenuOpen(false)}>{actionButton}</div>
-            ) : showLoginButton ? (
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                <button className="w-full text-[#735a00] font-['Public_Sans'] text-[14px] font-semibold px-4 py-3 rounded-[0.25rem] bg-[#fed255] min-h-[44px]">
-                  Login
-                </button>
-              </Link>
-            ) : null}
+            <div onClick={() => setMobileMenuOpen(false)}>
+              {renderAuthButtons(true)}
+            </div>
           </div>
         </div>
       )}

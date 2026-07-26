@@ -23,20 +23,23 @@ export default function CategoryCards({ isLoggedIn: initialIsLoggedIn }: Categor
     checkUser()
   }, [initialIsLoggedIn])
 
-  const handleCategoryClick = (type: 'pengaduan' | 'aspirasi' | 'informasi') => {
-    if (isLoggedIn === false) {
+  const handleCategoryClick = (type: 'pengaduan' | 'aspirasi' | 'informasi', e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (isLoggedIn !== true) {
       alert('Silakan login terlebih dahulu untuk membuat laporan.')
-      router.push(`/login?redirect=/lapor?type=${type}`)
-    } else {
-      router.push(`/lapor?type=${type}`)
+      return
     }
+
+    router.push(`/lapor?type=${type}`)
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-[24px]">
       {/* Card 1: Pengaduan */}
       <div
-        onClick={() => handleCategoryClick('pengaduan')}
+        onClick={(e) => handleCategoryClick('pengaduan', e)}
         className="bg-white border border-[#debfbf] p-6 md:p-8 rounded-[0.5rem] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer block select-none"
       >
         <div className="w-12 md:w-14 h-12 md:h-14 rounded-[0.75rem] bg-[#ffdad9] flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
@@ -53,7 +56,7 @@ export default function CategoryCards({ isLoggedIn: initialIsLoggedIn }: Categor
 
       {/* Card 2: Aspirasi */}
       <div
-        onClick={() => handleCategoryClick('aspirasi')}
+        onClick={(e) => handleCategoryClick('aspirasi', e)}
         className="bg-white border border-[#debfbf] p-6 md:p-8 rounded-[0.5rem] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer block select-none"
       >
         <div className="w-12 md:w-14 h-12 md:h-14 rounded-[0.75rem] bg-[#ffe08e] flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
@@ -70,7 +73,7 @@ export default function CategoryCards({ isLoggedIn: initialIsLoggedIn }: Categor
 
       {/* Card 3: Informasi */}
       <div
-        onClick={() => handleCategoryClick('informasi')}
+        onClick={(e) => handleCategoryClick('informasi', e)}
         className="bg-white border border-[#debfbf] p-6 md:p-8 rounded-[0.5rem] shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all group cursor-pointer block select-none"
       >
         <div className="w-12 md:w-14 h-12 md:h-14 rounded-[0.75rem] bg-[#dde4e6] flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform">
