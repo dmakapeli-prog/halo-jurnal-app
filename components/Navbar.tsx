@@ -15,6 +15,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [role, setRole] = useState<string | null>(null)
   const [checkedAuth, setCheckedAuth] = useState(false)
 
   useEffect(() => {
@@ -23,13 +24,27 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
       const { data } = await supabase.auth.getUser()
       if (data?.user) {
         setUser(data.user)
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single()
+        if (prof?.role) {
+          setRole(prof.role)
+        }
       }
       setCheckedAuth(true)
     }
     checkUser()
   }, [])
 
-  const navLinks = [
+  const isAdmin = role === 'admin' || role === 'superadmin'
+
+  const navLinks = isAdmin ? [
+    { href: '/admin', label: 'Dashboard Admin' },
+    { href: '/feed-publik', label: 'Feed Publik' },
+    { href: '/tentang', label: 'Tentang' },
+  ] : [
     { href: user ? '/beranda' : '/', label: 'Beranda' },
     { href: '/feed-publik', label: 'Feed Publik' },
     { href: '/lapor', label: 'Lapor' },
@@ -45,9 +60,14 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
     if (user) {
       return (
         <div className={`flex items-center gap-2 ${isMobile ? 'flex-col w-full' : ''}`}>
-          <Link href="/beranda" className={isMobile ? 'w-full' : ''}>
+          {isAdmin && (
+            <span className="px-3 py-1 bg-[#ffe08e] text-[#735a00] rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">shield</span> ADMIN
+            </span>
+          )}
+          <Link href={isAdmin ? "/admin" : "/beranda"} className={isMobile ? 'w-full' : ''}>
             <button className="bg-[#ffe08e] text-[#241a00] font-['Public_Sans'] text-[14px] font-semibold px-4 md:px-5 py-2 rounded-[0.25rem] hover:opacity-90 transition-all w-full min-h-[38px]">
-              Dashboard
+              {isAdmin ? "Panel Admin" : "Dashboard"}
             </button>
           </Link>
           <LogoutButton />
