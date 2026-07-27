@@ -494,71 +494,79 @@ export default function AdminLaporanDetailPage() {
             </div>
           </div>
 
-          {/* Right Column: Admin Chat Panel with Reporter */}
+          {/* Right Column: Redesigned Admin Chat Panel with Reporter */}
           <div className="lg:col-span-1">
-            <div className="bg-[#f5f2ed] border border-[#debfbf] rounded-2xl overflow-hidden shadow-sm flex flex-col h-[650px] sticky top-24">
+            <div className="bg-[#ece5dd] border border-[#debfbf] rounded-2xl overflow-hidden shadow-sm flex flex-col h-[650px] sticky top-24">
               {/* Chat Header */}
-              <div className="p-4 bg-white border-b border-[#debfbf] flex items-center justify-between">
+              <div className="px-4 py-3 bg-[#6b0218] flex items-center justify-between shadow-md z-10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#6b0218] text-white flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center border-2 border-white/30">
                     <span className="material-symbols-outlined text-lg">support_agent</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-[#1c1c19]">Chat dengan Pelapor</h4>
-                    <p className="text-[11px] text-[#574141] truncate max-w-[180px]">
+                    <h4 className="font-bold text-sm text-white leading-tight">Chat dengan Pelapor</h4>
+                    <p className="text-[11px] text-white/80 truncate max-w-[180px]">
                       {reporterProfile?.full_name || 'Pelapor'}
                     </p>
                   </div>
                 </div>
-                <span className="bg-[#ffe08e] text-[#241a00] text-xs font-bold px-2.5 py-1 rounded-full">
+                <span className="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full border border-white/30">
                   {messages.length} pesan
                 </span>
               </div>
 
               {/* Chat Messages List */}
-              <div className="flex-grow overflow-y-auto p-4 space-y-4 custom-scrollbar">
+              <div 
+                className="flex-grow overflow-y-auto p-4 space-y-3 custom-scrollbar"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 30 L15 15 L30 30 L15 45Z' fill='%23d4cfc4' opacity='0.08'/%3E%3Cpath d='M30 0 L45 15 L30 30 L15 15Z' fill='%23d4cfc4' opacity='0.05'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='%23ece5dd'/%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'repeat'
+                }}
+              >
                 {messages && messages.length > 0 ? (
                   messages.map((msg: any) => {
                     const isMyAdminMessage = adminUser && adminUser.id === msg.sender_id
 
                     return (
                       <div key={msg.id} className={`flex flex-col ${isMyAdminMessage ? 'items-end' : 'items-start'}`}>
-                        <div className="flex items-center gap-1.5 mb-1 px-1">
-                          <span className="text-[11px] font-bold text-[#574141] flex items-center gap-1">
-                            {isMyAdminMessage ? (
-                              <span className="text-[#6b0218] flex items-center gap-1">
-                                <span className="material-symbols-outlined text-xs">verified</span> Admin Jurnal Sukabumi (Anda)
-                              </span>
-                            ) : (
-                              reporterProfile?.full_name || 'Pelapor'
-                            )}
-                          </span>
-                          <span className="text-[10px] text-[#8b7171]">
-                            {new Date(msg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-
-                        <div className={`p-3.5 rounded-2xl max-w-[88%] text-xs leading-relaxed shadow-sm ${
+                        <div className={`relative max-w-[85%] px-3.5 py-2 rounded-2xl shadow-sm ${
                           isMyAdminMessage
-                            ? 'bg-[#6b0218] text-white rounded-tr-none'
-                            : 'bg-white text-[#1c1c19] border border-[#debfbf] rounded-tl-none'
+                            ? 'bg-[#dcf8c6] text-[#1c1c19] rounded-br-sm'
+                            : 'bg-white text-[#1c1c19] rounded-bl-sm border border-[#debfbf]/50'
                         }`}>
-                          {msg.message}
+                          {!isMyAdminMessage && (
+                            <p className="text-[11px] font-bold text-[#6b0218] mb-0.5">
+                              {reporterProfile?.full_name || 'Pelapor'}
+                            </p>
+                          )}
+                          
+                          <p className="text-[13.5px] leading-relaxed font-['Public_Sans'] whitespace-pre-wrap break-words">
+                            {msg.message}
+                          </p>
 
                           {msg.attachment_url && (
-                            <div className="mt-2 pt-2 border-t border-white/20">
+                            <div className="mt-1.5 pt-1.5 border-t border-black/10">
                               <a
                                 href={msg.attachment_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className={`text-[11px] flex items-center gap-1 font-bold underline ${
-                                  isMyAdminMessage ? 'text-[#ffe08e]' : 'text-[#6b0218]'
-                                }`}
+                                className="text-[12px] flex items-center gap-1 font-bold text-[#6b0218] hover:underline"
                               >
                                 <span className="material-symbols-outlined text-xs">attach_file</span> Lampiran Pesan
                               </a>
                             </div>
                           )}
+
+                          <div className="flex items-center justify-end gap-1 mt-1">
+                            <span className="text-[10px] text-[#8b7171]">
+                              {new Date(msg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                            {isMyAdminMessage && (
+                              <span className="material-symbols-outlined text-[14px] text-[#53bdeb]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                done_all
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     )
@@ -573,12 +581,12 @@ export default function AdminLaporanDetailPage() {
               </div>
 
               {/* Chat Form */}
-              <div className="p-3 bg-white border-t border-[#debfbf]">
+              <div className="p-3 bg-[#f0ebe3] border-t border-[#debfbf]/60">
                 <form onSubmit={handleSendChat} className="space-y-2">
                   {chatFile && (
-                    <div className="flex items-center justify-between bg-[#ffe08e]/30 border border-[#ffe08e] p-2 rounded-lg text-xs font-semibold text-[#241a00]">
+                    <div className="flex items-center justify-between bg-white border border-[#debfbf] p-2 rounded-xl text-xs font-semibold text-[#1c1c19]">
                       <span className="truncate flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">attach_file</span> {chatFile.name}
+                        <span className="material-symbols-outlined text-sm text-[#6b0218]">attach_file</span> {chatFile.name}
                       </span>
                       <button
                         type="button"
@@ -590,25 +598,47 @@ export default function AdminLaporanDetailPage() {
                     </div>
                   )}
 
-                  <div className="flex items-end gap-2 bg-[#fcf9f4] border border-[#debfbf] rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#6b0218]">
-                    <textarea
-                      rows={2}
-                      className="flex-grow bg-transparent border-none outline-none text-xs resize-none py-1"
-                      placeholder="Balas pesan pelapor sebagai Admin Jurnal Sukabumi..."
-                      value={chatMessage}
-                      onChange={(e) => setChatMessage(e.target.value)}
-                      disabled={isSendingChat}
-                    ></textarea>
+                  <div className="flex items-end gap-2">
+                    <label className="w-9 h-9 rounded-full flex items-center justify-center text-[#574141] hover:bg-[#debfbf]/40 transition-colors shrink-0 cursor-pointer">
+                      <span className="material-symbols-outlined text-[20px]">attach_file</span>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*,video/*,.pdf,.doc,.docx"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            setChatFile(e.target.files[0])
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <div className="flex-1 bg-white rounded-3xl px-3.5 py-2 border border-[#debfbf]/60 shadow-sm focus-within:border-[#6b0218]/40">
+                      <textarea
+                        rows={1}
+                        className="w-full bg-transparent border-none outline-none text-xs resize-none py-0.5 text-[#1c1c19] placeholder:text-[#8b7171]"
+                        placeholder="Balas pesan pelapor sebagai Admin Jurnal Sukabumi..."
+                        value={chatMessage}
+                        onChange={(e) => setChatMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault()
+                            handleSendChat(e)
+                          }
+                        }}
+                        disabled={isSendingChat}
+                      ></textarea>
+                    </div>
 
                     <button
                       type="submit"
                       disabled={isSendingChat || (!chatMessage.trim() && !chatFile)}
-                      className="bg-[#6b0218] text-white w-9 h-9 rounded-lg flex items-center justify-center shadow-md hover:bg-[#8b1e2c] transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
+                      className="bg-[#6b0218] text-white w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:bg-[#8b1e2c] transition-colors disabled:opacity-40 shrink-0 cursor-pointer"
                     >
                       {isSendingChat ? (
                         <span className="material-symbols-outlined animate-spin text-sm">sync</span>
                       ) : (
-                        <span className="material-symbols-outlined text-sm">send</span>
+                        <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
                       )}
                     </button>
                   </div>
