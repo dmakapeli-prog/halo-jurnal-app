@@ -38,7 +38,7 @@ export default async function TentangPage() {
                 Tentang Halo Jurnal
               </h1>
               <p className="font-['Public_Sans'] text-[15px] md:text-[18px] leading-[24px] md:leading-[28px] text-white/90 max-w-lg">
-                Sebuah platform aspirasi dan pengaduan publik yang menjembatani suara warga kepada instansi pemerintah maupun non-pemerintah, dibangun di atas fondasi transparansi dan akuntabilitas.
+                Sebuah platform aspirasi dan pengaduan warga yang dikelola secara independen oleh tim Jurnal Sukabumi (PT Media Jurnal Sukabumi). Kami menerima, menindaklanjuti, dan menjalin komunikasi aktif dengan pihak berwenang terkait demi transparansi dan akuntabilitas publik.
               </p>
               <div className="flex gap-4 pt-4">
                 <button className="bg-[#fed255] text-[#735a00] px-6 md:px-8 py-3 md:py-4 rounded-lg font-['Public_Sans'] text-[14px] font-semibold tracking-[0.01em] hover:scale-105 transition-transform min-h-[48px]">
@@ -91,7 +91,7 @@ export default async function TentangPage() {
                   <span className="material-symbols-outlined text-4xl group-hover:text-white transition-colors" style={{ fontVariationSettings: "'FILL' 0" }}>forum</span>
                 </div>
                 <h3 className="font-['Public_Sans'] text-[14px] font-semibold mb-2 text-[#1c1c19]">3. Diskusi Langsung</h3>
-                <p className="font-['Public_Sans'] text-[12px] text-[#574141]">Berinteraksi langsung dengan admin untuk proses klarifikasi data.</p>
+                <p className="font-['Public_Sans'] text-[12px] text-[#574141]">Berinteraksi langsung dengan Admin Jurnal Sukabumi untuk proses klarifikasi data.</p>
               </div>
 
               <div className="flex flex-col items-center text-center group">

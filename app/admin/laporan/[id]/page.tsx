@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 
 export default function AdminLaporanDetailPage() {
   const params = useParams()
@@ -131,7 +129,7 @@ export default function AdminLaporanDetailPage() {
         .insert({
           laporan_id: id,
           status: newStatus,
-          catatan: statusCatatan.trim() || `Status diubah menjadi ${newStatus} oleh petugas admin.`,
+          catatan: statusCatatan.trim() || `Status diubah menjadi ${newStatus} oleh Admin Jurnal Sukabumi.`,
           changed_by: adminUser.id
         })
 
@@ -224,7 +222,7 @@ export default function AdminLaporanDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
+      <div className="min-h-[400px] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6b0218]"></div>
       </div>
     )
@@ -232,24 +230,21 @@ export default function AdminLaporanDetailPage() {
 
   if (!report) {
     return (
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <div className="bg-white p-8 rounded-2xl border border-[#debfbf] text-center">
-          <p className="text-xl font-bold text-[#1c1c19] mb-4">Laporan tidak ditemukan.</p>
-          <Link href="/admin" className="bg-[#6b0218] text-white px-6 py-2 rounded-lg font-semibold">
-            Kembali ke Dashboard Admin
-          </Link>
-        </div>
+      <div className="bg-white p-8 rounded-2xl border border-[#debfbf] text-center">
+        <p className="text-xl font-bold text-[#1c1c19] mb-4">Laporan tidak ditemukan.</p>
+        <Link href="/admin" className="bg-[#6b0218] text-white px-6 py-2 rounded-lg font-semibold">
+          Kembali ke Dashboard Admin
+        </Link>
       </div>
     )
   }
 
-  return (
-    <div className="font-['Public_Sans'] bg-[#FAF7F2] text-[#1c1c19] min-h-screen">
-      <Navbar />
+  const targetInstansi = report.instansi_tujuan || report.tujuan || 'PT Media Jurnal Sukabumi'
 
-      <main className="pt-20 md:pt-24 pb-20 px-4 sm:px-6 md:px-[40px] max-w-[1400px] mx-auto">
+  return (
+    <div className="space-y-6">
         {/* Top Breadcrumb & Control Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
           <div className="flex items-center gap-2 text-sm text-[#574141]">
             <Link href="/admin" className="hover:underline font-semibold flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">arrow_back</span> Dashboard Admin
@@ -284,9 +279,14 @@ export default function AdminLaporanDetailPage() {
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-[#debfbf] shadow-sm">
               <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
                 <div>
-                  <span className="px-3 py-1 bg-[#6b0218]/10 text-[#6b0218] rounded-full text-xs font-bold uppercase tracking-wider mb-2 inline-block">
-                    {report.kategori}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="px-3 py-1 bg-[#6b0218]/10 text-[#6b0218] rounded-full text-xs font-bold uppercase tracking-wider">
+                      {report.kategori}
+                    </span>
+                    <span className="px-3 py-1 bg-gray-100 text-[#574141] rounded-full text-xs font-bold">
+                      Konteks Instansi: {targetInstansi}
+                    </span>
+                  </div>
                   <h1 className="font-['Libre_Franklin'] text-2xl md:text-3xl font-bold text-[#1c1c19] mt-1">
                     {report.judul}
                   </h1>
@@ -527,7 +527,7 @@ export default function AdminLaporanDetailPage() {
                           <span className="text-[11px] font-bold text-[#574141] flex items-center gap-1">
                             {isMyAdminMessage ? (
                               <span className="text-[#6b0218] flex items-center gap-1">
-                                <span className="material-symbols-outlined text-xs">verified</span> Petugas Instansi (Anda)
+                                <span className="material-symbols-outlined text-xs">verified</span> Admin Jurnal Sukabumi (Anda)
                               </span>
                             ) : (
                               reporterProfile?.full_name || 'Pelapor'
@@ -594,7 +594,7 @@ export default function AdminLaporanDetailPage() {
                     <textarea
                       rows={2}
                       className="flex-grow bg-transparent border-none outline-none text-xs resize-none py-1"
-                      placeholder="Balas pesan pelapor sebagai petugas admin..."
+                      placeholder="Balas pesan pelapor sebagai Admin Jurnal Sukabumi..."
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}
                       disabled={isSendingChat}
@@ -617,7 +617,6 @@ export default function AdminLaporanDetailPage() {
             </div>
           </div>
         </div>
-      </main>
 
       {/* KTP Modal Zoom */}
       {showKtpModal && (
@@ -636,8 +635,6 @@ export default function AdminLaporanDetailPage() {
           </div>
         </div>
       )}
-
-      <Footer />
     </div>
   )
 }

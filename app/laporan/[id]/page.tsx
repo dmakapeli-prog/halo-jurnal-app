@@ -387,7 +387,7 @@ export default function LaporanDetailPage() {
                     <span className="material-symbols-outlined text-[22px]">support_agent</span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-[16px] text-[#1c1c19] leading-tight font-['Libre_Franklin']">Chat dengan Admin/Petugas</h3>
+                    <h3 className="font-bold text-[16px] text-[#1c1c19] leading-tight font-['Libre_Franklin']">Chat dengan Admin Jurnal Sukabumi</h3>
                     <p className="text-[11px] text-[#574141]">Kanal komunikasi langsung & rahasia pelapor</p>
                   </div>
                 </div>
@@ -401,7 +401,7 @@ export default function LaporanDetailPage() {
                 {messages && messages.length > 0 ? (
                   messages.map((msg: any) => {
                     const isMyMessage = user && user.id === msg.sender_id
-                    const isAdmin = msg.profiles?.role === 'admin' || msg.profiles?.role === 'petugas' || (!isMyMessage && msg.sender_id !== report.user_id)
+                    const isAdmin = msg.profiles?.role === 'admin' || msg.profiles?.role === 'superadmin' || (!isMyMessage && msg.sender_id !== report.user_id)
 
                     return (
                       <div key={msg.id} className={`flex flex-col ${isMyMessage ? 'items-end' : 'items-start'}`}>
@@ -411,7 +411,7 @@ export default function LaporanDetailPage() {
                               'Anda (Pelapor)'
                             ) : isAdmin ? (
                               <span className="flex items-center gap-1 text-[#6b0218]">
-                                <span className="material-symbols-outlined text-xs">verified</span> Petugas Instansi
+                                <span className="material-symbols-outlined text-xs">verified</span> Admin Jurnal Sukabumi
                               </span>
                             ) : (
                               'Pelapor'
@@ -452,7 +452,7 @@ export default function LaporanDetailPage() {
                     </div>
                     <h4 className="font-bold text-base text-[#1c1c19] mb-1 font-['Libre_Franklin']">Belum Ada Percakapan</h4>
                     <p className="text-xs text-[#574141] max-w-xs leading-relaxed font-['Public_Sans']">
-                      Belum ada percakapan. Kirim pesan untuk memulai diskusi dengan admin terkait laporan ini.
+                      Belum ada percakapan. Kirim pesan untuk memulai diskusi dengan Admin Jurnal Sukabumi terkait laporan ini.
                     </p>
                   </div>
                 )}
@@ -479,7 +479,7 @@ export default function LaporanDetailPage() {
                   <div className="flex items-end gap-2 bg-[#fcf9f4] border border-[#debfbf] rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#6b0218] focus-within:border-transparent transition-all">
                     <textarea
                       className="flex-grow bg-transparent border-none focus:ring-0 text-sm py-1.5 resize-none outline-none min-h-[40px] max-h-[100px]"
-                      placeholder="Tulis pesan privat ke petugas admin..."
+                      placeholder="Tulis pesan privat ke Admin Jurnal Sukabumi..."
                       rows={2}
                       value={chatMessage}
                       onChange={(e) => setChatMessage(e.target.value)}

@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 
 export default function AdminDashboardPage() {
   const supabase = createClient()
@@ -110,10 +108,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="font-['Public_Sans'] bg-[#FAF7F2] text-[#1c1c19] min-h-screen">
-      <Navbar />
-
-      <main className="pt-20 md:pt-24 pb-20 px-4 sm:px-6 md:px-[40px] max-w-[1400px] mx-auto">
+    <div className="space-y-6">
         {/* Admin Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-white p-6 rounded-2xl border border-[#debfbf] shadow-sm">
           <div>
@@ -250,6 +245,7 @@ export default function AdminDashboardPage() {
                   <th className="py-4 px-6">Laporan & Ticket ID</th>
                   <th className="py-4 px-6">Pelapor (Identitas Asli)</th>
                   <th className="py-4 px-6">Kategori</th>
+                  <th className="py-4 px-6">Instansi Tujuan (Konteks)</th>
                   <th className="py-4 px-6">Tanggal</th>
                   <th className="py-4 px-6">Status</th>
                   <th className="py-4 px-6 text-center">Chat</th>
@@ -259,7 +255,7 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-[#debfbf]">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-[#574141]">
+                    <td colSpan={8} className="py-12 text-center text-[#574141]">
                       <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#6b0218] mb-2"></div>
                       <p className="text-sm">Memuat data laporan...</p>
                     </td>
@@ -269,6 +265,7 @@ export default function AdminDashboardPage() {
                     const chatCount = r.chat_messages?.[0]?.count || 0
                     const reporterName = r.profiles?.full_name || 'Pelapor Terdaftar'
                     const reporterEmail = r.profiles?.email || '-'
+                    const targetInstansi = r.instansi_tujuan || r.tujuan || 'PT Media Jurnal Sukabumi'
 
                     return (
                       <tr key={r.id} className="hover:bg-[#fcf9f4] transition-colors group">
@@ -294,6 +291,12 @@ export default function AdminDashboardPage() {
                         <td className="py-4 px-6">
                           <span className="text-xs font-semibold px-2.5 py-1 bg-[#f6f3ee] rounded border border-[#debfbf] text-[#1c1c19] inline-block">
                             {r.kategori}
+                          </span>
+                        </td>
+
+                        <td className="py-4 px-6">
+                          <span className="text-xs text-[#574141] font-semibold bg-gray-100 px-2 py-1 rounded">
+                            {targetInstansi}
                           </span>
                         </td>
 
@@ -327,7 +330,7 @@ export default function AdminDashboardPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-[#574141]">
+                    <td colSpan={8} className="py-12 text-center text-[#574141]">
                       <span className="material-symbols-outlined text-4xl text-[#debfbf] mb-2">search_off</span>
                       <p className="font-semibold text-sm text-[#1c1c19]">Tidak ada laporan ditemukan</p>
                       <p className="text-xs text-[#574141] mt-1">Coba sesuaikan filter atau kata kunci pencarian Anda.</p>
@@ -338,9 +341,6 @@ export default function AdminDashboardPage() {
             </table>
           </div>
         </div>
-      </main>
-
-      <Footer />
     </div>
   )
 }
