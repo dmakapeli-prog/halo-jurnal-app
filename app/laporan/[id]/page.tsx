@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
@@ -25,6 +25,13 @@ export default function LaporanDetailPage() {
   const [hasLiked, setHasLiked] = useState(false)
   const [isLiking, setIsLiking] = useState(false)
 
+  const chatEndRef = useRef<HTMLDivElement>(null)
+  const chatFileRef = useRef<HTMLInputElement>(null)
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   useEffect(() => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser()
@@ -41,6 +48,10 @@ export default function LaporanDetailPage() {
       fetchChatMessages()
     }
   }, [id, user])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const fetchChatMessages = async () => {
     try {
@@ -187,6 +198,21 @@ export default function LaporanDetailPage() {
     }
   }
 
+  const formatChatTime = (dateStr: string) => {
+    return new Date(dateStr).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+  }
+
+  const formatChatDate = (dateStr: string) => {
+    const date = new Date(dateStr)
+    const today = new Date()
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+
+    if (date.toDateString() === today.toDateString()) return 'Hari Ini'
+    if (date.toDateString() === yesterday.toDateString()) return 'Kemarin'
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+  }
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'selesai':
@@ -216,6 +242,24 @@ export default function LaporanDetailPage() {
     }
   }
 
+  // Group messages by date for date separators
+  const getMessageGroups = () => {
+    const groups: { date: string; messages: any[] }[] = []
+    let currentDate = ''
+
+    messages.forEach((msg) => {
+      const dateStr = formatChatDate(msg.created_at)
+      if (dateStr !== currentDate) {
+        currentDate = dateStr
+        groups.push({ date: dateStr, messages: [msg] })
+      } else {
+        groups[groups.length - 1].messages.push(msg)
+      }
+    })
+
+    return groups
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#fcf9f4] flex items-center justify-center">
@@ -233,8 +277,7 @@ export default function LaporanDetailPage() {
   }
 
   const isOwner = user && user.id === report.user_id
-  // Privacy rule: hide identity if it's public and viewer is not the owner
-  // In our simplified setup, we'll just not display the reporter's full name directly on the report details anyway.
+  const messageGroups = getMessageGroups()
 
   return (
     <div className="font-['Public_Sans'] bg-[#fcf9f4] text-[#1c1c19] min-h-screen">
@@ -377,131 +420,215 @@ export default function LaporanDetailPage() {
             </div>
           </section>
 
-          {/* Right Column: Chat Panel for Owner OR Notice for Public */}
+          {/* ================================================================== */}
+          {/* Right Column: REDESIGNED Chat Panel (WhatsApp / Telegram Style) */}
+          {/* ================================================================== */}
           {isOwner ? (
-            <section id="chat-admin" className="w-full lg:w-[450px] flex flex-col bg-[#f5f2ed] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[450px] lg:min-h-[500px] lg:h-full overflow-hidden relative">
-              {/* Panel Header */}
-              <div className="p-4 bg-white border-b border-[#debfbf] flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#6b0218]/10 flex items-center justify-center text-[#6b0218]">
+            <section id="chat-admin" className="w-full lg:w-[450px] flex flex-col bg-[#ece5dd] border-t lg:border-t-0 lg:border-l border-[#debfbf] min-h-[450px] lg:min-h-[500px] lg:h-full overflow-hidden relative">
+              {/* Chat Header — Premium Bar */}
+              <div className="px-4 py-3 bg-[#6b0218] flex items-center gap-3 shadow-md z-10">
+                <div className="relative">
+                  <div className="w-11 h-11 rounded-full bg-white/20 flex items-center justify-center text-white border-2 border-white/30">
                     <span className="material-symbols-outlined text-[22px]">support_agent</span>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[16px] text-[#1c1c19] leading-tight font-['Libre_Franklin']">Chat dengan Admin Jurnal Sukabumi</h3>
-                    <p className="text-[11px] text-[#574141]">Kanal komunikasi langsung & rahasia pelapor</p>
-                  </div>
+                  {/* Online indicator */}
+                  <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#25d366] rounded-full border-2 border-[#6b0218]"></div>
                 </div>
-                <span className="bg-[#ffe08e] text-[#241a00] text-xs font-bold px-2.5 py-1 rounded-full">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-[15px] text-white leading-tight font-['Public_Sans'] truncate">
+                    Admin Jurnal Sukabumi
+                  </h3>
+                  <p className="text-[11px] text-white/70 font-['Public_Sans']">
+                    Kanal komunikasi privat & rahasia
+                  </p>
+                </div>
+                <div className="bg-white/15 backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1 rounded-full border border-white/20">
                   {messages.length} pesan
-                </span>
+                </div>
               </div>
 
-              {/* Chat Thread List */}
-              <div className="flex-grow overflow-y-auto p-4 space-y-4 custom-scrollbar">
+              {/* Chat Thread — WhatsApp-style background */}
+              <div 
+                className="flex-grow overflow-y-auto px-3 py-4 custom-scrollbar"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 30 L15 15 L30 30 L15 45Z' fill='%23d4cfc4' opacity='0.08'/%3E%3Cpath d='M30 0 L45 15 L30 30 L15 15Z' fill='%23d4cfc4' opacity='0.05'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='60' height='60' fill='%23ece5dd'/%3E%3Crect width='60' height='60' fill='url(%23p)'/%3E%3C/svg%3E")`,
+                  backgroundRepeat: 'repeat'
+                }}
+              >
                 {messages && messages.length > 0 ? (
-                  messages.map((msg: any) => {
-                    const isMyMessage = user && user.id === msg.sender_id
-                    const isAdmin = msg.profiles?.role === 'admin' || msg.profiles?.role === 'superadmin' || (!isMyMessage && msg.sender_id !== report.user_id)
-
-                    return (
-                      <div key={msg.id} className={`flex flex-col ${isMyMessage ? 'items-end' : 'items-start'}`}>
-                        <div className="flex items-center gap-1.5 mb-1 px-1">
-                          <span className="text-[12px] font-bold text-[#574141] flex items-center gap-1">
-                            {isMyMessage ? (
-                              'Anda (Pelapor)'
-                            ) : isAdmin ? (
-                              <span className="flex items-center gap-1 text-[#6b0218]">
-                                <span className="material-symbols-outlined text-xs">verified</span> Admin Jurnal Sukabumi
-                              </span>
-                            ) : (
-                              'Pelapor'
-                            )}
-                          </span>
-                          <span className="text-[10px] text-[#8b7171]">
-                            {new Date(msg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                  <>
+                    {messageGroups.map((group, gIdx) => (
+                      <div key={gIdx}>
+                        {/* Date Separator */}
+                        <div className="flex justify-center my-4">
+                          <span className="bg-white/90 backdrop-blur-sm text-[#574141] text-[11px] font-semibold px-4 py-1.5 rounded-lg shadow-sm border border-[#debfbf]/50">
+                            {group.date}
                           </span>
                         </div>
 
-                        <div className={`p-3.5 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-sm ${
-                          isMyMessage
-                            ? 'bg-[#6b0218] text-white rounded-tr-none'
-                            : 'bg-white text-[#1c1c19] border border-[#debfbf] rounded-tl-none'
-                        }`}>
-                          {msg.message}
+                        {/* Messages in this date group */}
+                        {group.messages.map((msg: any, mIdx: number) => {
+                          const isMyMessage = user && user.id === msg.sender_id
+                          const isAdmin = msg.profiles?.role === 'admin' || msg.profiles?.role === 'superadmin' || (!isMyMessage && msg.sender_id !== report.user_id)
 
-                          {msg.attachment_url && (
-                            <div className="mt-2 pt-2 border-t border-white/20">
-                              <a
-                                href={msg.attachment_url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={`text-xs flex items-center gap-1 font-bold underline ${isMyMessage ? 'text-[#ffe08e]' : 'text-[#6b0218]'}`}
-                              >
-                                <span className="material-symbols-outlined text-sm">attach_file</span> Lihat Lampiran Pesan
-                              </a>
+                          // Check if next message is from same sender for grouping
+                          const nextMsg = mIdx < group.messages.length - 1 ? group.messages[mIdx + 1] : null
+                          const isLastInGroup = !nextMsg || (nextMsg.sender_id !== msg.sender_id)
+
+                          return (
+                            <div key={msg.id} className={`flex ${isMyMessage ? 'justify-end' : 'justify-start'} mb-1 ${isLastInGroup ? 'mb-3' : ''}`}>
+                              {/* Admin Avatar (left side) */}
+                              {!isMyMessage && isLastInGroup && (
+                                <div className="w-7 h-7 rounded-full bg-[#6b0218] flex items-center justify-center text-white shrink-0 mr-1.5 mt-auto mb-0.5 shadow-sm">
+                                  <span className="material-symbols-outlined text-[14px]">verified</span>
+                                </div>
+                              )}
+                              {!isMyMessage && !isLastInGroup && (
+                                <div className="w-7 mr-1.5 shrink-0"></div>
+                              )}
+
+                              {/* Message Bubble */}
+                              <div className={`relative max-w-[78%] ${isMyMessage ? 'order-1' : ''}`}>
+                                {/* Sender label (only show on first message in a group) */}
+                                {!isMyMessage && isAdmin && (mIdx === 0 || group.messages[mIdx - 1]?.sender_id !== msg.sender_id) && (
+                                  <p className="text-[11px] font-bold text-[#6b0218] mb-0.5 ml-1 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[12px]">verified</span>
+                                    Admin Jurnal Sukabumi
+                                  </p>
+                                )}
+
+                                <div className={`px-3 py-2 shadow-sm ${
+                                  isMyMessage
+                                    ? `bg-[#dcf8c6] text-[#1c1c19] ${isLastInGroup ? 'rounded-2xl rounded-br-sm' : 'rounded-2xl'}`
+                                    : `bg-white text-[#1c1c19] ${isLastInGroup ? 'rounded-2xl rounded-bl-sm' : 'rounded-2xl'}`
+                                }`}>
+                                  {/* Message text */}
+                                  <p className="text-[13.5px] leading-[1.45] font-['Public_Sans'] whitespace-pre-wrap break-words">
+                                    {msg.message}
+                                  </p>
+
+                                  {/* Attachment */}
+                                  {msg.attachment_url && (
+                                    <a
+                                      href={msg.attachment_url}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="mt-1.5 flex items-center gap-1.5 text-[12px] font-semibold text-[#6b0218] hover:underline"
+                                    >
+                                      <span className="material-symbols-outlined text-[14px]">attach_file</span>
+                                      Lihat Lampiran
+                                    </a>
+                                  )}
+
+                                  {/* Timestamp — inside bubble, bottom right */}
+                                  <div className={`flex items-center gap-1 mt-1 ${isMyMessage ? 'justify-end' : 'justify-end'}`}>
+                                    <span className="text-[10px] text-[#8b7171] font-['Public_Sans']">
+                                      {formatChatTime(msg.created_at)}
+                                    </span>
+                                    {isMyMessage && (
+                                      <span className="material-symbols-outlined text-[14px] text-[#53bdeb]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                        done_all
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                          )}
-                        </div>
+                          )
+                        })}
                       </div>
-                    )
-                  })
+                    ))}
+                    <div ref={chatEndRef} />
+                  </>
                 ) : (
                   <div className="h-full min-h-[280px] flex flex-col items-center justify-center text-[#574141] p-6 text-center">
-                    <div className="w-14 h-14 rounded-full bg-[#6b0218]/10 flex items-center justify-center text-[#6b0218] mb-3">
-                      <span className="material-symbols-outlined text-3xl">forum</span>
+                    <div className="w-16 h-16 rounded-full bg-white/80 flex items-center justify-center text-[#6b0218] mb-4 shadow-sm">
+                      <span className="material-symbols-outlined text-[32px]">forum</span>
                     </div>
-                    <h4 className="font-bold text-base text-[#1c1c19] mb-1 font-['Libre_Franklin']">Belum Ada Percakapan</h4>
-                    <p className="text-xs text-[#574141] max-w-xs leading-relaxed font-['Public_Sans']">
-                      Belum ada percakapan. Kirim pesan untuk memulai diskusi dengan Admin Jurnal Sukabumi terkait laporan ini.
+                    <h4 className="font-bold text-[15px] text-[#1c1c19] mb-1.5 font-['Libre_Franklin']">Belum Ada Percakapan</h4>
+                    <p className="text-[12px] text-[#574141] max-w-[260px] leading-relaxed font-['Public_Sans']">
+                      Kirim pesan untuk memulai diskusi privat dengan Admin Jurnal Sukabumi terkait laporan ini.
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Chat Input */}
-              <div className="p-4 bg-white border-t border-[#debfbf]">
-                <form onSubmit={handleSendChat} className="space-y-2">
-                  {chatFile && (
-                    <div className="flex items-center justify-between bg-[#ffe08e]/30 border border-[#ffe08e] p-2 rounded-lg text-xs font-semibold text-[#241a00]">
-                      <span className="truncate flex items-center gap-1">
-                        <span className="material-symbols-outlined text-sm">attach_file</span> {chatFile.name}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setChatFile(null)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <span className="material-symbols-outlined text-sm">close</span>
-                      </button>
-                    </div>
-                  )}
-
-                  <div className="flex items-end gap-2 bg-[#fcf9f4] border border-[#debfbf] rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-[#6b0218] focus-within:border-transparent transition-all">
-                    <textarea
-                      className="flex-grow bg-transparent border-none focus:ring-0 text-sm py-1.5 resize-none outline-none min-h-[40px] max-h-[100px]"
-                      placeholder="Tulis pesan privat ke Admin Jurnal Sukabumi..."
-                      rows={2}
-                      value={chatMessage}
-                      onChange={(e) => setChatMessage(e.target.value)}
-                      disabled={isSendingChat}
-                    ></textarea>
-
+              {/* Chat Input — Modern input bar */}
+              <div className="px-3 py-2.5 bg-[#f0ebe3] border-t border-[#debfbf]/60">
+                {/* Attachment Preview */}
+                {chatFile && (
+                  <div className="flex items-center justify-between bg-white border border-[#debfbf] px-3 py-2 rounded-xl mb-2 text-xs font-semibold text-[#1c1c19]">
+                    <span className="truncate flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-[16px] text-[#6b0218]">attach_file</span> 
+                      {chatFile.name}
+                    </span>
                     <button
-                      type="submit"
-                      disabled={isSendingChat || (!chatMessage.trim() && !chatFile)}
-                      className="bg-[#6b0218] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md hover:bg-[#8b1e2c] transition-colors disabled:opacity-50 shrink-0 cursor-pointer"
+                      type="button"
+                      onClick={() => setChatFile(null)}
+                      className="text-red-500 hover:text-red-700 ml-2"
                     >
-                      {isSendingChat ? (
-                        <span className="material-symbols-outlined animate-spin text-[20px]">sync</span>
-                      ) : (
-                        <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
-                      )}
+                      <span className="material-symbols-outlined text-[18px]">close</span>
                     </button>
                   </div>
-                  <p className="text-[10px] text-center text-[#8b7171]">
-                    Pesan bersifat rahasia dan hanya dapat dilihat oleh Anda dan Admin Jurnal Sukabumi.
-                  </p>
+                )}
+
+                <form onSubmit={handleSendChat} className="flex items-end gap-2">
+                  {/* Attach Button */}
+                  <button
+                    type="button"
+                    onClick={() => chatFileRef.current?.click()}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-[#574141] hover:bg-[#debfbf]/40 transition-colors shrink-0 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[22px]">attach_file</span>
+                  </button>
+                  <input
+                    ref={chatFileRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*,video/*,.pdf,.doc,.docx"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setChatFile(e.target.files[0])
+                      }
+                    }}
+                  />
+
+                  {/* Text Input */}
+                  <div className="flex-1 bg-white rounded-3xl px-4 py-2.5 border border-[#debfbf]/60 shadow-sm focus-within:border-[#6b0218]/40 focus-within:shadow-md transition-all">
+                    <textarea
+                      className="w-full bg-transparent border-none focus:ring-0 text-[14px] py-0 resize-none outline-none min-h-[22px] max-h-[100px] font-['Public_Sans'] text-[#1c1c19] placeholder:text-[#8b7171]"
+                      placeholder="Tulis pesan..."
+                      rows={1}
+                      value={chatMessage}
+                      onChange={(e) => setChatMessage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault()
+                          handleSendChat(e)
+                        }
+                      }}
+                      disabled={isSendingChat}
+                    ></textarea>
+                  </div>
+
+                  {/* Send Button */}
+                  <button
+                    type="submit"
+                    disabled={isSendingChat || (!chatMessage.trim() && !chatFile)}
+                    className="w-10 h-10 rounded-full bg-[#6b0218] text-white flex items-center justify-center shadow-lg hover:bg-[#8b1e2c] transition-all disabled:opacity-40 disabled:shadow-none shrink-0 cursor-pointer"
+                  >
+                    {isSendingChat ? (
+                      <span className="material-symbols-outlined animate-spin text-[18px]">sync</span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+                    )}
+                  </button>
                 </form>
+
+                <p className="text-[10px] text-center text-[#8b7171] mt-2 font-['Public_Sans']">
+                  <span className="material-symbols-outlined text-[11px] align-middle mr-0.5">lock</span>
+                  Pesan bersifat rahasia — hanya Anda dan Admin Jurnal Sukabumi.
+                </p>
               </div>
             </section>
           ) : (

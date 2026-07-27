@@ -341,48 +341,92 @@ function LaporForm() {
           </button>
         </div>
 
+        {/* UU KIP Banner — Only shown for Informasi type */}
+        {reportType === 'informasi' && (
+          <div className="mb-6 md:mb-8 bg-gradient-to-r from-[#6b0218] to-[#8b1e2c] text-white p-5 md:p-6 rounded-xl shadow-lg border-l-4 border-[#fed255]">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#fed255] flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[#6b0218] text-2xl">gavel</span>
+              </div>
+              <div>
+                <h3 className="font-['Libre_Franklin'] text-[18px] md:text-[20px] font-bold mb-1">
+                  UU Keterbukaan Informasi Publik
+                </h3>
+                <p className="font-['Public_Sans'] text-[13px] md:text-[14px] text-white/90 leading-relaxed">
+                  Berdasarkan <span className="font-bold text-[#fed255]">UU No. 14 Tahun 2008</span> tentang Keterbukaan Informasi Publik, 
+                  setiap warga negara berhak memperoleh informasi publik. Permohonan Anda akan diproses dalam waktu 
+                  <span className="font-bold text-[#fed255]"> maksimal 10 hari kerja</span> sejak diterima oleh tim Jurnal Sukabumi.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-[24px] items-start">
           {/* Left Side: Form Fields */}
           <div className="lg:col-span-8 bg-white border border-[#debfbf] p-5 md:p-8 rounded-xl shadow-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               
-              {/* Specialized Fields for Permohonan Informasi Publik */}
+              {/* ========== INFORMASI PUBLIK FORM (Completely Different Layout) ========== */}
               {reportType === 'informasi' ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Instansi Tujuan */}
-                  <div>
-                    <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
-                      Instansi Tujuan <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      className="w-full bg-[#fcf9f4] border-[1.5px] border-[#8b7171] rounded-lg p-3 font-['Public_Sans'] text-sm focus:ring-2 focus:ring-[#ffdad9] focus:border-[#6b0218] outline-none transition-all appearance-none cursor-pointer min-h-[48px]"
-                      value={instansi}
-                      onChange={(e) => setInstansi(e.target.value)}
-                    >
-                      <option value="">Pilih Instansi</option>
-                      {instansiList.map((inst) => (
-                        <option key={inst} value={inst}>{inst}</option>
-                      ))}
-                    </select>
+                <>
+                  {/* Instansi Tujuan & Jenis Informasi — Side by Side */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Instansi Tujuan */}
+                    <div>
+                      <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
+                        <span className="flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[16px] text-[#6b0218]">account_balance</span>
+                          Instansi Tujuan <span className="text-red-500">*</span>
+                        </span>
+                      </label>
+                      <select
+                        className="w-full bg-[#fcf9f4] border-[1.5px] border-[#8b7171] rounded-lg p-3 font-['Public_Sans'] text-sm focus:ring-2 focus:ring-[#ffdad9] focus:border-[#6b0218] outline-none transition-all appearance-none cursor-pointer min-h-[48px]"
+                        value={instansi}
+                        onChange={(e) => setInstansi(e.target.value)}
+                      >
+                        <option value="">Pilih Instansi Tujuan</option>
+                        {instansiList.map((inst) => (
+                          <option key={inst} value={inst}>{inst}</option>
+                        ))}
+                      </select>
+                      <p className="mt-1.5 text-[11px] text-[#8b7171] font-['Public_Sans']">
+                        Pilih instansi pemerintah yang menjadi tujuan permohonan informasi Anda.
+                      </p>
+                    </div>
+
+                    {/* Jenis Informasi */}
+                    <div>
+                      <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
+                        <span className="flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[16px] text-[#6b0218]">category</span>
+                          Jenis Informasi <span className="text-red-500">*</span>
+                        </span>
+                      </label>
+                      <select
+                        className="w-full bg-[#fcf9f4] border-[1.5px] border-[#8b7171] rounded-lg p-3 font-['Public_Sans'] text-sm focus:ring-2 focus:ring-[#ffdad9] focus:border-[#6b0218] outline-none transition-all appearance-none cursor-pointer min-h-[48px]"
+                        value={jenisInformasi}
+                        onChange={(e) => setJenisInformasi(e.target.value)}
+                      >
+                        <option value="">Pilih Jenis Informasi</option>
+                        {jenisInformasiList.map((jenis) => (
+                          <option key={jenis} value={jenis}>{jenis}</option>
+                        ))}
+                      </select>
+                      <p className="mt-1.5 text-[11px] text-[#8b7171] font-['Public_Sans']">
+                        Jenis data atau dokumen publik yang ingin Anda minta.
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Jenis Informasi */}
-                  <div>
-                    <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
-                      Jenis Informasi <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      className="w-full bg-[#fcf9f4] border-[1.5px] border-[#8b7171] rounded-lg p-3 font-['Public_Sans'] text-sm focus:ring-2 focus:ring-[#ffdad9] focus:border-[#6b0218] outline-none transition-all appearance-none cursor-pointer min-h-[48px]"
-                      value={jenisInformasi}
-                      onChange={(e) => setJenisInformasi(e.target.value)}
-                    >
-                      <option value="">Pilih Jenis Informasi</option>
-                      {jenisInformasiList.map((jenis) => (
-                        <option key={jenis} value={jenis}>{jenis}</option>
-                      ))}
-                    </select>
+                  {/* Legal basis notice inside the form */}
+                  <div className="bg-[#fff9e6] border border-[#ffe08e] rounded-lg p-4 flex items-start gap-3">
+                    <span className="material-symbols-outlined text-[#735a00] shrink-0 mt-0.5">info</span>
+                    <p className="font-['Public_Sans'] text-[12px] text-[#735a00] leading-relaxed">
+                      <strong>Dasar Hukum:</strong> Permohonan informasi ini diproses berdasarkan UU No. 14 Tahun 2008 tentang Keterbukaan Informasi Publik dan dikelola oleh Tim Jurnal Sukabumi (PT Media Jurnal Sukabumi).
+                    </p>
                   </div>
-                </div>
+                </>
               ) : (
                 /* Category Dropdown for Pengaduan & Aspirasi */
                 <div>
