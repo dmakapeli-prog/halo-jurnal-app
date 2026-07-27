@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Halo Jurnal - Portal Aspirasi Warga',
-  description: 'Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada instansi pemerintah yang berwenang. Portal resmi aspirasi dan pengaduan masyarakat Jurnal Sukabumi.',
+  description: 'Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada tim Jurnal Sukabumi. Portal aspirasi dan pengaduan masyarakat PT Media Jurnal Sukabumi.',
 }
 
 export default function RootLayout({

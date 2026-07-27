@@ -50,7 +50,7 @@ export default function SyaratKetentuanPage() {
           <section>
             <h2 className="font-['Libre_Franklin'] text-[24px] font-bold text-[#1c1c19] mb-4">3. Keterbatasan Tanggung Jawab</h2>
             <p className="leading-relaxed mb-4">
-              Halo Jurnal berfungsi sebagai jembatan informasi antara warga dan pihak terkait. Kami tidak menjamin bahwa setiap laporan akan langsung diselesaikan oleh instansi terkait. Kami hanya memastikan bahwa laporan yang valid akan diteruskan melalui saluran yang tepat.
+              Halo Jurnal dikelola secara independen oleh tim Jurnal Sukabumi (PT Media Jurnal Sukabumi) sebagai kanal pengaduan warga. Tim kami akan meninjau, menindaklanjuti, dan menjalin komunikasi aktif dengan pihak berwenang terkait.
             </p>
           </section>
           

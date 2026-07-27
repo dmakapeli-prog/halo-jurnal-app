@@ -47,7 +47,7 @@ export default function KebijakanPrivasiPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-[#1c1c19]">
               <li><strong>Verifikasi Identitas Pelapor:</strong> Memastikan bahwa setiap laporan yang masuk berasal dari warga yang nyata (sah) guna menghindari spam, laporan palsu (hoax), atau penyalahgunaan platform.</li>
-              <li><strong>Tindak Lanjut Instansi Terkait:</strong> Meneruskan substansi laporan dan lokasi kejadian kepada instansi atau pihak berwenang yang tepat agar dapat diproses dan ditindaklanjuti secara efektif.</li>
+              <li><strong>Penanganan Laporan oleh Tim Admin:</strong> Memproses substansi laporan dan lokasi kejadian oleh tim Jurnal Sukabumi serta menjalin komunikasi dengan pihak berwenang terkait demi transparansi publik.</li>
               <li><strong>Komunikasi:</strong> Menghubungi Anda terkait pembaruan status laporan (melalui notifikasi email) atau meminta informasi tambahan jika diperlukan.</li>
             </ul>
           </section>

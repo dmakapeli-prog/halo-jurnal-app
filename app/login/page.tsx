@@ -95,7 +95,7 @@ function LoginPageContent() {
                 <span className="material-symbols-outlined text-[#ffe08e] text-3xl mb-2">history_edu</span>
                 <h3 className="font-['Libre_Franklin'] text-sm font-semibold mb-1">Respon Terukur</h3>
                 <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-semibold text-white/70">
-                  Setiap jurnal aspirasi dipantau oleh instansi terkait secara real-time.
+                  Setiap jurnal aspirasi dipantau dan dikelola oleh tim Admin Jurnal Sukabumi secara real-time.
                 </p>
               </div>
             </div>

@@ -76,7 +76,7 @@ export default async function BerandaPage() {
               Suara Anda, Wadah Kami
             </h2>
             <p className="font-['Public_Sans'] text-[14px] sm:text-[16px] md:text-[18px] leading-[22px] md:leading-[28px] text-white/90 mb-6 md:mb-8 drop-shadow-md max-w-xl mx-auto">
-              Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada instansi pemerintah yang berwenang.
+              Sampaikan aspirasi dan laporan pengaduan Anda secara langsung kepada tim Jurnal Sukabumi (PT Media Jurnal Sukabumi).
             </p>
             {/* Search Bar — stacks vertically on mobile */}
             <form action="/feed-publik" method="GET" className="bg-white rounded-lg shadow-xl p-2 w-full max-w-2xl mx-auto border border-gray-300 relative z-30">

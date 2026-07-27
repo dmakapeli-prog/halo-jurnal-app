@@ -34,7 +34,7 @@ const formConfigs: Record<ReportType, FormConfig> = {
     locationLabel: 'Lokasi Kejadian',
     categories: ['Infrastruktur', 'Kebersihan Lingkungan', 'Keamanan & Ketertiban', 'Pelayanan Publik', 'Kesehatan', 'Lainnya'],
     submitText: 'Kirim Pengaduan',
-    sidebarInfo: 'Laporan pengaduan Anda akan ditindaklanjuti oleh instansi terkait dalam waktu 2x24 jam.'
+    sidebarInfo: 'Laporan pengaduan Anda akan ditindaklanjuti oleh tim Admin Jurnal Sukabumi dalam waktu 2x24 jam.'
   },
   aspirasi: {
     headerTitle: 'Formulir Aspirasi & Usulan',
@@ -46,11 +46,11 @@ const formConfigs: Record<ReportType, FormConfig> = {
     locationLabel: 'Lokasi Target / Scope Usulan',
     categories: ['Pembangunan Daerah', 'Program Kemasyarakatan', 'Inovasi Pelayanan', 'Fasilitas Umum', 'Lainnya'],
     submitText: 'Kirim Aspirasi',
-    sidebarInfo: 'Aspirasi Anda akan didokumentasikan dan menjadi pertimbangan dalam perencanaan pembangunan.'
+    sidebarInfo: 'Aspirasi Anda akan didokumentasikan dan menjadi pertimbangan oleh tim Jurnal Sukabumi.'
   },
   informasi: {
     headerTitle: 'Permohonan Informasi Publik',
-    headerDesc: 'Ajukan permintaan data atau kebijakan resmi kepada instansi pemerintah maupun non-pemerintah melalui sistem transparansi digital kami.',
+    headerDesc: 'Ajukan permintaan data atau kebijakan resmi melalui sistem transparansi digital kami yang dikelola oleh tim Jurnal Sukabumi.',
     titleLabel: 'Judul Permohonan',
     titlePlaceholder: 'Contoh: Permintaan Data Anggaran Kebersihan 2024',
     descLabel: 'Rincian Permohonan',

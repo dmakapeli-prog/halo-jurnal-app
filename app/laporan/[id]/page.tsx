@@ -499,7 +499,7 @@ export default function LaporanDetailPage() {
                     </button>
                   </div>
                   <p className="text-[10px] text-center text-[#8b7171]">
-                    Pesan bersifat rahasia dan hanya dapat dilihat oleh Anda dan petugas instansi.
+                    Pesan bersifat rahasia dan hanya dapat dilihat oleh Anda dan Admin Jurnal Sukabumi.
                   </p>
                 </form>
               </div>
