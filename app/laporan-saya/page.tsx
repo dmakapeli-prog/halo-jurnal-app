@@ -93,10 +93,20 @@ export default function LaporanSayaPage() {
   }
 
   // Calculate counts for stats
+  const allReportsUnfiltered = reports // reports is already filtered by query, we need raw counts
   const totalReports = reports.length
+  const diterimaCount = reports.filter(r => r.status === 'diterima').length
   const processingCount = reports.filter(r => r.status === 'diproses').length
+  const ditindaklanjutiCount = reports.filter(r => r.status === 'ditindaklanjuti').length
   const completedCount = reports.filter(r => r.status === 'selesai').length
-  const chatCount = reports.reduce((acc, curr) => acc + (curr.chat_messages?.[0]?.count || 0), 0)
+
+  const statusCards = [
+    { key: 'Semua Status', label: 'Total', count: totalReports, icon: 'assignment', bgIcon: 'bg-[#8b1e2c]/10', textIcon: 'text-[#6b0218]', activeBg: 'bg-[#6b0218]', activeText: 'text-white' },
+    { key: 'Diterima', label: 'Diterima', count: diterimaCount, icon: 'inbox', bgIcon: 'bg-blue-100', textIcon: 'text-blue-700', activeBg: 'bg-blue-600', activeText: 'text-white' },
+    { key: 'Diproses', label: 'Diproses', count: processingCount, icon: 'pending', bgIcon: 'bg-yellow-100', textIcon: 'text-yellow-700', activeBg: 'bg-yellow-500', activeText: 'text-white' },
+    { key: 'Ditindaklanjuti', label: 'Ditindaklanjuti', count: ditindaklanjutiCount, icon: 'gavel', bgIcon: 'bg-purple-100', textIcon: 'text-purple-700', activeBg: 'bg-purple-600', activeText: 'text-white' },
+    { key: 'Selesai', label: 'Selesai', count: completedCount, icon: 'check_circle', bgIcon: 'bg-green-100', textIcon: 'text-green-700', activeBg: 'bg-green-600', activeText: 'text-white' },
+  ]
 
   return (
     <div className="bg-[#fcf9f4] text-[#1c1c19] font-['Public_Sans'] overflow-x-hidden min-h-screen">
@@ -150,44 +160,32 @@ export default function LaporanSayaPage() {
               <p className="text-[#574141] font-['Public_Sans'] text-[16px]">Pantau status aspirasi dan keluhan Anda secara real-time.</p>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-[24px] mb-8 md:mb-10">
-              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#8b1e2c]/10 rounded-full flex items-center justify-center text-[#6b0218] shrink-0">
-                  <span className="material-symbols-outlined">assignment</span>
-                </div>
-                <div>
-                  <p className="text-[12px] font-bold text-[#574141] uppercase tracking-wider">Total</p>
-                  <p className="text-2xl font-bold">{totalReports}</p>
-                </div>
-              </div>
-              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#fed255]/20 rounded-full flex items-center justify-center text-[#755b00] shrink-0">
-                  <span className="material-symbols-outlined">pending</span>
-                </div>
-                <div>
-                  <p className="text-[12px] font-bold text-[#574141] uppercase tracking-wider">Proses</p>
-                  <p className="text-2xl font-bold">{processingCount}</p>
-                </div>
-              </div>
-              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-green-100 rounded-full flex items-center justify-center text-green-700 shrink-0">
-                  <span className="material-symbols-outlined">check_circle</span>
-                </div>
-                <div>
-                  <p className="text-[12px] font-bold text-[#574141] uppercase tracking-wider">Selesai</p>
-                  <p className="text-2xl font-bold">{completedCount}</p>
-                </div>
-              </div>
-              <div className="bg-[#fcf9f4] p-4 md:p-6 rounded-xl border border-[#debfbf] shadow-sm flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-[#6b0218]/10 rounded-full flex items-center justify-center text-[#6b0218] shrink-0">
-                  <span className="material-symbols-outlined">forum</span>
-                </div>
-                <div>
-                  <p className="text-[12px] font-bold text-[#574141] uppercase tracking-wider">Chat Admin</p>
-                  <p className="text-2xl font-bold">{chatCount}</p>
-                </div>
-              </div>
+            {/* Stats — 5 Clickable Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-8 md:mb-10">
+              {statusCards.map(card => {
+                const isActive = statusFilter === card.key
+                return (
+                  <button
+                    key={card.key}
+                    onClick={() => setStatusFilter(card.key)}
+                    className={`p-4 md:p-5 rounded-xl border shadow-sm flex items-center gap-3 md:gap-4 transition-all cursor-pointer text-left ${
+                      isActive
+                        ? `${card.activeBg} ${card.activeText} border-transparent shadow-md scale-[1.02]`
+                        : 'bg-[#fcf9f4] border-[#debfbf] hover:border-[#6b0218] hover:shadow-md'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center shrink-0 ${
+                      isActive ? 'bg-white/20' : card.bgIcon
+                    }`}>
+                      <span className={`material-symbols-outlined ${isActive ? 'text-white' : card.textIcon}`}>{card.icon}</span>
+                    </div>
+                    <div>
+                      <p className={`text-[11px] font-bold uppercase tracking-wider ${isActive ? 'text-white/80' : 'text-[#574141]'}`}>{card.label}</p>
+                      <p className="text-xl md:text-2xl font-bold">{card.count}</p>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
 
             {/* Filter Bar */}

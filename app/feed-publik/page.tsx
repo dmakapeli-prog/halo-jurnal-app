@@ -20,7 +20,7 @@ function FeedPublikContent() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [selectedJenis, setSelectedJenis] = useState<string>('')
-  const [selectedLocation, setSelectedLocation] = useState<string>('Seluruh Indonesia')
+  const [selectedLocation, setSelectedLocation] = useState<string>('Semua Wilayah Sukabumi')
   const [customLocation, setCustomLocation] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -92,10 +92,9 @@ function FeedPublikContent() {
       query = query.eq('jenis', jenisMap[selectedJenis])
     }
 
-    // REVISI 6: Location filter with working custom input
-    const activeLoc = selectedLocation === 'Lainnya' ? customLocation : selectedLocation
-    if (activeLoc && activeLoc !== 'Seluruh Indonesia' && activeLoc.trim()) {
-      query = query.ilike('lokasi', `%${activeLoc.trim()}%`)
+    // REVISI 6: Location filter — Sukabumi only
+    if (selectedLocation && selectedLocation !== 'Semua Wilayah Sukabumi' && selectedLocation.trim()) {
+      query = query.ilike('lokasi', `%${selectedLocation.trim()}%`)
     }
 
     if (searchQuery) {
@@ -278,35 +277,65 @@ function FeedPublikContent() {
             }
           }}
         >
-          <option>Seluruh Indonesia</option>
-          <option>Sukabumi</option>
-          <option>Jakarta Pusat</option>
-          <option>Bandung</option>
-          <option>Surabaya</option>
-          <option>Medan</option>
-          <option>Lainnya</option>
+          <option>Semua Wilayah Sukabumi</option>
+          <optgroup label="Kota Sukabumi">
+            <option>Baros</option>
+            <option>Citamiang</option>
+            <option>Cikole</option>
+            <option>Gunungpuyuh</option>
+            <option>Lembursitu</option>
+            <option>Warudoyong</option>
+            <option>Cibeureum</option>
+          </optgroup>
+          <optgroup label="Kabupaten Sukabumi">
+            <option>Cibadak</option>
+            <option>Cicurug</option>
+            <option>Cisaat</option>
+            <option>Parungkuda</option>
+            <option>Palabuhanratu</option>
+            <option>Jampangkulon</option>
+            <option>Jampangtengah</option>
+            <option>Sukaraja</option>
+            <option>Surade</option>
+            <option>Kabandungan</option>
+            <option>Kadudampit</option>
+            <option>Nyalindung</option>
+            <option>Cisolok</option>
+            <option>Cikembar</option>
+            <option>Nagrak</option>
+            <option>Gegerbitung</option>
+            <option>Sagaranten</option>
+            <option>Cidahu</option>
+            <option>Caringin</option>
+            <option>Lengkong</option>
+            <option>Pabuaran</option>
+            <option>Kalibunder</option>
+            <option>Tegalbuleud</option>
+            <option>Cidolog</option>
+            <option>Ciemas</option>
+            <option>Warungkiara</option>
+            <option>Bantargadung</option>
+            <option>Cimanggu</option>
+            <option>Curugkembar</option>
+            <option>Ciracap</option>
+            <option>Purabaya</option>
+            <option>Simpenan</option>
+            <option>Waluran</option>
+            <option>Cireunghas</option>
+            <option>Sukalarang</option>
+            <option>Sukabumi</option>
+            <option>Kebonpedes</option>
+            <option>Gunungguruh</option>
+            <option>Cicantayan</option>
+            <option>Ciambar</option>
+            <option>Bojongmanik</option>
+            <option>Cipeuteuy</option>
+            <option>Cidadap</option>
+            <option>Takokak</option>
+            <option>Cikidang</option>
+            <option>Bojonggenteng</option>
+          </optgroup>
         </select>
-        {selectedLocation === 'Lainnya' && (
-          <div className="mt-3">
-            <div className="relative">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#8b7171] text-[18px]">search</span>
-              <input
-                type="text"
-                placeholder="Ketik nama wilayah, contoh: Bogor, Cianjur..."
-                className={`w-full bg-white border-[1.5px] border-[#debfbf] rounded-lg ${isMobile ? 'p-3 pl-10' : 'p-2.5 pl-9'} font-['Public_Sans'] text-sm focus:border-[#6b0218] focus:ring-1 focus:ring-[#6b0218] outline-none transition-all`}
-                value={customLocation}
-                onChange={(e) => setCustomLocation(e.target.value)}
-                autoFocus
-              />
-            </div>
-            {customLocation.trim() && (
-              <p className="mt-1.5 text-[11px] text-[#574141] font-['Public_Sans'] flex items-center gap-1">
-                <span className="material-symbols-outlined text-[12px] text-[#6b0218]">filter_list</span>
-                Memfilter laporan dengan lokasi mengandung: <strong>&quot;{customLocation.trim()}&quot;</strong>
-              </p>
-            )}
-          </div>
-        )}
       </div>
     </>
   )

@@ -102,6 +102,18 @@ export default function AdminLaporanDetailPage() {
 
       if (chatData) {
         setMessages(chatData)
+        // Mark messages from other party (user/pelapor) as read by admin
+        if (adminUser) {
+          const unreadIds = chatData
+            .filter((m: any) => m.sender_id !== adminUser.id && !m.read_at)
+            .map((m: any) => m.id)
+          if (unreadIds.length > 0) {
+            await supabase
+              .from('chat_messages')
+              .update({ read_at: new Date().toISOString() })
+              .in('id', unreadIds)
+          }
+        }
       }
     } catch (err) {
       console.error('Chat fetch error:', err)
@@ -349,6 +361,11 @@ export default function AdminLaporanDetailPage() {
                   </div>
 
                   <div>
+                    <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block">Nomor Telepon</span>
+                    <p className="font-semibold text-[#1c1c19]">{reporterProfile?.phone || 'Tidak ada nomor telepon'}</p>
+                  </div>
+
+                  <div>
                     <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block">Role Akun</span>
                     <span className="px-2.5 py-0.5 bg-[#f6f3ee] border border-[#debfbf] rounded text-xs font-bold capitalize inline-block mt-0.5">
                       {reporterProfile?.role || 'citizen'}
@@ -562,9 +579,15 @@ export default function AdminLaporanDetailPage() {
                               {new Date(msg.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                             {isMyAdminMessage && (
-                              <span className="material-symbols-outlined text-[14px] text-[#53bdeb]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                done_all
-                              </span>
+                              msg.read_at ? (
+                                <span className="material-symbols-outlined text-[14px] text-[#53bdeb]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                  done_all
+                                </span>
+                              ) : (
+                                <span className="material-symbols-outlined text-[14px] text-[#8b7171]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                  done
+                                </span>
+                              )
                             )}
                           </div>
                         </div>

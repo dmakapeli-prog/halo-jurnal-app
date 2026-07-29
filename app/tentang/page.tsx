@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -190,18 +191,22 @@ export default async function TentangPage() {
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-3 text-[#1c1c19]">
                     <span className="material-symbols-outlined text-[#6b0218] text-[20px]">mail</span>
-                    <span className="font-['Public_Sans'] text-[13px] md:text-[14px] font-semibold">kontak@halojurnal.id</span>
+                    <span className="font-['Public_Sans'] text-[13px] md:text-[14px] font-semibold">redaksi@jurnalsukabumi.com</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-[#1c1c19]">
+                    <span className="material-symbols-outlined text-[#6b0218] text-[20px]">call</span>
+                    <span className="font-['Public_Sans'] text-[13px] md:text-[14px] font-semibold">0821-1165-1470</span>
                   </div>
                   <div className="flex items-center gap-3 text-[#1c1c19]">
                     <span className="material-symbols-outlined text-[#6b0218] text-[20px]">location_on</span>
-                    <span className="font-['Public_Sans'] text-[13px] md:text-[14px] font-semibold">Jl. Pahlawan No. 12, Sukabumi</span>
+                    <span className="font-['Public_Sans'] text-[13px] md:text-[14px] font-semibold">Perum Bukit Randu Asri, Blok K No. 14, Cibadak, Kab. Sukabumi 43351</span>
                   </div>
                 </div>
               </div>
               <div className="w-full md:w-auto">
-                <button className="w-full md:w-auto bg-[#755b00] text-white px-8 md:px-12 py-3.5 md:py-4 rounded-lg font-['Libre_Franklin'] text-[16px] md:text-[20px] font-semibold hover:scale-105 active:scale-95 transition-all shadow-lg min-h-[52px]">
+                <Link href="/hubungi-kami" className="w-full md:w-auto bg-[#755b00] text-white px-8 md:px-12 py-3.5 md:py-4 rounded-lg font-['Libre_Franklin'] text-[16px] md:text-[20px] font-semibold hover:scale-105 active:scale-95 transition-all shadow-lg min-h-[52px] inline-flex items-center justify-center">
                   Hubungi Kami
-                </button>
+                </Link>
               </div>
             </div>
           </div>

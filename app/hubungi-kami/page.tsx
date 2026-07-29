@@ -54,14 +54,14 @@ export default function HubungiKamiPage() {
                 <span className="material-symbols-outlined text-[#ffe08e] text-2xl">mail</span>
                 <div>
                   <p className="font-bold mb-1">Email Dukungan</p>
-                  <p className="text-white/80 text-sm">support@halojurnal.com</p>
+                  <p className="text-white/80 text-sm">redaksi@jurnalsukabumi.com</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
                 <span className="material-symbols-outlined text-[#ffe08e] text-2xl">call</span>
                 <div>
                   <p className="font-bold mb-1">Nomor Kontak (WhatsApp)</p>
-                  <p className="text-white/80 text-sm">+62 812-3456-7890</p>
+                  <p className="text-white/80 text-sm">0821-1165-1470 / 0815-7273-8335</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -69,9 +69,9 @@ export default function HubungiKamiPage() {
                 <div>
                   <p className="font-bold mb-1">Kantor Jurnal Sukabumi</p>
                   <p className="text-white/80 text-sm leading-relaxed">
-                    Jl. Contoh Alamat No. 123,<br/>
-                    Sukabumi, Jawa Barat,<br/>
-                    Indonesia
+                    Perum Bukit Randu Asri, Blok K No. 14,<br/>
+                    RT 07 RW 22, Kel./Kec. Cibadak,<br/>
+                    Kabupaten Sukabumi, Jawa Barat 43351
                   </p>
                 </div>
               </div>

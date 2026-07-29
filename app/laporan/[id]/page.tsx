@@ -63,9 +63,29 @@ export default function LaporanDetailPage() {
 
       if (!error && chatData) {
         setMessages(chatData)
+        // Mark messages from other party as read
+        if (user) {
+          markMessagesAsRead(chatData)
+        }
       }
     } catch (err) {
       console.error('Chat fetch error:', err)
+    }
+  }
+
+  const markMessagesAsRead = async (msgs: any[]) => {
+    if (!user) return
+    const unreadIds = msgs
+      .filter((m: any) => m.sender_id !== user.id && !m.read_at)
+      .map((m: any) => m.id)
+    if (unreadIds.length === 0) return
+    try {
+      await supabase
+        .from('chat_messages')
+        .update({ read_at: new Date().toISOString() })
+        .in('id', unreadIds)
+    } catch (err) {
+      console.error('Mark as read error:', err)
     }
   }
 
@@ -526,9 +546,15 @@ export default function LaporanDetailPage() {
                                       {formatChatTime(msg.created_at)}
                                     </span>
                                     {isMyMessage && (
-                                      <span className="material-symbols-outlined text-[14px] text-[#53bdeb]" style={{ fontVariationSettings: "'FILL' 1" }}>
-                                        done_all
-                                      </span>
+                                      msg.read_at ? (
+                                        <span className="material-symbols-outlined text-[14px] text-[#53bdeb]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                          done_all
+                                        </span>
+                                      ) : (
+                                        <span className="material-symbols-outlined text-[14px] text-[#8b7171]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                          done
+                                        </span>
+                                      )
                                     )}
                                   </div>
                                 </div>

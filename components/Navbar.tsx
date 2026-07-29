@@ -42,7 +42,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
 
   const navLinks = isAdmin ? [
     { href: '/admin', label: 'Dashboard Admin' },
-    { href: '/feed-publik', label: 'Feed Publik' },
+    { href: '/admin/feed-publik', label: 'Feed Publik (Admin)' },
     { href: '/tentang', label: 'Tentang' },
   ] : [
     { href: user ? '/beranda' : '/', label: 'Beranda' },
@@ -50,6 +50,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
     { href: '/lapor', label: 'Lapor' },
     { href: '/laporan-saya', label: 'Laporan Saya' },
     { href: '/tentang', label: 'Tentang' },
+    ...(user ? [{ href: '/profil', label: 'Profil Saya' }] : [])
   ]
 
   const renderAuthButtons = (isMobile = false) => {

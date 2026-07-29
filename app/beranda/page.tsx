@@ -24,6 +24,10 @@ export default async function BerandaPage() {
     .eq('id', user.id)
     .single()
 
+  if (profile?.role === 'admin' || profile?.role === 'superadmin') {
+    redirect('/admin')
+  }
+
   // Fetch recent public reports
   const { data: recentReports } = await supabase
     .from('laporan')
