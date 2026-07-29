@@ -127,7 +127,7 @@ export default async function BerandaPage() {
                       <div className="flex justify-between items-start mb-3 md:mb-4">
                         {report.status === 'selesai' && (
                           <span className="px-3 py-1 rounded-[0.75rem] bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider">
-                            Selesai
+                            {report.jenis === 'inspirasi' ? 'Tayang' : 'Selesai'}
                           </span>
                         )}
                         {report.status === 'diproses' && (

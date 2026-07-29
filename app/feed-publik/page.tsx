@@ -86,7 +86,8 @@ function FeedPublikContent() {
       const jenisMap: Record<string, string> = {
         'Pengaduan': 'pengaduan',
         'Aspirasi': 'aspirasi',
-        'Informasi': 'informasi'
+        'Informasi': 'informasi',
+        'Inspirasi': 'inspirasi'
       }
       query = query.eq('jenis', jenisMap[selectedJenis])
     }
@@ -192,6 +193,13 @@ function FeedPublikContent() {
             Informasi
           </span>
         )
+      case 'inspirasi':
+        return (
+          <span className="bg-teal-50 text-teal-700 border border-teal-200 px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1">
+            <span className="material-symbols-outlined text-[12px]">auto_awesome</span>
+            Inspirasi
+          </span>
+        )
       default:
         return null
     }
@@ -204,7 +212,7 @@ function FeedPublikContent() {
       <div className="mb-8">
         <label className="block font-['Public_Sans'] text-[14px] font-bold text-[#574141] mb-3 uppercase tracking-wider">Jenis Laporan</label>
         <div className={`space-y-${isMobile ? '3' : '2'}`}>
-          {['Semua Jenis', 'Pengaduan', 'Aspirasi', 'Informasi'].map(jenis => (
+          {['Semua Jenis', 'Pengaduan', 'Aspirasi', 'Informasi', 'Inspirasi'].map(jenis => (
             <label key={jenis} className="flex items-center gap-3 cursor-pointer group">
               <input 
                 type="radio" 
@@ -373,9 +381,9 @@ function FeedPublikContent() {
 
             {/* REVISI 5: Quick Jenis Tabs above the feed */}
             <div className="mb-6 flex flex-wrap gap-2">
-              {['Semua Jenis', 'Pengaduan', 'Aspirasi', 'Informasi'].map(jenis => {
+              {['Semua Jenis', 'Pengaduan', 'Aspirasi', 'Informasi', 'Inspirasi'].map(jenis => {
                 const isActive = selectedJenis === jenis || (!selectedJenis && jenis === 'Semua Jenis')
-                const icons: Record<string, string> = { 'Semua Jenis': 'apps', 'Pengaduan': 'report_problem', 'Aspirasi': 'lightbulb', 'Informasi': 'description' }
+                const icons: Record<string, string> = { 'Semua Jenis': 'apps', 'Pengaduan': 'report_problem', 'Aspirasi': 'lightbulb', 'Informasi': 'description', 'Inspirasi': 'auto_awesome' }
                 return (
                   <button
                     key={jenis}
@@ -425,8 +433,8 @@ function FeedPublikContent() {
                           {/* Status Badge */}
                           {report.status === 'selesai' && (
                             <span className="bg-green-100 text-green-800 px-4 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
-                              <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              Selesai
+                              <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>{report.jenis === 'inspirasi' ? 'public' : 'check_circle'}</span>
+                              {report.jenis === 'inspirasi' ? 'Tayang' : 'Selesai'}
                             </span>
                           )}
                           {report.status === 'diproses' && (
@@ -452,12 +460,26 @@ function FeedPublikContent() {
 
                       <h3 className="font-['Libre_Franklin'] text-xl md:text-[24px] font-semibold text-[#6b0218] mb-3">{report.judul}</h3>
                       
-                      <div className="flex flex-col-reverse md:flex-row gap-6 mb-6">
-                        <p className={`font-['Public_Sans'] text-[16px] text-[#574141] line-clamp-3 ${report.laporan_lampiran?.length > 0 ? 'md:w-2/3' : 'w-full'}`}>
+                      <div className={`flex ${report.jenis === 'inspirasi' ? 'flex-col' : 'flex-col-reverse md:flex-row'} gap-6 mb-6`}>
+                        {/* Inspirasi: Show image first, full width, larger */}
+                        {report.jenis === 'inspirasi' && report.laporan_lampiran && report.laporan_lampiran.length > 0 && report.laporan_lampiran[0].file_url && (
+                          <div className="w-full aspect-video rounded-lg overflow-hidden">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img 
+                              src={report.laporan_lampiran[0].file_url} 
+                              alt={report.judul}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <p className={`font-['Public_Sans'] text-[16px] text-[#574141] line-clamp-3 ${
+                          report.jenis !== 'inspirasi' && report.laporan_lampiran?.length > 0 ? 'md:w-2/3' : 'w-full'
+                        }`}>
                           {report.deskripsi}
                         </p>
                         
-                        {report.laporan_lampiran && report.laporan_lampiran.length > 0 && report.laporan_lampiran[0].file_url && (
+                        {/* Non-Inspirasi: regular side thumbnail */}
+                        {report.jenis !== 'inspirasi' && report.laporan_lampiran && report.laporan_lampiran.length > 0 && report.laporan_lampiran[0].file_url && (
                           <div className="md:w-1/3 h-32 md:h-auto rounded-lg overflow-hidden flex-shrink-0">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img 

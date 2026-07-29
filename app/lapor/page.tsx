@@ -8,7 +8,7 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import LocationPicker from '@/components/LocationPicker'
 
-type ReportType = 'pengaduan' | 'aspirasi' | 'informasi'
+type ReportType = 'pengaduan' | 'aspirasi' | 'informasi' | 'inspirasi'
 
 interface FormConfig {
   headerTitle: string
@@ -59,6 +59,18 @@ const formConfigs: Record<ReportType, FormConfig> = {
     categories: ['Kebijakan', 'Data Statistik', 'Anggaran', 'Laporan Kegiatan', 'Lainnya'],
     submitText: 'Ajukan Permohonan',
     sidebarInfo: 'Permohonan akan diproses maksimal 10 hari kerja sesuai UU Keterbukaan Informasi Publik.'
+  },
+  inspirasi: {
+    headerTitle: 'Bagikan Cerita Inspirasi',
+    headerDesc: 'Ceritakan kegiatan positif atau hal baik yang terjadi di lingkungan Anda. Bagikan cerita Anda untuk menginspirasi warga lain!',
+    titleLabel: 'Judul Cerita',
+    titlePlaceholder: 'Contoh: Gotong Royong Bersihkan Sungai RW 05',
+    descLabel: 'Ceritakan Kegiatannya',
+    descPlaceholder: 'Ceritakan kegiatan atau hal positif yang terjadi, siapa yang terlibat, dan dampaknya...',
+    locationLabel: 'Lokasi Kegiatan (Opsional)',
+    categories: ['Gotong Royong', 'Prestasi Warga', 'UMKM & Ekonomi Lokal', 'Komunitas & Kegiatan Sosial', 'Lainnya'],
+    submitText: 'Bagikan Cerita',
+    sidebarInfo: 'Cerita Anda akan diverifikasi oleh Admin. Setelah disetujui, cerita akan Tayang di Feed Publik untuk menginspirasi warga lain.'
   }
 }
 
@@ -87,7 +99,7 @@ function LaporForm() {
   const [supabase] = useState(() => createClient())
 
   const rawType = searchParams.get('type') || 'pengaduan'
-  const reportType: ReportType = ['pengaduan', 'aspirasi', 'informasi'].includes(rawType) 
+  const reportType: ReportType = ['pengaduan', 'aspirasi', 'informasi', 'inspirasi'].includes(rawType) 
     ? (rawType as ReportType) 
     : 'pengaduan'
 
@@ -170,7 +182,16 @@ function LaporForm() {
     if (!user) return
 
     // Validation
-    if (reportType === 'informasi') {
+    if (reportType === 'inspirasi') {
+      if (!category || !title || !description) {
+        alert('Mohon lengkapi semua field yang wajib (Kategori, Judul, dan Cerita).')
+        return
+      }
+      if (!file) {
+        alert('Foto/video wajib dilampirkan untuk cerita inspirasi. Silakan upload bukti foto atau video kegiatan.')
+        return
+      }
+    } else if (reportType === 'informasi') {
       if (!instansi || !jenisInformasi || !title || !description || !locationData.address) {
         alert('Mohon lengkapi semua field yang wajib (Instansi, Jenis Informasi, Judul, Rincian, dan Lokasi).')
         return
@@ -217,7 +238,7 @@ function LaporForm() {
           kategori: finalKategori,
           judul: title,
           deskripsi: description,
-          lokasi: locationData.address,
+          lokasi: locationData.address || (reportType === 'inspirasi' ? 'Tidak disebutkan' : ''),
           latitude: locationData.lat,
           longitude: locationData.lng,
           instansi_tujuan: reportType === 'informasi' ? instansi : null,
@@ -339,6 +360,18 @@ function LaporForm() {
             <span className="material-symbols-outlined text-[18px]">description</span>
             Informasi Publik
           </button>
+          <button
+            type="button"
+            onClick={() => handleTabChange('inspirasi')}
+            className={`flex-1 py-3 px-4 rounded-lg font-['Public_Sans'] text-[14px] font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              reportType === 'inspirasi'
+                ? 'bg-[#0d9488] text-white shadow-md'
+                : 'text-[#574141] hover:bg-[#e5e2dd] hover:text-[#1c1c19]'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+            Inspirasi
+          </button>
         </div>
 
         {/* UU KIP Banner — Only shown for Informasi type */}
@@ -428,13 +461,13 @@ function LaporForm() {
                   </div>
                 </>
               ) : (
-                /* Category Dropdown for Pengaduan & Aspirasi */
+                /* Category Dropdown for Pengaduan, Aspirasi & Inspirasi */
                 <div>
                   <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
-                    Kategori Laporan <span className="text-red-500">*</span>
+                    Kategori {reportType === 'inspirasi' ? 'Cerita' : 'Laporan'} <span className="text-red-500">*</span>
                   </label>
                   <select
-                    className="w-full bg-[#fcf9f4] border-[1.5px] border-[#8b7171] rounded-lg p-3 font-['Public_Sans'] text-sm focus:ring-2 focus:ring-[#ffdad9] focus:border-[#6b0218] outline-none transition-all appearance-none cursor-pointer min-h-[48px]"
+                    className={`w-full bg-[#fcf9f4] border-[1.5px] border-[#8b7171] rounded-lg p-3 font-['Public_Sans'] text-sm focus:ring-2 ${reportType === 'inspirasi' ? 'focus:ring-[#ccfbf1] focus:border-[#0d9488]' : 'focus:ring-[#ffdad9] focus:border-[#6b0218]'} outline-none transition-all appearance-none cursor-pointer min-h-[48px]`}
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
@@ -483,7 +516,9 @@ function LaporForm() {
               {/* Attachment Upload */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
-                  {reportType === 'informasi' ? 'Lampiran Pendukung (Opsional)' : 'Bukti Foto / Video (Opsional)'}
+                  {reportType === 'inspirasi' ? (
+                    <>Foto / Video Kegiatan <span className="text-red-500">*</span></>
+                  ) : reportType === 'informasi' ? 'Lampiran Pendukung (Opsional)' : 'Bukti Foto / Video (Opsional)'}
                 </label>
                 <div
                   className={`p-5 sm:p-6 border-2 border-dashed ${dragOver ? 'border-[#6b0218] bg-[#ffdad9]/20' : 'border-[#debfbf] bg-[#f6f3ee]'} rounded-xl text-center transition-colors`}
@@ -580,7 +615,9 @@ function LaporForm() {
               <div className="space-y-3 text-sm">
                 <div>
                   <span className="text-[11px] font-bold text-[#574141] uppercase tracking-wider block">Jenis & Context</span>
-                  <span className="inline-block px-2.5 py-0.5 mt-0.5 bg-[#6b0218]/10 text-[#6b0218] font-bold rounded text-xs capitalize">
+                  <span className={`inline-block px-2.5 py-0.5 mt-0.5 font-bold rounded text-xs capitalize ${
+                    reportType === 'inspirasi' ? 'bg-[#ccfbf1] text-[#0d9488]' : 'bg-[#6b0218]/10 text-[#6b0218]'
+                  }`}>
                     {reportType}
                   </span>
                 </div>
@@ -631,9 +668,17 @@ function LaporForm() {
                 </div>
               </div>
 
-              <div className="bg-[#ffdad9]/30 p-3 rounded-lg flex gap-2.5 border border-[#debfbf]">
-                <span className="material-symbols-outlined text-[#6b0218] shrink-0 text-lg">info</span>
-                <p className="text-[11px] text-[#881c2a] leading-relaxed">
+              <div className={`p-3 rounded-lg flex gap-2.5 border ${
+                reportType === 'inspirasi' 
+                  ? 'bg-[#ccfbf1]/30 border-[#a7d8d0]' 
+                  : 'bg-[#ffdad9]/30 border-[#debfbf]'
+              }`}>
+                <span className={`material-symbols-outlined shrink-0 text-lg ${
+                  reportType === 'inspirasi' ? 'text-[#0d9488]' : 'text-[#6b0218]'
+                }`}>info</span>
+                <p className={`text-[11px] leading-relaxed ${
+                  reportType === 'inspirasi' ? 'text-[#0d7a6e]' : 'text-[#881c2a]'
+                }`}>
                   {config.sidebarInfo}
                 </p>
               </div>

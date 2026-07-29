@@ -49,7 +49,7 @@ export default function AdminDashboardPage() {
       }
 
       if (selectedJenis !== 'Semua Jenis') {
-        query = query.ilike('kategori', `%${selectedJenis}%`)
+        query = query.eq('jenis', selectedJenis.toLowerCase())
       }
 
       if (searchQuery.trim()) {
@@ -232,6 +232,7 @@ export default function AdminDashboardPage() {
               <option>Pengaduan</option>
               <option>Aspirasi</option>
               <option>Informasi</option>
+              <option>Inspirasi</option>
             </select>
           </div>
         </div>

@@ -218,7 +218,7 @@ export default function LaporanDetailPage() {
       case 'selesai':
         return (
           <span className="bg-[#e7f5ed] text-[#1a7f47] px-4 py-1.5 rounded-full font-['Public_Sans'] font-semibold text-[14px] flex items-center gap-2 border border-[#b7e4c7]">
-            <span className="material-symbols-outlined text-[16px]">check_circle</span> Selesai
+            <span className="material-symbols-outlined text-[16px]">{report?.jenis === 'inspirasi' ? 'public' : 'check_circle'}</span> {report?.jenis === 'inspirasi' ? 'Tayang' : 'Selesai'}
           </span>
         )
       case 'diproses':
