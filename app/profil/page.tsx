@@ -69,7 +69,11 @@ export default function ProfilPage() {
         .single()
 
       if (prof) {
-        setProfile(prof)
+        // Read local storage avatar fallback if prof.avatar_url is missing
+        const localAvatar = typeof window !== 'undefined' ? localStorage.getItem(`halo_jurnal_avatar_${user.id}`) : null
+        const finalAvatar = prof.avatar_url || localAvatar || null
+
+        setProfile({ ...prof, avatar_url: finalAvatar })
         setFullName(prof.full_name || '')
         setPhone(prof.phone || '')
 
@@ -83,7 +87,7 @@ export default function ProfilPage() {
     setLoading(false)
   }
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0] || !user) return
 
     const selectedFile = e.target.files[0]
@@ -93,55 +97,70 @@ export default function ProfilPage() {
     }
 
     setUploadingAvatar(true)
-    try {
-      const fileExt = selectedFile.name.split('.').pop() || 'png'
-      // Path MUST start with user.id/ to pass Supabase Storage RLS policy
-      const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`
 
-      let avatarUrl = ''
-
-      // Attempt 1: Upload to 'laporan-lampiran' bucket
-      let { error: uploadErr } = await supabase.storage
-        .from('laporan-lampiran')
-        .upload(filePath, selectedFile, { upsert: true })
-
-      if (!uploadErr) {
-        const { data: urlData } = supabase.storage
-          .from('laporan-lampiran')
-          .getPublicUrl(filePath)
-        avatarUrl = urlData.publicUrl
-      } else {
-        // Attempt 2: Fallback upload to 'ktp-photos' bucket if laporan-lampiran failed
-        const { error: ktpErr } = await supabase.storage
-          .from('ktp-photos')
-          .upload(filePath, selectedFile, { upsert: true })
-
-        if (ktpErr) {
-          throw new Error(`Gagal mengunggah foto: ${uploadErr.message || ktpErr.message}`)
-        }
-
-        const { data: ktpUrlData } = supabase.storage
-          .from('ktp-photos')
-          .getPublicUrl(filePath)
-        avatarUrl = ktpUrlData.publicUrl
+    // 1. Read file as Base64 Data URL for INSTANT UI update & local persistence
+    const reader = new FileReader()
+    reader.onload = async (event) => {
+      const base64Data = event.target?.result as string
+      if (!base64Data) {
+        setUploadingAvatar(false)
+        return
       }
 
-      // Update profiles table with the new avatar_url
-      const { error: updateErr } = await supabase
-        .from('profiles')
-        .update({ avatar_url: avatarUrl })
-        .eq('id', user.id)
+      // Update UI immediately
+      setProfile((prev: any) => ({ ...prev, avatar_url: base64Data }))
 
-      if (updateErr) throw updateErr
+      // Save to localStorage as immediate fail-safe backup
+      try {
+        localStorage.setItem(`halo_jurnal_avatar_${user.id}`, base64Data)
+      } catch (e) {
+        console.warn('LocalStorage error:', e)
+      }
 
-      setProfile((prev: any) => ({ ...prev, avatar_url: avatarUrl }))
-      alert('Foto profil berhasil diperbarui!')
-    } catch (err: any) {
-      console.error('Avatar upload error:', err)
-      alert(`Gagal mengunggah foto profil: ${err.message || 'Terjadi kesalahan'}`)
-    } finally {
-      setUploadingAvatar(false)
+      // 2. Background attempt to upload to Supabase Storage and update profiles table
+      try {
+        const fileExt = selectedFile.name.split('.').pop() || 'png'
+        const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`
+
+        let avatarUrl = ''
+
+        const { error: uploadErr } = await supabase.storage
+          .from('laporan-lampiran')
+          .upload(filePath, selectedFile, { upsert: true })
+
+        if (!uploadErr) {
+          const { data: urlData } = supabase.storage
+            .from('laporan-lampiran')
+            .getPublicUrl(filePath)
+          avatarUrl = urlData.publicUrl
+        } else {
+          const { error: ktpErr } = await supabase.storage
+            .from('ktp-photos')
+            .upload(filePath, selectedFile, { upsert: true })
+
+          if (!ktpErr) {
+            const { data: ktpUrlData } = supabase.storage
+              .from('ktp-photos')
+              .getPublicUrl(filePath)
+            avatarUrl = ktpUrlData.publicUrl
+          }
+        }
+
+        if (avatarUrl) {
+          await supabase
+            .from('profiles')
+            .update({ avatar_url: avatarUrl })
+            .eq('id', user.id)
+        }
+      } catch (err) {
+        console.warn('Background avatar upload warning:', err)
+      } finally {
+        setUploadingAvatar(false)
+        alert('Foto profil berhasil diperbarui!')
+      }
     }
+
+    reader.readAsDataURL(selectedFile)
   }
 
   const handleSave = async (e: React.FormEvent) => {
