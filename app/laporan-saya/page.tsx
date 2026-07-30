@@ -122,9 +122,9 @@ export default function LaporanSayaPage() {
           <div className="p-4 mb-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#6b0218] bg-[#ffdad9] flex items-center justify-center text-[#6b0218]">
-                {profile?.ktp_photo_url ? (
+                {profile?.avatar_url || profile?.ktp_photo_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.ktp_photo_url} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={profile.avatar_url || profile.ktp_photo_url} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <span className="material-symbols-outlined">person</span>
                 )}

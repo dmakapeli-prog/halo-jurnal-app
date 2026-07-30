@@ -31,8 +31,39 @@ export default function AdminLaporanDetailPage() {
   const [isSendingChat, setIsSendingChat] = useState(false)
   const [chatFile, setChatFile] = useState<File | null>(null)
 
-  // KTP Modal State
+  // KTP Modal State & Signed URL
   const [showKtpModal, setShowKtpModal] = useState(false)
+  const [signedKtpUrl, setSignedKtpUrl] = useState<string | null>(null)
+
+  const fetchSignedKtpUrl = async (rawUrlOrPath: string) => {
+    if (!rawUrlOrPath) return
+    if (rawUrlOrPath.includes('token=') || rawUrlOrPath.startsWith('blob:')) {
+      setSignedKtpUrl(rawUrlOrPath)
+      return
+    }
+
+    let filePath = rawUrlOrPath
+    if (rawUrlOrPath.includes('/storage/v1/object/public/ktp-photos/')) {
+      filePath = rawUrlOrPath.split('/storage/v1/object/public/ktp-photos/')[1]
+    } else if (rawUrlOrPath.includes('/ktp-photos/')) {
+      filePath = rawUrlOrPath.split('/ktp-photos/')[1]
+    }
+    filePath = filePath.split('?')[0]
+
+    try {
+      const { data } = await supabase.storage
+        .from('ktp-photos')
+        .createSignedUrl(filePath, 3600)
+
+      if (data?.signedUrl) {
+        setSignedKtpUrl(data.signedUrl)
+        return
+      }
+    } catch (err) {
+      console.error('Error creating signed URL for KTP:', err)
+    }
+    setSignedKtpUrl(rawUrlOrPath)
+  }
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -80,7 +111,12 @@ export default function AdminLaporanDetailPage() {
             .eq('id', data.user_id)
             .single()
 
-          if (profData) setReporterProfile(profData)
+          if (profData) {
+            setReporterProfile(profData)
+            if (profData.ktp_photo_url) {
+              fetchSignedKtpUrl(profData.ktp_photo_url)
+            }
+          }
         }
       } else {
         console.error(error)
@@ -380,19 +416,20 @@ export default function AdminLaporanDetailPage() {
                     <div className="relative rounded-xl overflow-hidden border border-[#debfbf] group h-40 bg-[#f6f3ee]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={reporterProfile.ktp_photo_url}
+                        src={signedKtpUrl || reporterProfile.ktp_photo_url}
                         alt="KTP Pelapor"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
                         <button
+                          type="button"
                           onClick={() => setShowKtpModal(true)}
                           className="bg-white text-[#1c1c19] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-sm">zoom_in</span> Zoom KTP
                         </button>
                         <a
-                          href={reporterProfile.ktp_photo_url}
+                          href={signedKtpUrl || reporterProfile.ktp_photo_url}
                           target="_blank"
                           rel="noreferrer"
                           className="bg-[#6b0218] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md"
@@ -683,7 +720,7 @@ export default function AdminLaporanDetailPage() {
             </div>
             <div className="max-h-[80vh] overflow-auto flex items-center justify-center bg-[#f6f3ee] rounded-xl p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={reporterProfile?.ktp_photo_url} alt="KTP Zoom" className="max-w-full h-auto object-contain rounded-lg shadow-lg" />
+              <img src={signedKtpUrl || reporterProfile?.ktp_photo_url} alt="KTP Zoom" className="max-w-full h-auto object-contain rounded-lg shadow-lg" />
             </div>
           </div>
         </div>

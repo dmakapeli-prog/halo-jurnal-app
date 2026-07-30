@@ -99,10 +99,20 @@ function LaporForm() {
   const [supabase] = useState(() => createClient())
 
   const rawType = searchParams.get('type') || 'pengaduan'
-  const reportType: ReportType = ['pengaduan', 'aspirasi', 'informasi', 'inspirasi'].includes(rawType) 
+  const initialType: ReportType = ['pengaduan', 'aspirasi', 'informasi', 'inspirasi'].includes(rawType) 
     ? (rawType as ReportType) 
     : 'pengaduan'
 
+  const [activeType, setActiveType] = useState<ReportType>(initialType)
+
+  useEffect(() => {
+    const paramType = searchParams.get('type')
+    if (paramType && ['pengaduan', 'aspirasi', 'informasi', 'inspirasi'].includes(paramType)) {
+      setActiveType(paramType as ReportType)
+    }
+  }, [searchParams])
+
+  const reportType = activeType
   const config = formConfigs[reportType]
 
   const [loading, setLoading] = useState(false)
@@ -131,7 +141,6 @@ function LaporForm() {
       if (data?.user) {
         setUser(data.user)
       } else {
-        // If unauthenticated user lands on /lapor directly, alert and redirect to login
         alert('Silakan login terlebih dahulu untuk membuat laporan.')
         router.push('/login')
       }
@@ -140,10 +149,11 @@ function LaporForm() {
   }, [supabase, router])
 
   const handleTabChange = (newType: ReportType) => {
-    router.push(`/lapor?type=${newType}`)
+    setActiveType(newType)
     setCategory('')
     setInstansi('')
     setJenisInformasi('')
+    router.push(`/lapor?type=${newType}`, { scroll: false })
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,14 +191,16 @@ function LaporForm() {
     e.preventDefault()
     if (!user) return
 
-    // Validation
+    // REVISI 2: Upload foto/video WAJIB untuk SEMUA jenis laporan
+    if (!file) {
+      alert('Foto/Video bukti pendukung WAJIB dilampirkan untuk semua jenis laporan.')
+      return
+    }
+
+    // Form Field Validation
     if (reportType === 'inspirasi') {
       if (!category || !title || !description) {
         alert('Mohon lengkapi semua field yang wajib (Kategori, Judul, dan Cerita).')
-        return
-      }
-      if (!file) {
-        alert('Foto/video wajib dilampirkan untuk cerita inspirasi. Silakan upload bukti foto atau video kegiatan.')
         return
       }
     } else if (reportType === 'informasi') {
@@ -516,9 +528,7 @@ function LaporForm() {
               {/* Attachment Upload */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] font-bold mb-2 text-[#1c1c19]">
-                  {reportType === 'inspirasi' ? (
-                    <>Foto / Video Kegiatan <span className="text-red-500">*</span></>
-                  ) : reportType === 'informasi' ? 'Lampiran Pendukung (Opsional)' : 'Bukti Foto / Video (Opsional)'}
+                  Bukti Foto / Video Pendukung <span className="text-red-500">* (Wajib)</span>
                 </label>
                 <div
                   className={`p-5 sm:p-6 border-2 border-dashed ${dragOver ? 'border-[#6b0218] bg-[#ffdad9]/20' : 'border-[#debfbf] bg-[#f6f3ee]'} rounded-xl text-center transition-colors`}

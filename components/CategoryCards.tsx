@@ -26,12 +26,6 @@ export default function CategoryCards({ isLoggedIn: initialIsLoggedIn }: Categor
   const handleCategoryClick = (type: 'pengaduan' | 'aspirasi' | 'informasi' | 'inspirasi', e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-
-    if (isLoggedIn !== true) {
-      alert('Silakan login terlebih dahulu untuk membuat laporan.')
-      return
-    }
-
     router.push(`/lapor?type=${type}`)
   }
 

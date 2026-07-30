@@ -103,7 +103,7 @@ function LoginPageContent() {
           {/* Footer-like element in Brand Side */}
           <div className="absolute bottom-10 left-20 z-10 flex gap-6">
             <span className="text-white/60 font-['Public_Sans'] text-[12px] leading-[16px] tracking-[0.04em] font-bold">
-              © 2024 Halo Jurnal. Portal Aspirasi Masyarakat.
+              © {new Date().getFullYear()} Halo Jurnal. Portal Aspirasi Masyarakat.
             </span>
           </div>
         </div>

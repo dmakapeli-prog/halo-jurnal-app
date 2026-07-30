@@ -41,7 +41,7 @@ export default function Footer() {
           </a>
         </p>
         <p className="font-['Public_Sans'] text-[11px] md:text-[12px] leading-[16px] text-[#8b7171]">
-          © 2024 Halo Jurnal. Portal Aspirasi Masyarakat.
+          © {new Date().getFullYear()} Halo Jurnal. Portal Aspirasi Masyarakat.
         </p>
       </div>
     </footer>

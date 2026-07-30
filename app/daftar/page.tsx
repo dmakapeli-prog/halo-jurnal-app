@@ -71,7 +71,7 @@ export default function DaftarPage() {
       return
     }
     if (!ktpFile) {
-      setError('Unggah foto KTP Anda.')
+      setError('Foto KTP wajib diunggah untuk verifikasi akun Anda.')
       return
     }
     if (!agreed) {
@@ -368,7 +368,7 @@ export default function DaftarPage() {
                 onDrop={handleDrop}
               >
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-3 sm:mb-4 text-[#1c1c19]">
-                  Unggah KTP (Wajib)
+                  Unggah Foto KTP <span className="text-red-500">* (Wajib)</span>
                 </label>
                 <div
                   className="flex flex-col items-center gap-3 sm:gap-4 cursor-pointer group"
