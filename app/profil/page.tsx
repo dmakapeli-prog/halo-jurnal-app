@@ -94,23 +94,39 @@ export default function ProfilPage() {
 
     setUploadingAvatar(true)
     try {
-      const fileExt = selectedFile.name.split('.').pop()
-      const filePath = `avatars/${user.id}-${Date.now()}.${fileExt}`
+      const fileExt = selectedFile.name.split('.').pop() || 'png'
+      // Path MUST start with user.id/ to pass Supabase Storage RLS policy
+      const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`
 
-      // Upload to storage bucket
-      const { error: uploadErr } = await supabase.storage
+      let avatarUrl = ''
+
+      // Attempt 1: Upload to 'laporan-lampiran' bucket
+      let { error: uploadErr } = await supabase.storage
         .from('laporan-lampiran')
         .upload(filePath, selectedFile, { upsert: true })
 
-      if (uploadErr) throw uploadErr
+      if (!uploadErr) {
+        const { data: urlData } = supabase.storage
+          .from('laporan-lampiran')
+          .getPublicUrl(filePath)
+        avatarUrl = urlData.publicUrl
+      } else {
+        // Attempt 2: Fallback upload to 'ktp-photos' bucket if laporan-lampiran failed
+        const { error: ktpErr } = await supabase.storage
+          .from('ktp-photos')
+          .upload(filePath, selectedFile, { upsert: true })
 
-      const { data: urlData } = supabase.storage
-        .from('laporan-lampiran')
-        .getPublicUrl(filePath)
+        if (ktpErr) {
+          throw new Error(`Gagal mengunggah foto: ${uploadErr.message || ktpErr.message}`)
+        }
 
-      const avatarUrl = urlData.publicUrl
+        const { data: ktpUrlData } = supabase.storage
+          .from('ktp-photos')
+          .getPublicUrl(filePath)
+        avatarUrl = ktpUrlData.publicUrl
+      }
 
-      // Update profiles table
+      // Update profiles table with the new avatar_url
       const { error: updateErr } = await supabase
         .from('profiles')
         .update({ avatar_url: avatarUrl })
@@ -121,7 +137,7 @@ export default function ProfilPage() {
       setProfile((prev: any) => ({ ...prev, avatar_url: avatarUrl }))
       alert('Foto profil berhasil diperbarui!')
     } catch (err: any) {
-      console.error(err)
+      console.error('Avatar upload error:', err)
       alert(`Gagal mengunggah foto profil: ${err.message || 'Terjadi kesalahan'}`)
     } finally {
       setUploadingAvatar(false)
