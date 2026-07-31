@@ -24,13 +24,47 @@ export default function AdminDashboardPage() {
     selesai: 0
   })
 
+  const [currentProfile, setCurrentProfile] = useState<any>(null)
+  const [isFixingRole, setIsFixingRole] = useState(false)
+
   useEffect(() => {
     fetchAdminReports()
   }, [searchQuery, selectedCategory, selectedStatus, selectedJenis])
 
+  const handleMakeMeAdmin = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    setIsFixingRole(true)
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role: 'admin' })
+        .eq('id', user.id)
+
+      if (error) throw error
+
+      alert('Role akun Anda telah diaktifkan menjadi Admin! Data laporan akan dimuat.')
+      fetchAdminReports()
+    } catch (err: any) {
+      alert(`Gagal memperbarui role: ${err.message}`)
+    } finally {
+      setIsFixingRole(false)
+    }
+  }
+
   const fetchAdminReports = async () => {
     setLoading(true)
     try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+        if (prof) setCurrentProfile(prof)
+      }
+
       let query = supabase
         .from('laporan')
         .select(`
@@ -122,15 +156,29 @@ export default function AdminDashboardPage() {
               Dashboard Pengelolaan Laporan
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+        </div>
+
+        {/* Warning banner if Admin role not active */}
+        {currentProfile && currentProfile.role !== 'admin' && currentProfile.role !== 'superadmin' && (
+          <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl flex items-center justify-between gap-4 shadow-sm mb-6">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-amber-600 text-2xl">warning</span>
+              <div>
+                <p className="font-bold text-sm text-amber-900">Perhatian: Role Akun Belum Terdaftar Sebagai Admin</p>
+                <p className="text-xs text-amber-800">
+                  Sistem Supabase RLS menyembunyikan data laporan privat jika role akun di tabel profiles bukan Admin. Aktifkan role Admin agar seluruh data laporan dan chat muncul.
+                </p>
+              </div>
+            </div>
             <button
-              onClick={fetchAdminReports}
-              className="bg-[#f6f3ee] text-[#6b0218] border border-[#debfbf] px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#6b0218] hover:text-white transition-all flex items-center gap-2 cursor-pointer"
+              onClick={handleMakeMeAdmin}
+              disabled={isFixingRole}
+              className="bg-amber-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-amber-700 transition-colors shrink-0 cursor-pointer disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-sm">refresh</span> Refresh Data
+              {isFixingRole ? 'Memproses...' : 'Aktifkan Role Admin Akun Ini'}
             </button>
           </div>
-        </div>
+        )}
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
