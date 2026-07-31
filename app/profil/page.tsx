@@ -1,21 +1,20 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import UserAvatar from '@/components/UserAvatar'
 
 export default function ProfilPage() {
   const supabase = createClient()
-  const avatarInputRef = useRef<HTMLInputElement>(null)
 
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [uploadingAvatar, setUploadingAvatar] = useState(false)
 
   // Form State
   const [fullName, setFullName] = useState('')
@@ -69,11 +68,7 @@ export default function ProfilPage() {
         .single()
 
       if (prof) {
-        // Read local storage avatar fallback if prof.avatar_url is missing
-        const localAvatar = typeof window !== 'undefined' ? localStorage.getItem(`halo_jurnal_avatar_${user.id}`) : null
-        const finalAvatar = prof.avatar_url || localAvatar || null
-
-        setProfile({ ...prof, avatar_url: finalAvatar })
+        setProfile(prof)
         setFullName(prof.full_name || '')
         setPhone(prof.phone || '')
 
@@ -85,82 +80,6 @@ export default function ProfilPage() {
       }
     }
     setLoading(false)
-  }
-
-  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0] || !user) return
-
-    const selectedFile = e.target.files[0]
-    if (selectedFile.size > 5 * 1024 * 1024) {
-      alert('Ukuran foto profil maksimal 5MB.')
-      return
-    }
-
-    setUploadingAvatar(true)
-
-    // 1. Read file as Base64 Data URL for INSTANT UI update & local persistence
-    const reader = new FileReader()
-    reader.onload = async (event) => {
-      const base64Data = event.target?.result as string
-      if (!base64Data) {
-        setUploadingAvatar(false)
-        return
-      }
-
-      // Update UI immediately
-      setProfile((prev: any) => ({ ...prev, avatar_url: base64Data }))
-
-      // Save to localStorage as immediate fail-safe backup
-      try {
-        localStorage.setItem(`halo_jurnal_avatar_${user.id}`, base64Data)
-      } catch (e) {
-        console.warn('LocalStorage error:', e)
-      }
-
-      // 2. Background attempt to upload to Supabase Storage and update profiles table
-      try {
-        const fileExt = selectedFile.name.split('.').pop() || 'png'
-        const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`
-
-        let avatarUrl = ''
-
-        const { error: uploadErr } = await supabase.storage
-          .from('laporan-lampiran')
-          .upload(filePath, selectedFile, { upsert: true })
-
-        if (!uploadErr) {
-          const { data: urlData } = supabase.storage
-            .from('laporan-lampiran')
-            .getPublicUrl(filePath)
-          avatarUrl = urlData.publicUrl
-        } else {
-          const { error: ktpErr } = await supabase.storage
-            .from('ktp-photos')
-            .upload(filePath, selectedFile, { upsert: true })
-
-          if (!ktpErr) {
-            const { data: ktpUrlData } = supabase.storage
-              .from('ktp-photos')
-              .getPublicUrl(filePath)
-            avatarUrl = ktpUrlData.publicUrl
-          }
-        }
-
-        if (avatarUrl) {
-          await supabase
-            .from('profiles')
-            .update({ avatar_url: avatarUrl })
-            .eq('id', user.id)
-        }
-      } catch (err) {
-        console.warn('Background avatar upload warning:', err)
-      } finally {
-        setUploadingAvatar(false)
-        alert('Foto profil berhasil diperbarui!')
-      }
-    }
-
-    reader.readAsDataURL(selectedFile)
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -213,8 +132,6 @@ export default function ProfilPage() {
     )
   }
 
-  const displayAvatar = profile?.avatar_url || null
-
   return (
     <div className="font-['Public_Sans'] bg-[#fcf9f4] text-[#1c1c19] min-h-screen flex flex-col">
       <Navbar showLoginButton={false} />
@@ -223,38 +140,13 @@ export default function ProfilPage() {
         {/* Profile Card Main Container */}
         <div className="bg-white border border-[#debfbf] rounded-2xl shadow-sm overflow-hidden">
           
-          {/* Header Banner & Avatar Section */}
+          {/* Header Banner & Initial Avatar Section */}
           <div className="bg-gradient-to-r from-[#6b0218] to-[#8b1e2c] p-6 md:p-8 text-white relative">
             <div className="flex flex-col md:flex-row items-center gap-6">
               
-              {/* Avatar Image with Hover Upload Button */}
-              <div className="relative group shrink-0">
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-[#ffdad9] border-4 border-white flex items-center justify-center overflow-hidden shadow-md">
-                  {displayAvatar ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={displayAvatar} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="material-symbols-outlined text-[#6b0218] text-5xl">person</span>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => avatarInputRef.current?.click()}
-                  disabled={uploadingAvatar}
-                  className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-xs font-bold gap-1"
-                >
-                  <span className="material-symbols-outlined text-lg">photo_camera</span>
-                  {uploadingAvatar ? 'Proses...' : 'Ubah Foto'}
-                </button>
-
-                <input
-                  ref={avatarInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarUpload}
-                />
+              {/* Initial Avatar */}
+              <div className="shrink-0">
+                <UserAvatar name={profile?.full_name} size="xl" bgColor="gold" className="border-4 border-white shadow-lg" />
               </div>
 
               {/* User Identity Info */}
@@ -263,30 +155,26 @@ export default function ProfilPage() {
                   <h1 className="font-['Libre_Franklin'] text-2xl md:text-3xl font-bold text-white">
                     {profile?.full_name || 'Pelapor Halo Jurnal'}
                   </h1>
-                  {profile?.ktp_photo_url ? (
+                  {profile?.ktp_verified ? (
                     <span className="bg-green-500/20 border border-green-300 text-green-200 text-xs font-bold px-3 py-0.5 rounded-full flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm">verified</span> KTP Terverifikasi
+                      <span className="material-symbols-outlined text-sm">verified</span> KTP Terverifikasi (Admin)
+                    </span>
+                  ) : profile?.ktp_photo_url ? (
+                    <span className="bg-amber-500/20 border border-amber-300 text-amber-200 text-xs font-bold px-3 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="material-symbols-outlined text-sm">hourglass_top</span> Menunggu Verifikasi Admin
                     </span>
                   ) : (
-                    <span className="bg-amber-500/20 border border-amber-300 text-amber-200 text-xs font-bold px-3 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="bg-red-500/20 border border-red-300 text-red-200 text-xs font-bold px-3 py-0.5 rounded-full flex items-center gap-1">
                       <span className="material-symbols-outlined text-sm">warning</span> Belum Verifikasi KTP
                     </span>
                   )}
                 </div>
                 
-                <p className="text-sm text-white/80 mb-3">{user?.email}</p>
+                <p className="text-sm text-white/80 mb-2">{user?.email}</p>
 
-                <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  <button
-                    type="button"
-                    onClick={() => avatarInputRef.current?.click()}
-                    disabled={uploadingAvatar}
-                    className="bg-white/20 hover:bg-white/30 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-sm">upload</span>
-                    {uploadingAvatar ? 'Mengunggah Foto...' : 'Ubah Foto Profil'}
-                  </button>
-                </div>
+                <p className="text-xs text-white/70 italic">
+                  Identitas sistem berbasis Avatar Inisial otomatis dari nama Anda.
+                </p>
               </div>
             </div>
           </div>
@@ -377,7 +265,7 @@ export default function ProfilPage() {
               )}
             </div>
 
-            {/* REVISI 6: KTP Document Preview & Zoom Section */}
+            {/* KTP Document Preview & Status Section */}
             <div>
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-[#debfbf]">
                 <h2 className="font-['Libre_Franklin'] text-lg font-bold text-[#1c1c19] flex items-center gap-2">
@@ -423,7 +311,7 @@ export default function ProfilPage() {
                       Dokumen KTP Berhasil Diunggah
                     </div>
                     <p className="text-xs text-[#574141] leading-relaxed">
-                      Dokumen KTP Anda tersimpan secara aman dalam sistem terenkripsi. Foto KTP ini digunakan oleh tim verifikasi untuk memastikan validitas pengaduan warga.
+                      Dokumen KTP Anda tersimpan secara aman dalam sistem terenkripsi. Foto KTP ini digunakan oleh tim verifikasi Admin untuk memverifikasi keabsahan identitas Anda secara manual.
                     </p>
                     {signedKtpUrl && (
                       <div className="pt-2">

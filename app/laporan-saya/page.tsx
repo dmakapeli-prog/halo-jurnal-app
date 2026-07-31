@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
+import UserAvatar from '@/components/UserAvatar'
 
 export default function LaporanSayaPage() {
   const supabase = createClient()
@@ -121,14 +122,7 @@ export default function LaporanSayaPage() {
         <aside className="fixed left-0 top-16 md:top-20 h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] w-[280px] hidden lg:flex flex-col p-[8px] bg-[#fcf9f4] border-r border-[#debfbf]">
           <div className="p-4 mb-6">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#6b0218] bg-[#ffdad9] flex items-center justify-center text-[#6b0218]">
-                {profile?.avatar_url || profile?.ktp_photo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.avatar_url || profile.ktp_photo_url} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="material-symbols-outlined">person</span>
-                )}
-              </div>
+              <UserAvatar name={profile?.full_name || user?.user_metadata?.full_name} size="md" bgColor="gold" />
               <div>
                 <p className="font-['Public_Sans'] text-[14px] font-bold text-[#1c1c19]">{profile?.full_name || user?.user_metadata?.full_name || 'Warga'}</p>
                 <p className="text-[12px] text-[#574141]">Portal Aspirasi Warga</p>

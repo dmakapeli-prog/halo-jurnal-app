@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import UserAvatar from '@/components/UserAvatar'
 
 export default function AdminLaporanDetailPage() {
   const params = useParams()
@@ -34,6 +35,28 @@ export default function AdminLaporanDetailPage() {
   // KTP Modal State & Signed URL
   const [showKtpModal, setShowKtpModal] = useState(false)
   const [signedKtpUrl, setSignedKtpUrl] = useState<string | null>(null)
+  const [isUpdatingKtpVerification, setIsUpdatingKtpVerification] = useState(false)
+
+  const handleToggleKtpVerification = async (targetStatus: boolean) => {
+    if (!reporterProfile?.id) return
+    setIsUpdatingKtpVerification(true)
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ ktp_verified: targetStatus })
+        .eq('id', reporterProfile.id)
+
+      if (error) throw error
+
+      setReporterProfile((prev: any) => ({ ...prev, ktp_verified: targetStatus }))
+      alert(`Status verifikasi KTP pelapor berhasil diubah menjadi: ${targetStatus ? 'TERVERIFIKASI (VALID)' : 'BELUM TERVERIFIKASI'}`)
+    } catch (err: any) {
+      console.error('KTP verification update error:', err)
+      alert(`Gagal mengubah verifikasi KTP: ${err.message || 'Terjadi kesalahan'}`)
+    } finally {
+      setIsUpdatingKtpVerification(false)
+    }
+  }
 
   const fetchSignedKtpUrl = async (rawUrlOrPath: string) => {
     if (!rawUrlOrPath) return
@@ -374,21 +397,37 @@ export default function AdminLaporanDetailPage() {
 
             {/* Reporter Verification Card (Admin Only) */}
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-[#debfbf] shadow-sm">
-              <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[#debfbf]">
-                <div className="w-10 h-10 rounded-full bg-[#6b0218]/10 text-[#6b0218] flex items-center justify-center">
-                  <span className="material-symbols-outlined">badge</span>
+              <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-[#debfbf] flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#6b0218]/10 text-[#6b0218] flex items-center justify-center">
+                    <span className="material-symbols-outlined">badge</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-[#1c1c19] font-['Libre_Franklin']">Identitas & Verifikasi Pelapor</h3>
+                    <p className="text-xs text-[#574141]">Data sensitif pelapor (Hanya dapat diakses oleh Admin)</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg text-[#1c1c19] font-['Libre_Franklin']">Identitas & Verifikasi Pelapor</h3>
-                  <p className="text-xs text-[#574141]">Data sensitif pelapor (Hanya dapat diakses oleh Admin)</p>
-                </div>
+
+                {/* Status Verifikasi Pill */}
+                {reporterProfile?.ktp_verified ? (
+                  <span className="px-3 py-1 bg-green-100 text-green-800 border border-green-300 rounded-full text-xs font-bold flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-sm">verified</span> KTP Terverifikasi (Valid)
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-bold flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-sm">warning</span> Belum Diverifikasi
+                  </span>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block">Nama Lengkap</span>
-                    <p className="font-bold text-base text-[#1c1c19]">{reporterProfile?.full_name || 'Tidak ada data nama'}</p>
+                <div className="space-y-4 text-sm">
+                  <div className="flex items-center gap-3 p-3 bg-[#fcf9f4] border border-[#debfbf] rounded-xl">
+                    <UserAvatar name={reporterProfile?.full_name} size="md" bgColor="maroon" />
+                    <div>
+                      <span className="text-[11px] text-[#574141] font-bold uppercase tracking-wider block">Nama Lengkap</span>
+                      <p className="font-bold text-base text-[#1c1c19]">{reporterProfile?.full_name || 'Pelapor Halo Jurnal'}</p>
+                    </div>
                   </div>
 
                   <div>
@@ -409,35 +448,62 @@ export default function AdminLaporanDetailPage() {
                   </div>
                 </div>
 
-                {/* KTP Photo Section */}
-                <div>
-                  <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block mb-2">Foto KTP Verifikasi</span>
+                {/* KTP Photo Section & Admin Toggle Controls */}
+                <div className="space-y-3">
+                  <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block">Dokumen KTP Verifikasi</span>
                   {reporterProfile?.ktp_photo_url ? (
-                    <div className="relative rounded-xl overflow-hidden border border-[#debfbf] group h-40 bg-[#f6f3ee]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={signedKtpUrl || reporterProfile.ktp_photo_url}
-                        alt="KTP Pelapor"
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setShowKtpModal(true)}
-                          className="bg-white text-[#1c1c19] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md cursor-pointer"
-                        >
-                          <span className="material-symbols-outlined text-sm">zoom_in</span> Zoom KTP
-                        </button>
-                        <a
-                          href={signedKtpUrl || reporterProfile.ktp_photo_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-[#6b0218] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md"
-                        >
-                          <span className="material-symbols-outlined text-sm">open_in_new</span> Tab Baru
-                        </a>
+                    <>
+                      <div className="relative rounded-xl overflow-hidden border border-[#debfbf] group h-40 bg-[#f6f3ee]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={signedKtpUrl || reporterProfile.ktp_photo_url}
+                          alt="KTP Pelapor"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setShowKtpModal(true)}
+                            className="bg-white text-[#1c1c19] px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm">zoom_in</span> Zoom KTP
+                          </button>
+                          <a
+                            href={signedKtpUrl || reporterProfile.ktp_photo_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="bg-[#6b0218] text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-md"
+                          >
+                            <span className="material-symbols-outlined text-sm">open_in_new</span> Tab Baru
+                          </a>
+                        </div>
                       </div>
-                    </div>
+
+                      {/* Action Buttons for Admin Manual Verification */}
+                      <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                        {!reporterProfile?.ktp_verified ? (
+                          <button
+                            type="button"
+                            disabled={isUpdatingKtpVerification}
+                            onClick={() => handleToggleKtpVerification(true)}
+                            className="flex-1 bg-green-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-green-800 transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-base">check_circle</span>
+                            {isUpdatingKtpVerification ? 'Memproses...' : 'Tandai KTP Valid (Verifikasi)'}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            disabled={isUpdatingKtpVerification}
+                            onClick={() => handleToggleKtpVerification(false)}
+                            className="flex-1 bg-amber-100 border border-amber-400 text-amber-900 px-3.5 py-2 rounded-xl text-xs font-bold hover:bg-amber-200 transition-all flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-base">cancel</span>
+                            {isUpdatingKtpVerification ? 'Memproses...' : 'Batalkan Verifikasi KTP'}
+                          </button>
+                        )}
+                      </div>
+                    </>
                   ) : (
                     <div className="h-40 rounded-xl border border-dashed border-[#debfbf] bg-[#f6f3ee] flex flex-col items-center justify-center text-[#574141] p-4 text-center">
                       <span className="material-symbols-outlined text-3xl mb-1 text-[#8b7171]">no_sim</span>

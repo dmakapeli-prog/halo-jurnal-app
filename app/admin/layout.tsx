@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import LogoutButton from '@/app/beranda/LogoutButton'
+import UserAvatar from '@/components/UserAvatar'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -86,9 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Footer Admin Profile */}
         <div className="p-4 border-t border-white/10 bg-white/5 flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#ffe08e] text-[#241a00] flex items-center justify-center font-bold text-xs shrink-0">
-              {profile?.full_name?.substring(0, 2).toUpperCase() || 'AD'}
-            </div>
+            <UserAvatar name={profile?.full_name || 'Admin'} size="sm" bgColor="gold" />
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-white truncate">{profile?.full_name || 'Admin Jurnal Sukabumi'}</p>
               <span className="text-[10px] bg-[#ffe08e]/20 text-[#ffe08e] px-2 py-0.5 rounded font-bold uppercase tracking-wider inline-block">

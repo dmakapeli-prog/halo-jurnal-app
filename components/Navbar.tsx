@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import LogoutButton from '@/app/beranda/LogoutButton'
+import UserAvatar from '@/components/UserAvatar'
 
 interface NavbarProps {
   showLoginButton?: boolean
@@ -16,6 +17,7 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [role, setRole] = useState<string | null>(null)
+  const [fullName, setFullName] = useState<string | null>(null)
   const [checkedAuth, setCheckedAuth] = useState(false)
 
   useEffect(() => {
@@ -26,11 +28,12 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
         setUser(data.user)
         const { data: prof } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, full_name')
           .eq('id', data.user.id)
           .single()
-        if (prof?.role) {
-          setRole(prof.role)
+        if (prof) {
+          if (prof.role) setRole(prof.role)
+          if (prof.full_name) setFullName(prof.full_name)
         }
       }
       setCheckedAuth(true)
@@ -66,6 +69,9 @@ export default function Navbar({ showLoginButton = true, actionButton }: NavbarP
               <span className="material-symbols-outlined text-sm">shield</span> ADMIN
             </span>
           )}
+          <Link href="/profil" title="Profil Saya" className="shrink-0 hover:scale-105 transition-transform">
+            <UserAvatar name={fullName || user?.user_metadata?.full_name} size="sm" bgColor="gold" />
+          </Link>
           <Link href={isAdmin ? "/admin" : "/beranda"} className={isMobile ? 'w-full' : ''}>
             <button className="bg-[#ffe08e] text-[#241a00] font-['Public_Sans'] text-[14px] font-semibold px-4 md:px-5 py-2 rounded-[0.25rem] hover:opacity-90 transition-all w-full min-h-[38px]">
               {isAdmin ? "Panel Admin" : "Dashboard"}

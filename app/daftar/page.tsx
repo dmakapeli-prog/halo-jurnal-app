@@ -26,21 +26,66 @@ export default function DaftarPage() {
   const [registrationComplete, setRegistrationComplete] = useState(false)
 
   const handleFileChange = (file: File | null) => {
-    if (file) {
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Ukuran file maksimal 5MB.')
+    if (!file) return
+
+    // 1. Validate file type strictly (image/jpeg, image/png)
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    if (!validTypes.includes(file.type)) {
+      setError('Format file KTP harus berupa foto gambar (JPG, JPEG, atau PNG).')
+      setKtpFile(null)
+      setKtpPreviewName('')
+      return
+    }
+
+    // 2. Validate file size (min 10KB, max 5MB)
+    if (file.size < 10 * 1024) {
+      setError('Ukuran file KTP terlalu kecil (minimal 10KB). Pastikan foto KTP jelas dan tidak rusak/kosong.')
+      setKtpFile(null)
+      setKtpPreviewName('')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Ukuran file KTP maksimal 5MB.')
+      setKtpFile(null)
+      setKtpPreviewName('')
+      return
+    }
+
+    // 3. Aspect ratio & orientation validation (Landscape, ratio ~1.25 to 1.85)
+    const img = new Image()
+    const objectUrl = URL.createObjectURL(file)
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl)
+      const width = img.width
+      const height = img.height
+
+      if (width < height) {
+        setError('Foto KTP harus posisi Landscape (horisontal), bukan Portrait.')
+        setKtpFile(null)
+        setKtpPreviewName('')
         return
       }
-      // Validate file type
-      const validTypes = ['image/jpeg', 'image/png', 'application/pdf']
-      if (!validTypes.includes(file.type)) {
-        setError('Format file harus JPG, PNG, atau PDF.')
+
+      const ratio = width / height
+      if (ratio < 1.25 || ratio > 1.85) {
+        setError(`Rasio gambar (${ratio.toFixed(2)}:1) kurang sesuai dengan standar kartu KTP (landscape, rasio sekitar 1.5 - 1.6:1). Silakan sesuaikan foto KTP Anda.`)
+        setKtpFile(null)
+        setKtpPreviewName('')
         return
       }
+
+      // All checks passed!
       setKtpFile(file)
       setKtpPreviewName(file.name)
       setError('')
+    }
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl)
+      setError('Gagal membaca file gambar KTP. Pastikan file berupa foto gambar yang valid.')
+      setKtpFile(null)
+      setKtpPreviewName('')
     }
   }
 
@@ -360,6 +405,18 @@ export default function DaftarPage() {
                 />
               </div>
 
+              {/* Instruction Notice Box for KTP Upload */}
+              <div className="bg-[#6b0218]/10 border-l-4 border-[#6b0218] p-3.5 sm:p-4 rounded-r-md">
+                <div className="flex items-start gap-2.5">
+                  <span className="material-symbols-outlined text-[#6b0218] text-xl shrink-0 mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    info
+                  </span>
+                  <p className="font-['Public_Sans'] text-[12px] sm:text-[13px] leading-[18px] sm:leading-[20px] font-bold text-[#6b0218]">
+                    Pastikan foto yang diunggah adalah KTP asli Anda dengan jelas dan tidak buram, karena akan diverifikasi oleh Admin sebelum akun dapat digunakan sepenuhnya.
+                  </p>
+                </div>
+              </div>
+
               {/* KTP Upload */}
               <div
                 className={`p-5 sm:p-6 bg-[#f0ede9] border border-[#debfbf] border-dashed rounded-[0.5rem] text-center ${dragOver ? 'bg-[#6b0218]/5' : ''}`}
@@ -385,10 +442,10 @@ export default function DaftarPage() {
                     ) : (
                       <>
                         <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218]">
-                          Klik untuk memilih file
+                          Klik untuk memilih foto KTP
                         </p>
                         <p className="text-[10px] uppercase tracking-wider mt-1 font-['Public_Sans']">
-                          Format: JPG, PNG, PDF (Max 5MB)
+                          Format: JPG, PNG (Landscape, Max 5MB)
                         </p>
                       </>
                     )}
@@ -398,7 +455,7 @@ export default function DaftarPage() {
                     className="hidden"
                     id="ktp-upload"
                     type="file"
-                    accept=".jpg,.jpeg,.png,.pdf"
+                    accept=".jpg,.jpeg,.png"
                     onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
                   />
                 </div>
