@@ -36,7 +36,7 @@ export default function AdminDashboardPage() {
         .select(`
           *,
           profiles:user_id(full_name, email, role),
-          chat_messages(count)
+          chat_messages(id, read_at, sender_id)
         `)
         .order('created_at', { ascending: false })
 
@@ -263,7 +263,10 @@ export default function AdminDashboardPage() {
                   </tr>
                 ) : reports.length > 0 ? (
                   reports.map((r) => {
-                    const chatCount = r.chat_messages?.[0]?.count || 0
+                    const totalChat = r.chat_messages ? r.chat_messages.length : 0
+                    const unreadChat = r.chat_messages
+                      ? r.chat_messages.filter((m: any) => !m.read_at && m.sender_id === r.user_id).length
+                      : 0
                     const reporterName = r.profiles?.full_name || 'Pelapor Terdaftar'
                     const reporterEmail = r.profiles?.email || '-'
                     const targetInstansi = r.instansi_tujuan || r.tujuan || 'PT Media Jurnal Sukabumi'
@@ -310,12 +313,28 @@ export default function AdminDashboardPage() {
                         </td>
 
                         <td className="py-4 px-6 text-center">
-                          <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${
-                            chatCount > 0 ? 'bg-[#ffe08e] text-[#241a00]' : 'bg-gray-100 text-gray-500'
-                          }`}>
-                            <span className="material-symbols-outlined text-sm">forum</span>
-                            {chatCount}
-                          </span>
+                          <Link
+                            href={`/admin/laporan/${r.id}#chat-panel`}
+                            title="Buka Chat dengan Pelapor"
+                            className="inline-block transition-transform hover:scale-105 cursor-pointer"
+                          >
+                            {unreadChat > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-red-600 text-white shadow-md hover:bg-red-700 transition-colors animate-pulse">
+                                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>mark_chat_unread</span>
+                                {unreadChat} Baru
+                              </span>
+                            ) : totalChat > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full bg-[#ffe08e] text-[#241a00] hover:bg-[#fed255] transition-colors border border-[#debfbf] shadow-sm">
+                                <span className="material-symbols-outlined text-sm">forum</span>
+                                {totalChat} Pesan
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors border border-gray-200">
+                                <span className="material-symbols-outlined text-sm">chat_bubble_outline</span>
+                                Balas
+                              </span>
+                            )}
+                          </Link>
                         </td>
 
                         <td className="py-4 px-6 text-center">

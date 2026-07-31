@@ -102,6 +102,15 @@ export default function AdminLaporanDetailPage() {
     if (id) {
       fetchReportDetail()
       fetchChatMessages()
+
+      if (typeof window !== 'undefined' && window.location.hash === '#chat-panel') {
+        setTimeout(() => {
+          const chatEl = document.getElementById('chat-panel')
+          if (chatEl) {
+            chatEl.scrollIntoView({ behavior: 'smooth' })
+          }
+        }, 300)
+      }
     }
   }, [id])
 
@@ -615,7 +624,7 @@ export default function AdminLaporanDetailPage() {
           </div>
 
           {/* Right Column: Redesigned Admin Chat Panel with Reporter */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1" id="chat-panel">
             <div className="bg-[#ece5dd] border border-[#debfbf] rounded-2xl overflow-hidden shadow-sm flex flex-col h-[650px] sticky top-24">
               {/* Chat Header */}
               <div className="px-4 py-3 bg-[#6b0218] flex items-center justify-between shadow-md z-10">
