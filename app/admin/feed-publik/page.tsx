@@ -25,7 +25,7 @@ export default function AdminFeedPublikPage() {
         .from('laporan')
         .select(`
           *,
-          profiles:user_id(full_name, email, phone, role, ktp_photo_url),
+          profiles:user_id(full_name, phone, role, ktp_photo_url, ktp_verified),
           chat_messages(count)
         `)
         .eq('is_public', true)
@@ -173,7 +173,6 @@ export default function AdminFeedPublikPage() {
               ) : reports.length > 0 ? (
                 reports.map((r) => {
                   const reporterName = r.profiles?.full_name || 'Pelapor Terdaftar'
-                  const reporterEmail = r.profiles?.email || '-'
                   const reporterPhone = r.profiles?.phone || '-'
 
                   return (
@@ -187,8 +186,12 @@ export default function AdminFeedPublikPage() {
 
                       <td className="py-4 px-6">
                         <p className="font-bold text-sm text-[#1c1c19]">{reporterName}</p>
-                        <p className="text-xs text-[#574141]">{reporterEmail}</p>
                         <p className="text-xs text-[#6b0218] font-semibold">Telp: {reporterPhone}</p>
+                        {r.profiles?.ktp_verified && (
+                          <span className="inline-block mt-0.5 text-[9px] bg-green-100 text-green-800 border border-green-300 font-bold px-1.5 py-0.5 rounded">
+                            ✓ KTP Valid
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-4 px-6">

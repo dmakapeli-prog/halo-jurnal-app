@@ -74,7 +74,7 @@ export default function AdminChatInboxPage() {
         .from('laporan')
         .select(`
           id, judul, ticket_number, kategori, user_id, created_at, status, is_public,
-          profiles:user_id(full_name, email, role, ktp_verified),
+          profiles:user_id(full_name, phone, role, ktp_verified),
           chat_messages(*, profiles:sender_id(full_name, role))
         `)
         .order('created_at', { ascending: false })

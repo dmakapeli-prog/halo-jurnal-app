@@ -440,8 +440,18 @@ export default function AdminLaporanDetailPage() {
                   </div>
 
                   <div>
-                    <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block">Email Terdaftar</span>
-                    <p className="font-semibold text-[#1c1c19]">{reporterProfile?.email || 'Tidak ada email'}</p>
+                    <span className="text-xs text-[#574141] font-bold uppercase tracking-wider block">Verifikasi KTP</span>
+                    <p className="font-semibold text-[#1c1c19] flex items-center gap-1 mt-0.5">
+                      {reporterProfile?.ktp_verified ? (
+                        <span className="text-green-700 font-bold flex items-center gap-1 text-xs">
+                          <span className="material-symbols-outlined text-sm">check_circle</span> Terverifikasi (Valid)
+                        </span>
+                      ) : (
+                        <span className="text-amber-800 font-bold flex items-center gap-1 text-xs">
+                          <span className="material-symbols-outlined text-sm">hourglass_top</span> Belum Terverifikasi
+                        </span>
+                      )}
+                    </p>
                   </div>
 
                   <div>

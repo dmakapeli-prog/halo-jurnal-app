@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { createWorker } from 'tesseract.js'
 
 export default function DaftarPage() {
   const getSupabase = () => createClient()
@@ -25,67 +26,80 @@ export default function DaftarPage() {
   const [dragOver, setDragOver] = useState(false)
   const [registrationComplete, setRegistrationComplete] = useState(false)
 
-  const handleFileChange = (file: File | null) => {
+  // OCR state
+  const [isOcrScanning, setIsOcrScanning] = useState(false)
+  const [ocrStatus, setOcrStatus] = useState('')
+  const [ocrWarning, setOcrWarning] = useState<string | null>(null)
+  const [ocrConfirmed, setOcrConfirmed] = useState(false)
+
+  const handleFileChange = async (file: File | null) => {
     if (!file) return
 
-    // 1. Validate file type strictly (image/jpeg, image/png)
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg']
+    // Clear file input value to allow re-selecting same file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+
+    // 1. Validate file type strictly (image/*)
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
     if (!validTypes.includes(file.type)) {
-      setError('Format file KTP harus berupa foto gambar (JPG, JPEG, atau PNG).')
+      setError('Format file KTP harus berupa foto gambar (JPG, JPEG, PNG, atau WEBP).')
       setKtpFile(null)
       setKtpPreviewName('')
       return
     }
 
-    // 2. Validate file size (min 10KB, max 5MB)
+    // 2. Validate file size (min 10KB, max 10MB)
     if (file.size < 10 * 1024) {
       setError('Ukuran file KTP terlalu kecil (minimal 10KB). Pastikan foto KTP jelas dan tidak rusak/kosong.')
       setKtpFile(null)
       setKtpPreviewName('')
       return
     }
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Ukuran file KTP maksimal 5MB.')
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Ukuran file KTP maksimal 10MB.')
       setKtpFile(null)
       setKtpPreviewName('')
       return
     }
 
-    // 3. Aspect ratio & orientation validation (Landscape, ratio ~1.25 to 1.85)
-    const img = new Image()
-    const objectUrl = URL.createObjectURL(file)
+    setError('')
+    setKtpFile(file)
+    setKtpPreviewName(file.name)
+    setIsOcrScanning(true)
+    setOcrStatus('Menganalisis teks KTP...')
+    setOcrWarning(null)
+    setOcrConfirmed(false)
 
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl)
-      const width = img.width
-      const height = img.height
+    try {
+      const worker = await createWorker('eng')
+      const ret = await worker.recognize(file)
+      await worker.terminate()
 
-      if (width < height) {
-        setError('Foto KTP harus posisi Landscape (horisontal), bukan Portrait.')
-        setKtpFile(null)
-        setKtpPreviewName('')
-        return
+      const text = ret.data.text ? ret.data.text.toUpperCase() : ''
+
+      const ktpKeywords = [
+        'REPUBLIK', 'INDONESIA', 'PROVINSI', 'KOTA', 'KABUPATEN',
+        'NIK', 'KTP', 'TEMPAT', 'LAHIR', 'AGAMA', 'PERKAWINAN',
+        'KEWARGANEGARAAN', 'BERLAKU', 'GOL', 'ALAMAT', 'DESA',
+        'KELURAHAN', 'KECAMATAN'
+      ]
+
+      const matched = ktpKeywords.filter((kw) => text.includes(kw))
+      const hasDigitSequence = /\b\d{10,16}\b/.test(text)
+
+      if (matched.length >= 1 || hasDigitSequence) {
+        setOcrWarning(null)
+        setOcrConfirmed(true)
+      } else {
+        setOcrWarning('Foto yang diunggah sepertinya bukan KTP. Pastikan foto KTP terlihat jelas dan tidak buram.')
+        setOcrConfirmed(false)
       }
-
-      const ratio = width / height
-      if (ratio < 1.25 || ratio > 1.85) {
-        setError(`Rasio gambar (${ratio.toFixed(2)}:1) kurang sesuai dengan standar kartu KTP (landscape, rasio sekitar 1.5 - 1.6:1). Silakan sesuaikan foto KTP Anda.`)
-        setKtpFile(null)
-        setKtpPreviewName('')
-        return
-      }
-
-      // All checks passed!
-      setKtpFile(file)
-      setKtpPreviewName(file.name)
-      setError('')
-    }
-
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl)
-      setError('Gagal membaca file gambar KTP. Pastikan file berupa foto gambar yang valid.')
-      setKtpFile(null)
-      setKtpPreviewName('')
+    } catch (ocrErr) {
+      console.warn('OCR Scan error:', ocrErr)
+      setOcrConfirmed(true)
+    } finally {
+      setIsOcrScanning(false)
     }
   }
 
@@ -119,6 +133,14 @@ export default function DaftarPage() {
       setError('Foto KTP wajib diunggah untuk verifikasi akun Anda.')
       return
     }
+    if (isOcrScanning) {
+      setError('Mohon tunggu hingga proses analisis OCR KTP selesai.')
+      return
+    }
+    if (ocrWarning && !ocrConfirmed) {
+      setError('Foto KTP memerlukan konfirmasi. Silakan periksa opsi konfirmasi di bawah area unggah KTP.')
+      return
+    }
     if (!agreed) {
       setError('Anda harus menyetujui Syarat & Ketentuan.')
       return
@@ -150,7 +172,6 @@ export default function DaftarPage() {
       }
 
       // Step 2: Store registration data in localStorage temporarily
-      // so we can complete profile setup after email confirmation
       const registrationData = {
         full_name: fullName,
         phone: phone || null,
@@ -160,7 +181,6 @@ export default function DaftarPage() {
       localStorage.setItem('halo_jurnal_registration', JSON.stringify(registrationData))
 
       // Step 3: Store KTP file as base64 in localStorage temporarily
-      // (will be uploaded to Supabase Storage after email confirmation)
       const reader = new FileReader()
       reader.onload = () => {
         localStorage.setItem('halo_jurnal_ktp_base64', reader.result as string)
@@ -314,9 +334,10 @@ export default function DaftarPage() {
               {/* Nama Lengkap */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
-                  Nama Lengkap
+                  Nama Lengkap <span className="text-red-500">*</span>
                 </label>
                 <input
+                  required
                   className="w-full px-4 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
                   placeholder="Masukkan nama lengkap sesuai KTP"
                   type="text"
@@ -328,13 +349,14 @@ export default function DaftarPage() {
               {/* Email */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8b7171]">
                     mail
                   </span>
                   <input
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
                     placeholder="Masukkan email aktif"
                     type="email"
@@ -347,13 +369,14 @@ export default function DaftarPage() {
               {/* Password */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
-                  Password
+                  Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8b7171]">
                     lock
                   </span>
                   <input
+                    required
                     className="w-full pl-12 pr-12 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
                     placeholder="Minimal 8 karakter"
                     type={showPassword ? 'text' : 'password'}
@@ -375,13 +398,14 @@ export default function DaftarPage() {
               {/* Konfirmasi Password */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
-                  Konfirmasi Password
+                  Konfirmasi Password <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8b7171]">
                     lock
                   </span>
                   <input
+                    required
                     className="w-full pl-12 pr-4 py-3 bg-white border border-[#debfbf] rounded-[0.25rem] focus:ring-2 focus:ring-[#6b0218] focus:border-[#6b0218] outline-none transition-all font-['Public_Sans'] text-[16px] leading-[24px]"
                     placeholder="Ulangi password Anda"
                     type={showPassword ? 'text' : 'password'}
@@ -391,7 +415,7 @@ export default function DaftarPage() {
                 </div>
               </div>
 
-              {/* Phone field (contact only, not for auth) */}
+              {/* Phone field */}
               <div>
                 <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-2 text-[#1c1c19]">
                   Nomor Telepon (opsional)
@@ -417,48 +441,97 @@ export default function DaftarPage() {
                 </div>
               </div>
 
-              {/* KTP Upload */}
+              {/* KTP Upload Area with HTML Label Integration */}
               <div
-                className={`p-5 sm:p-6 bg-[#f0ede9] border border-[#debfbf] border-dashed rounded-[0.5rem] text-center ${dragOver ? 'bg-[#6b0218]/5' : ''}`}
+                className={`p-5 sm:p-6 bg-[#f0ede9] border border-[#debfbf] border-dashed rounded-[0.5rem] text-center ${dragOver ? 'bg-[#6b0218]/5 border-[#6b0218]' : ''}`}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
               >
-                <label className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-3 sm:mb-4 text-[#1c1c19]">
-                  Unggah Foto KTP <span className="text-red-500">* (Wajib)</span>
-                </label>
-                <div
-                  className="flex flex-col items-center gap-3 sm:gap-4 cursor-pointer group"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#6b0218]/10 flex items-center justify-center group-hover:bg-[#6b0218]/20 transition-colors">
-                    <span className="material-symbols-outlined text-[#6b0218] text-2xl sm:text-3xl">upload_file</span>
-                  </div>
-                  <div className="text-[#574141]">
-                    {ktpPreviewName ? (
-                      <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218] break-all">
-                        {ktpPreviewName}
-                      </p>
-                    ) : (
-                      <>
-                        <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218]">
-                          Klik untuk memilih foto KTP
+                <label htmlFor="ktp-upload" className="block cursor-pointer group">
+                  <span className="block font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold mb-3 sm:mb-4 text-[#1c1c19]">
+                    Unggah Foto KTP <span className="text-red-500">* (Wajib)</span>
+                  </span>
+
+                  <div className="flex flex-col items-center gap-3 sm:gap-4">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#6b0218]/10 flex items-center justify-center group-hover:bg-[#6b0218]/20 transition-colors">
+                      <span className="material-symbols-outlined text-[#6b0218] text-2xl sm:text-3xl">upload_file</span>
+                    </div>
+
+                    <div className="text-[#574141]">
+                      {ktpPreviewName ? (
+                        <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218] break-all">
+                          📄 {ktpPreviewName}
                         </p>
-                        <p className="text-[10px] uppercase tracking-wider mt-1 font-['Public_Sans']">
-                          Format: JPG, PNG (Landscape, Max 5MB)
-                        </p>
-                      </>
-                    )}
+                      ) : (
+                        <>
+                          <p className="font-['Public_Sans'] text-[14px] leading-[20px] tracking-[0.01em] font-bold text-[#6b0218] group-hover:underline">
+                            Klik untuk memilih foto KTP
+                          </p>
+                          <p className="text-[10px] uppercase tracking-wider mt-1 font-['Public_Sans']">
+                            Format: JPG, JPEG, PNG, WEBP (Max 10MB)
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
+
                   <input
                     ref={fileInputRef}
-                    className="hidden"
                     id="ktp-upload"
                     type="file"
-                    accept=".jpg,.jpeg,.png"
+                    className="sr-only"
+                    accept="image/jpeg,image/png,image/jpg,image/webp"
                     onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
                   />
-                </div>
+                </label>
+
+                {/* OCR Processing Indicator */}
+                {isOcrScanning && (
+                  <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center gap-2 text-xs text-blue-900 font-semibold">
+                    <span className="material-symbols-outlined text-base animate-spin">sync</span>
+                    {ocrStatus}
+                  </div>
+                )}
+
+                {/* OCR Warning & Fallback Confirmation Box */}
+                {ocrWarning && !ocrConfirmed && !isOcrScanning && (
+                  <div className="mt-3 p-4 bg-amber-50 border border-amber-300 rounded-xl text-left text-xs space-y-3 shadow-sm">
+                    <div className="flex items-start gap-2.5 text-amber-900">
+                      <span className="material-symbols-outlined text-amber-600 text-xl shrink-0 mt-0.5">warning</span>
+                      <p className="font-semibold leading-relaxed">{ocrWarning}</p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setKtpFile(null)
+                          setKtpPreviewName('')
+                          setOcrWarning(null)
+                          setOcrConfirmed(false)
+                        }}
+                        className="px-3.5 py-2 bg-white border border-amber-400 text-amber-900 rounded-lg font-bold hover:bg-amber-100 transition-colors text-xs cursor-pointer shadow-sm"
+                      >
+                        Unggah Ulang Foto KTP
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOcrConfirmed(true)}
+                        className="px-3.5 py-2 bg-amber-600 text-white rounded-lg font-bold hover:bg-amber-700 transition-colors text-xs cursor-pointer shadow-sm"
+                      >
+                        Saya yakin ini foto KTP saya
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* OCR Verified Success Tag */}
+                {ktpFile && ocrConfirmed && !isOcrScanning && (
+                  <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-800 font-bold flex items-center justify-center gap-1.5">
+                    <span className="material-symbols-outlined text-base text-green-600">verified</span>
+                    Foto KTP SIAP Diunggah {ocrWarning ? '(Dikonfirmasi User)' : '(Terdeteksi Otomatis OCR)'}
+                  </div>
+                )}
               </div>
 
               {/* Privacy Notice Box */}
@@ -472,6 +545,7 @@ export default function DaftarPage() {
               {/* Agreement */}
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
+                  required
                   className="mt-1 w-4 h-4 rounded text-[#6b0218] focus:ring-[#6b0218] border-[#8b7171] shrink-0"
                   type="checkbox"
                   checked={agreed}
@@ -489,10 +563,10 @@ export default function DaftarPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full bg-[#fed255] text-[#735a00] py-4 rounded-[0.5rem] font-['Libre_Franklin'] text-[18px] sm:text-[24px] leading-[28px] sm:leading-[32px] font-semibold shadow-md hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-h-[52px]"
+                disabled={loading || isOcrScanning || !ktpFile || (!!ocrWarning && !ocrConfirmed)}
+                className="w-full bg-[#fed255] text-[#735a00] py-4 rounded-[0.5rem] font-['Libre_Franklin'] text-[18px] sm:text-[24px] leading-[28px] sm:leading-[32px] font-semibold shadow-md hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-h-[52px] cursor-pointer"
               >
-                {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
+                {loading ? 'Mendaftarkan...' : isOcrScanning ? 'Menganalisis KTP...' : 'Daftar Sekarang'}
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
 

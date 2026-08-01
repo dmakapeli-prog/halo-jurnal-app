@@ -27,21 +27,19 @@ function CompleteProfileContent() {
         const regDataStr = localStorage.getItem('halo_jurnal_registration')
         const ktpBase64 = localStorage.getItem('halo_jurnal_ktp_base64')
 
-        // If no registration data, it might just be a regular login magic link
+        // If no registration data in local storage
         if (!regDataStr || !ktpBase64) {
-          // Check if they already have a profile
-          const { data: profile } = await sb.from('profiles').select('id').eq('id', user.id).single()
-          if (profile) {
-            // Regular login flow via magic link
+          // Check if they already have a profile with uploaded KTP
+          const { data: profile } = await sb.from('profiles').select('id, ktp_photo_url').eq('id', user.id).single()
+          if (profile && profile.ktp_photo_url) {
+            // Regular login / return user flow
             const next = searchParams.get('next') ?? '/beranda'
             router.push(next)
             return
           } else {
-             // Edge case: Signed up but no localstorage data (e.g., confirmed on a different device)
-             // We should probably redirect them to a page to complete their profile manually,
-             // but for now let's just create a basic profile or show an error.
-             setError('Data pendaftaran tidak ditemukan di perangkat ini. Jika Anda memverifikasi dari perangkat lain, silakan lengkapi profil Anda.')
-             return
+            // Missing mandatory KTP photo
+            setError('Pendaftaran gagal: Foto KTP wajib diunggah untuk verifikasi akun. Silakan kembali ke halaman pendaftaran untuk mendaftar ulang dengan foto KTP yang valid.')
+            return
           }
         }
 

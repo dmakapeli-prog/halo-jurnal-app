@@ -10,7 +10,7 @@ import UserAvatar from '@/components/UserAvatar'
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [profile, setProfile] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
   useEffect(() => {
     const fetchAdminProfile = async () => {
@@ -27,12 +27,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }
       } catch (err) {
         console.error(err)
-      } finally {
-        setLoading(false)
       }
     }
     fetchAdminProfile()
   }, [])
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileSidebarOpen(false)
+  }, [pathname])
 
   const navItems = [
     { href: '/admin', label: 'Dashboard Admin', icon: 'dashboard' },
@@ -43,10 +46,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-[#f4f1ec] text-[#1c1c19] flex font-['Public_Sans']">
-      {/* Sidebar Navigation - Fixed 260px */}
-      <aside className="w-[260px] bg-[#1c1c19] text-white flex flex-col fixed left-0 top-0 bottom-0 z-50 border-r border-[#333]">
+      {/* Backdrop overlay for mobile drawer */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Navigation — Responsive Drawer */}
+      <aside
+        className={`w-[260px] bg-[#1c1c19] text-white flex flex-col fixed left-0 top-0 bottom-0 z-50 border-r border-[#333] transition-transform duration-300 ${
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
         {/* Brand Header */}
-        <div className="p-6 border-b border-white/10 bg-[#6b0218]">
+        <div className="p-5 border-b border-white/10 bg-[#6b0218] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-[#ffe08e] text-[#735a00] flex items-center justify-center font-bold shrink-0">
               <span className="material-symbols-outlined text-[20px]">shield</span>
@@ -56,6 +71,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <p className="text-[10px] text-white/80 font-bold uppercase tracking-wider">Control Panel Admin</p>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={() => setMobileSidebarOpen(false)}
+            className="lg:hidden text-white/70 hover:text-white p-1"
+          >
+            <span className="material-symbols-outlined text-xl">close</span>
+          </button>
         </div>
 
         {/* Navigation Links */}
@@ -79,7 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )
           })}
 
-          <div className="pt-6 text-[10px] font-bold text-white/40 uppercase tracking-widest px-3 mb-2">Manajemen Kategori</div>
+          <div className="pt-6 text-[10px] font-bold text-white/40 uppercase tracking-widest px-3 mb-2">Manajemen Portal</div>
           <div className="px-3.5 py-2.5 bg-white/5 rounded-xl text-xs text-white/60 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-green-400"></span> PT Media Jurnal Sukabumi
           </div>
@@ -101,27 +123,36 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Workspace Area */}
-      <div className="flex-1 ml-[260px] flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-[260px] flex flex-col min-h-screen">
         {/* Top Control Bar */}
-        <header className="h-16 bg-white border-b border-[#debfbf] px-8 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+        <header className="h-16 bg-white border-b border-[#debfbf] px-4 md:px-8 flex items-center justify-between sticky top-0 z-40 shadow-sm">
           <div className="flex items-center gap-3">
-            <span className="text-xs bg-[#6b0218]/10 text-[#6b0218] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            <button
+              type="button"
+              onClick={() => setMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-lg text-[#1c1c19] hover:bg-[#f4f1ec] transition-colors"
+              title="Buka Navigasi Admin"
+            >
+              <span className="material-symbols-outlined text-2xl">menu</span>
+            </button>
+
+            <span className="text-xs bg-[#6b0218]/10 text-[#6b0218] font-bold px-3 py-1 rounded-full uppercase tracking-wider hidden sm:inline-block">
               Internal Portal
             </span>
-            <span className="text-sm font-semibold text-[#574141]">
-              PT Media Jurnal Sukabumi — Sistem Pengelolaan Laporan Warga
+            <span className="text-xs sm:text-sm font-semibold text-[#574141] truncate max-w-[200px] sm:max-w-none">
+              PT Media Jurnal Sukabumi — Panel Admin
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-xs font-semibold text-[#574141]">
+          <div className="flex items-center gap-3 text-xs font-semibold text-[#574141]">
             <span className="flex items-center gap-1.5 bg-[#f6f3ee] border border-[#debfbf] px-3 py-1.5 rounded-lg">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Mode Admin Aktif
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Mode Admin
             </span>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 p-6 md:p-8">
+        <div className="flex-1 p-4 md:p-8 overflow-x-hidden">
           {children}
         </div>
       </div>

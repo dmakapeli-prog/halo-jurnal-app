@@ -5,6 +5,7 @@ import LogoutButton from './LogoutButton'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CategoryCards from '@/components/CategoryCards'
+import UserAvatar from '@/components/UserAvatar'
 
 export const dynamic = 'force-dynamic'
 
@@ -48,11 +49,7 @@ export default async function BerandaPage() {
         {/* Welcome Section */}
         <section className="max-w-[1280px] mx-auto px-5 md:px-[40px] pt-6 md:pt-12 pb-6 md:pb-8">
           <div className="flex items-center gap-3 md:gap-4">
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#ffdad9] flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[#6b0218] text-2xl md:text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                person
-              </span>
-            </div>
+            <UserAvatar name={displayName} size="lg" bgColor="maroon" className="w-12 h-12 md:w-16 md:h-16 text-lg md:text-xl font-extrabold shadow-md border-2 border-white/40" />
             <div className="min-w-0">
               <h1 className="font-['Libre_Franklin'] text-xl sm:text-2xl md:text-[32px] md:leading-[40px] font-bold text-[#1c1c19] truncate">
                 Selamat Datang, {displayName}

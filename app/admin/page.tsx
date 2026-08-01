@@ -69,7 +69,7 @@ export default function AdminDashboardPage() {
         .from('laporan')
         .select(`
           *,
-          profiles:user_id(full_name, email, role),
+          profiles:user_id(full_name, phone, role, ktp_photo_url, ktp_verified),
           chat_messages(id, read_at, sender_id)
         `)
         .order('created_at', { ascending: false })
@@ -316,7 +316,7 @@ export default function AdminDashboardPage() {
                       ? r.chat_messages.filter((m: any) => !m.read_at && m.sender_id === r.user_id).length
                       : 0
                     const reporterName = r.profiles?.full_name || 'Pelapor Terdaftar'
-                    const reporterEmail = r.profiles?.email || '-'
+                    const reporterPhone = r.profiles?.phone ? `Telp: ${r.profiles.phone}` : (r.profiles?.role || 'Citizen')
                     const targetInstansi = r.instansi_tujuan || r.tujuan || 'PT Media Jurnal Sukabumi'
 
                     return (
@@ -337,7 +337,12 @@ export default function AdminDashboardPage() {
 
                         <td className="py-4 px-6">
                           <p className="font-semibold text-sm text-[#1c1c19]">{reporterName}</p>
-                          <p className="text-xs text-[#574141]">{reporterEmail}</p>
+                          <p className="text-xs text-[#574141]">{reporterPhone}</p>
+                          {r.profiles?.ktp_verified && (
+                            <span className="inline-block mt-0.5 text-[9px] bg-green-100 text-green-800 border border-green-300 font-bold px-1.5 py-0.5 rounded">
+                              ✓ KTP Valid
+                            </span>
+                          )}
                         </td>
 
                         <td className="py-4 px-6">
