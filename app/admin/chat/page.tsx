@@ -53,7 +53,7 @@ export default function AdminChatInboxPage() {
           table: 'chat_messages',
           filter: `laporan_id=eq.${selectedReportId}`,
         },
-        async (payload) => {
+        async (payload: any) => {
           const newMsg = payload.new
           if (!newMsg) return
 

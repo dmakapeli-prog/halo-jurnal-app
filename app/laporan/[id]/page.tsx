@@ -63,7 +63,7 @@ export default function LaporanDetailPage() {
           table: 'chat_messages',
           filter: `laporan_id=eq.${id}`,
         },
-        async (payload) => {
+        async (payload: any) => {
           const newMsg = payload.new
           if (!newMsg) return
 
