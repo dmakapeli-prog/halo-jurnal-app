@@ -80,7 +80,7 @@ export default function HubungiKamiPage() {
             <div className="mt-12 pt-8 border-t border-white/20">
               <p className="text-sm text-white/70">
                 Halo Jurnal adalah inisiatif dari{' '}
-                <a href="https://jurnalsukabumi.com" target="_blank" rel="noreferrer" className="text-[#ffe08e] hover:underline font-bold">
+                <a href="https://jurnal-sukabumi-portal.vercel.app/" target="_blank" rel="noreferrer" className="text-[#ffe08e] hover:underline font-bold">
                   PT. Media Jurnal Sukabumi
                 </a>
               </p>
