@@ -487,7 +487,7 @@ function FeedPublikContent() {
                         </div>
                       </div>
 
-                      <h3 className="font-['Libre_Franklin'] text-xl md:text-[24px] font-semibold text-[#6b0218] mb-3">{report.judul}</h3>
+                      <h3 className="font-['Libre_Franklin'] text-xl md:text-[24px] leading-snug md:leading-[1.3] font-semibold text-[#6b0218] mb-3 break-words">{report.judul}</h3>
                       
                       <div className={`flex ${report.jenis === 'inspirasi' ? 'flex-col' : 'flex-col-reverse md:flex-row'} gap-6 mb-6`}>
                         {/* Inspirasi: Show image first, full width, larger */}

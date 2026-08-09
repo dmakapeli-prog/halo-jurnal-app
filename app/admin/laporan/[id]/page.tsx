@@ -444,7 +444,7 @@ export default function AdminLaporanDetailPage() {
                       Konteks Instansi: {targetInstansi}
                     </span>
                   </div>
-                  <h1 className="font-['Libre_Franklin'] text-2xl md:text-3xl font-bold text-[#1c1c19] mt-1">
+                  <h1 className="font-['Libre_Franklin'] text-2xl md:text-3xl leading-snug md:leading-[1.3] font-bold text-[#1c1c19] mt-1 break-words">
                     {report.judul}
                   </h1>
                   <p className="text-xs text-[#574141] mt-2 flex flex-wrap gap-4">

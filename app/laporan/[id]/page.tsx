@@ -389,7 +389,7 @@ export default function LaporanDetailPage() {
                 <span className="px-3 py-1 bg-[#6b0218]/10 text-[#6b0218] rounded-full text-[12px] font-bold uppercase tracking-wider mb-2 inline-block">
                   {report.kategori}
                 </span>
-                <h1 className="font-['Libre_Franklin'] text-[22px] sm:text-[28px] md:text-[32px] font-bold text-[#1c1c19] mt-2">
+                <h1 className="font-['Libre_Franklin'] text-[22px] sm:text-[28px] md:text-[32px] leading-snug md:leading-[1.3] font-bold text-[#1c1c19] mt-2 break-words">
                   {report.judul}
                 </h1>
                 <p className="text-[#574141] mt-2 flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4 text-[13px] sm:text-[14px]">
