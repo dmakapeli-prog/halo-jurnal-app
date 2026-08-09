@@ -39,6 +39,49 @@ export default function AdminChatInboxPage() {
     }
   }, [selectedReportId])
 
+  // Realtime subscription for selected report chat in admin inbox
+  useEffect(() => {
+    if (!selectedReportId) return
+
+    const channel = supabase
+      .channel(`admin_inbox_chat:${selectedReportId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `laporan_id=eq.${selectedReportId}`,
+        },
+        async (payload) => {
+          const newMsg = payload.new
+          if (!newMsg) return
+
+          const { data: fullMsg } = await supabase
+            .from('chat_messages')
+            .select(`*, profiles:sender_id(full_name, role)`)
+            .eq('id', newMsg.id)
+            .single()
+
+          const msgToAdd = fullMsg || newMsg
+
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === msgToAdd.id)) {
+              return prev
+            }
+            return [...prev, msgToAdd]
+          })
+
+          fetchAllConversations()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [selectedReportId, adminUser, supabase])
+
   useEffect(() => {
     scrollToBottom()
   }, [messages])

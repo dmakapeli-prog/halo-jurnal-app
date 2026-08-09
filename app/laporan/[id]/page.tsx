@@ -49,6 +49,52 @@ export default function LaporanDetailPage() {
     }
   }, [id, user])
 
+  // Realtime subscription for new chat messages
+  useEffect(() => {
+    if (!id) return
+
+    const channel = supabase
+      .channel(`chat_messages:${id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `laporan_id=eq.${id}`,
+        },
+        async (payload) => {
+          const newMsg = payload.new
+          if (!newMsg) return
+
+          // Fetch sender profile so role and full_name are populated
+          const { data: fullMsg } = await supabase
+            .from('chat_messages')
+            .select(`*, profiles:sender_id(full_name, role)`)
+            .eq('id', newMsg.id)
+            .single()
+
+          const msgToAdd = fullMsg || newMsg
+
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === msgToAdd.id)) {
+              return prev
+            }
+            return [...prev, msgToAdd]
+          })
+
+          if (user && msgToAdd.sender_id !== user.id) {
+            markMessagesAsRead([msgToAdd])
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [id, user, supabase])
+
   useEffect(() => {
     scrollToBottom()
   }, [messages])

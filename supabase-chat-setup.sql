@@ -29,3 +29,6 @@ CREATE POLICY "Users can insert chat messages for their reports" ON chat_message
   FOR INSERT WITH CHECK (
     auth.uid() = sender_id
   );
+
+-- 5. Aktifkan Realtime Publication untuk tabel chat_messages
+ALTER PUBLICATION supabase_realtime ADD TABLE chat_messages;

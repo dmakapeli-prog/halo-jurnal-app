@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
@@ -31,6 +31,11 @@ export default function AdminLaporanDetailPage() {
   const [chatMessage, setChatMessage] = useState('')
   const [isSendingChat, setIsSendingChat] = useState(false)
   const [chatFile, setChatFile] = useState<File | null>(null)
+  const chatEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   // KTP Modal State & Signed URL
   const [showKtpModal, setShowKtpModal] = useState(false)
@@ -113,6 +118,64 @@ export default function AdminLaporanDetailPage() {
       }
     }
   }, [id])
+
+  // Realtime subscription for admin chat messages
+  useEffect(() => {
+    if (!id) return
+
+    const channel = supabase
+      .channel(`admin_chat_messages:${id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `laporan_id=eq.${id}`,
+        },
+        async (payload) => {
+          const newMsg = payload.new
+          if (!newMsg) return
+
+          // Fetch sender profile so role and full_name are populated
+          const { data: fullMsg } = await supabase
+            .from('chat_messages')
+            .select(`*, profiles:sender_id(full_name, role)`)
+            .eq('id', newMsg.id)
+            .single()
+
+          const msgToAdd = fullMsg || newMsg
+
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === msgToAdd.id)) {
+              return prev
+            }
+            return [...prev, msgToAdd]
+          })
+
+          // Mark message as read if sent by pelapor
+          if (adminUser && msgToAdd.sender_id !== adminUser.id && !msgToAdd.read_at) {
+            try {
+              await supabase
+                .from('chat_messages')
+                .update({ read_at: new Date().toISOString() })
+                .eq('id', msgToAdd.id)
+            } catch (err) {
+              console.error('Error marking admin chat as read:', err)
+            }
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [id, adminUser, supabase])
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const fetchReportDetail = async () => {
     setLoading(true)
@@ -723,6 +786,7 @@ export default function AdminLaporanDetailPage() {
                     <p className="text-[11px] text-[#574141]">Balas atau kirim pesan pertama ke pelapor laporan ini.</p>
                   </div>
                 )}
+                <div ref={chatEndRef} />
               </div>
 
               {/* Chat Form */}
