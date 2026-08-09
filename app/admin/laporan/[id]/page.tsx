@@ -313,7 +313,10 @@ export default function AdminLaporanDetailPage() {
 
   const handleSendChat = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!adminUser) return
+    if (!adminUser) {
+      alert('Sesi login admin tidak ditemukan. Silakan login ulang.')
+      return
+    }
     if (!chatMessage.trim() && !chatFile) return
 
     setIsSendingChat(true)
@@ -337,27 +340,38 @@ export default function AdminLaporanDetailPage() {
         }
       }
 
-      const { data: newMsg, error } = await supabase
+      const { data: insertedMsg, error: insertError } = await supabase
         .from('chat_messages')
         .insert({
           laporan_id: id,
           sender_id: adminUser.id,
-          message: chatMessage,
+          message: chatMessage.trim(),
           attachment_url: attachmentUrl
         })
-        .select(`*, profiles:sender_id(full_name, role)`)
+        .select()
         .single()
 
-      if (error) throw error
+      if (insertError) throw insertError
 
-      if (newMsg) {
-        setMessages((prev) => [...prev, newMsg])
+      if (insertedMsg) {
+        const { data: fullMsg } = await supabase
+          .from('chat_messages')
+          .select(`*, profiles:sender_id(full_name, role)`)
+          .eq('id', insertedMsg.id)
+          .single()
+
+        const newMsg = fullMsg || insertedMsg
+
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === newMsg.id)) return prev
+          return [...prev, newMsg]
+        })
         setChatMessage('')
         setChatFile(null)
       }
     } catch (err: any) {
-      console.error(err)
-      alert(`Gagal mengirim pesan: ${err.message || 'Terjadi kesalahan'}`)
+      console.error('Error sending admin chat message:', err)
+      alert(`Gagal mengirim pesan: ${err.message || 'Terjadi kesalahan pada server/RLS Supabase.'}`)
     } finally {
       setIsSendingChat(false)
     }

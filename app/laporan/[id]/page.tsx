@@ -238,26 +238,37 @@ export default function LaporanDetailPage() {
         }
       }
 
-      const { data: newMsg, error } = await supabase
+      const { data: insertedMsg, error: insertError } = await supabase
         .from('chat_messages')
         .insert({
           laporan_id: id,
           sender_id: user.id,
-          message: chatMessage,
+          message: chatMessage.trim(),
           attachment_url: attachmentUrl
         })
-        .select(`*, profiles:sender_id(full_name, role)`)
+        .select()
         .single()
 
-      if (error) throw error
+      if (insertError) throw insertError
 
-      if (newMsg) {
-        setMessages((prev) => [...prev, newMsg])
+      if (insertedMsg) {
+        const { data: fullMsg } = await supabase
+          .from('chat_messages')
+          .select(`*, profiles:sender_id(full_name, role)`)
+          .eq('id', insertedMsg.id)
+          .single()
+
+        const newMsg = fullMsg || insertedMsg
+
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === newMsg.id)) return prev
+          return [...prev, newMsg]
+        })
         setChatMessage('')
         setChatFile(null)
       }
     } catch (err: any) {
-      console.error(err)
+      console.error('Error sending chat message:', err)
       alert(`Gagal mengirim pesan: ${err.message || 'Terjadi kesalahan'}`)
     } finally {
       setIsSendingChat(false)
