@@ -41,10 +41,16 @@ export default async function TentangPage() {
               <p className="font-['Public_Sans'] text-[15px] md:text-[17px] leading-[1.65] text-white/85 max-w-[520px]">
                 Sebuah platform aspirasi dan pengaduan warga yang dikelola secara independen oleh tim Jurnal Sukabumi (PT Media Jurnal Sukabumi). Kami menerima, menindaklanjuti, dan menjalin komunikasi aktif dengan pihak berwenang terkait demi transparansi dan akuntabilitas publik.
               </p>
-              <div className="pt-2">
-                <button className="bg-[#fed255] text-[#735a00] px-7 md:px-8 py-3 md:py-3.5 rounded-lg font-['Public_Sans'] text-[14px] font-semibold tracking-[0.01em] hover:scale-105 transition-transform min-h-[48px] shadow-lg">
-                  Pelajari Visi Kami
-                </button>
+              <div className="pt-2 flex flex-wrap gap-3">
+                <a
+                  href="https://jurnalsukabumi.com/tentang-kami/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-[#fed255] text-[#735a00] px-7 md:px-8 py-3 md:py-3.5 rounded-lg font-['Public_Sans'] text-[14px] font-bold tracking-[0.01em] hover:scale-105 transition-transform min-h-[48px] shadow-lg inline-flex items-center gap-2"
+                >
+                  Tentang Kami Resmi (Jurnal Sukabumi)
+                  <span className="material-symbols-outlined text-sm">open_in_new</span>
+                </a>
               </div>
             </div>
             <div className="hidden md:block relative h-[440px]">
@@ -138,6 +144,86 @@ export default async function TentangPage() {
                   <div className="rounded-xl overflow-hidden h-36 md:h-48 border border-[#debfbf]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img className="w-full h-full object-cover" alt="Meeting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx4OhrLUxLryVolr4LOicZzI9RepBjkuXko0sVZmGcfQAOGTi3Ct496jcbWYLy-tUNx_lOQrzBU1M0wezYmpVAp3HnEgkXXAFpoxWyUZyBc-nsWgvAA3Fcz2nszpFBNLn_GhQqogScUdV4Pgwjc7RMZjpiJ6suSnsxWu-qtYhCdhLLBmS3GfhbRwvyvqWX-sizqBYaQham7cd_SoHBeu9ShJ9q0XTeDECqs-w7DrgqlFfhcvx0NcRkeGweV_PA6QPHAdtsobdPSe5h" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ==================== OFFICIAL COMPANY PROFILE & REDAKSI ==================== */}
+        <section className="py-16 md:py-20 bg-[#f6f3ee] border-t border-[#debfbf]">
+          <div className="max-w-[1280px] mx-auto px-6 md:px-10 lg:px-[60px]">
+            <div className="bg-white rounded-2xl p-8 md:p-12 border border-[#debfbf] shadow-sm">
+              <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-10 pb-8 border-b border-[#debfbf]">
+                <div className="max-w-2xl">
+                  <span className="text-xs font-bold text-[#6b0218] uppercase tracking-widest bg-[#6b0218]/10 px-3 py-1 rounded-full inline-block mb-3">
+                    Profil Resmi Media
+                  </span>
+                  <h3 className="font-['Libre_Franklin'] text-2xl md:text-3xl font-bold text-[#1c1c19] mb-4">
+                    PT. Media Jurnal Sukabumi
+                  </h3>
+                  <p className="font-['Public_Sans'] text-sm md:text-base text-[#574141] leading-relaxed">
+                    Portal berita <a href="https://jurnalsukabumi.com" target="_blank" rel="noreferrer" className="text-[#6b0218] font-bold hover:underline">www.jurnalsukabumi.com</a> berada di bawah naungan <strong>PT. Media Jurnal Sukabumi</strong>. Jurnalsukabumi.com hadir di tengah menjamurnya beragam media siber. Kehadirannya tentu saja diharapkan menjadi pembeda dengan media online lainnya. Maka itu, dibidani oleh sumber daya manusia yang mumpuni, profesional, dan konsisten di bidang jurnalistik, kami hadir di tengah masyarakat.
+                  </p>
+                </div>
+
+                <a
+                  href="https://jurnalsukabumi.com/tentang-kami/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-[#6b0218] text-white px-6 py-3 rounded-xl text-xs md:text-sm font-bold hover:bg-[#8b1e2c] transition-colors shrink-0 shadow-md inline-flex items-center gap-2"
+                >
+                  Buka Halaman Tentang Kami di Portal Utama
+                  <span className="material-symbols-outlined text-sm">open_in_new</span>
+                </a>
+              </div>
+
+              {/* Redaksi & Legal Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Susunan Redaksi */}
+                <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf]">
+                  <h4 className="font-bold text-base text-[#6b0218] mb-4 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-lg">badge</span> Susunan Redaksi
+                  </h4>
+                  <ul className="space-y-2.5 text-xs text-[#1c1c19] font-['Public_Sans']">
+                    <li><strong className="text-[#574141]">Chief Executive Officer:</strong><br/> Eman Sulaeman, S.IP</li>
+                    <li><strong className="text-[#574141]">Pemimpin Redaksi:</strong><br/> Ujang Herlan, S.Pd</li>
+                    <li><strong className="text-[#574141]">Reporter:</strong><br/> Ilham Nugraha, Idris</li>
+                    <li><strong className="text-[#574141]">Media Sosial:</strong><br/> Nofa Apekariasnya</li>
+                    <li><strong className="text-[#574141]">Manager IT:</strong><br/> Mohammad Nur</li>
+                    <li><strong className="text-[#574141]">Publisher:</strong><br/> Yoga Arya Suhada, H Agustina</li>
+                  </ul>
+                </div>
+
+                {/* Legalitas Perusahaan */}
+                <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf]">
+                  <h4 className="font-bold text-base text-[#6b0218] mb-4 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-lg">gavel</span> Legalitas Resmi Perusahaan
+                  </h4>
+                  <ul className="space-y-2.5 text-xs text-[#1c1c19] font-['Public_Sans']">
+                    <li><strong className="text-[#574141]">Nomor SK Kemenkumham:</strong><br/> AHU-0007259.AH.01.01. Tahun 2020</li>
+                    <li><strong className="text-[#574141]">NIB:</strong><br/> 0220109361089</li>
+                    <li><strong className="text-[#574141]">NPWP:</strong><br/> 94.265.244.7-405.000</li>
+                    <li><strong className="text-[#574141]">IMB:</strong><br/> 503.3/644.4/2717/PMB-DPTMPTSP/2020</li>
+                  </ul>
+                </div>
+
+                {/* Kontak & Rekening Bank */}
+                <div className="bg-[#fcf9f4] p-6 rounded-xl border border-[#debfbf]">
+                  <h4 className="font-bold text-base text-[#6b0218] mb-4 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-lg">account_balance</span> Rekening Resmi PT
+                  </h4>
+                  <p className="text-xs text-[#574141] font-['Public_Sans'] mb-3">
+                    <strong>Bank Jabar Banten (BJB)</strong> KCP Cibadak<br/>
+                    Atas Nama: <span className="font-bold text-[#1c1c19]">PT Media Jurnal Sukabumi</span><br/>
+                    No. Rekening: <span className="font-bold text-[#6b0218]">0122-4504-14100</span>
+                  </p>
+                  <div className="pt-3 border-t border-[#debfbf]">
+                    <p className="text-xs text-[#574141]">
+                      <strong>Email Redaksi:</strong><br/>
+                      redaksi@jurnalsukabumi.com
+                    </p>
                   </div>
                 </div>
               </div>
