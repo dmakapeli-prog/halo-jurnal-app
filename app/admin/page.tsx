@@ -52,8 +52,11 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const [fetchError, setFetchError] = useState<string | null>(null)
+
   const fetchAdminReports = async () => {
     setLoading(true)
+    setFetchError(null)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
@@ -70,7 +73,7 @@ export default function AdminDashboardPage() {
         .select(`
           *,
           profiles:user_id(full_name, phone, role, ktp_photo_url, ktp_verified),
-          chat_messages(id, read_at, sender_id)
+          chat_messages(id, sender_id, created_at)
         `)
         .order('created_at', { ascending: false })
 
@@ -90,7 +93,28 @@ export default function AdminDashboardPage() {
         query = query.or(`judul.ilike.%${searchQuery}%,lokasi.ilike.%${searchQuery}%`)
       }
 
-      const { data, error } = await query
+      let { data, error } = await query
+
+      // Fallback jika kueri relasi bertingkat gagal (misal kolom read_at atau FK tidak terdeteksi)
+      if (error && error.message) {
+        console.warn('Primary query failed, attempting simplified query fallback...', error)
+        let fallbackQuery = supabase
+          .from('laporan')
+          .select('*')
+          .order('created_at', { ascending: false })
+
+        if (selectedCategory !== 'Semua Kategori') fallbackQuery = fallbackQuery.eq('kategori', selectedCategory)
+        if (selectedStatus !== 'Semua Status') fallbackQuery = fallbackQuery.eq('status', selectedStatus.toLowerCase())
+        if (selectedJenis !== 'Semua Jenis') fallbackQuery = fallbackQuery.eq('jenis', selectedJenis.toLowerCase())
+        if (searchQuery.trim()) fallbackQuery = fallbackQuery.or(`judul.ilike.%${searchQuery}%,lokasi.ilike.%${searchQuery}%`)
+
+        const fallbackRes = await fallbackQuery
+        if (fallbackRes.data) {
+          data = fallbackRes.data
+        } else {
+          setFetchError(error.message)
+        }
+      }
 
       if (data) {
         setReports(data)
@@ -104,8 +128,9 @@ export default function AdminDashboardPage() {
 
         setStats({ total, diterima, diproses, ditindaklanjuti, selesai })
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching admin reports:', err)
+      setFetchError(err.message || 'Terjadi kesalahan saat memuat data laporan.')
     } finally {
       setLoading(false)
     }
@@ -158,13 +183,32 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
+        {/* Error banner if query fails */}
+        {fetchError && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl flex items-center justify-between gap-4 shadow-sm mb-6">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-red-600 text-2xl">error</span>
+              <div>
+                <p className="font-bold text-sm text-red-900">Gagal Memuat Data Supabase</p>
+                <p className="text-xs text-red-800">{fetchError}</p>
+              </div>
+            </div>
+            <button
+              onClick={fetchAdminReports}
+              className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 transition-colors shrink-0"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        )}
+
         {/* Warning banner if Admin role not active */}
-        {currentProfile && currentProfile.role !== 'admin' && currentProfile.role !== 'superadmin' && (
+        {(!currentProfile || (currentProfile.role !== 'admin' && currentProfile.role !== 'superadmin')) && (
           <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl flex items-center justify-between gap-4 shadow-sm mb-6">
             <div className="flex items-center gap-3">
               <span className="material-symbols-outlined text-amber-600 text-2xl">warning</span>
               <div>
-                <p className="font-bold text-sm text-amber-900">Perhatian: Role Akun Belum Terdaftar Sebagai Admin</p>
+                <p className="font-bold text-sm text-amber-900">Perhatian: Role Akun Belum Terdaftar Sebagai Admin / RLS Aktif</p>
                 <p className="text-xs text-amber-800">
                   Sistem Supabase RLS menyembunyikan data laporan privat jika role akun di tabel profiles bukan Admin. Aktifkan role Admin agar seluruh data laporan dan chat muncul.
                 </p>
@@ -313,7 +357,7 @@ export default function AdminDashboardPage() {
                   reports.map((r) => {
                     const totalChat = r.chat_messages ? r.chat_messages.length : 0
                     const unreadChat = r.chat_messages
-                      ? r.chat_messages.filter((m: any) => !m.read_at && m.sender_id === r.user_id).length
+                      ? r.chat_messages.filter((m: any) => m.read_at !== undefined && !m.read_at && m.sender_id === r.user_id).length
                       : 0
                     const reporterName = r.profiles?.full_name || 'Pelapor Terdaftar'
                     const reporterPhone = r.profiles?.phone ? `Telp: ${r.profiles.phone}` : (r.profiles?.role || 'Citizen')
