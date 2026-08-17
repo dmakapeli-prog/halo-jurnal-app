@@ -68,3 +68,14 @@ textarea:focus,
 select:focus {
   outline: none;
 }
+
+/* Hide Next.js dev overlay indicator badge */
+nextjs-portal,
+[data-nextjs-toast],
+[class*="nextjs-portal"],
+#nextjs-dev-overlay {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
