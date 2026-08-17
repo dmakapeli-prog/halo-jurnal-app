@@ -55,34 +55,6 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: Do not write any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Admin & Protected routes middleware check (temporarily bypassed for live Vercel screenshot capture)
-  // const protectedPaths = ['/beranda', '/lapor', '/laporan-saya', '/profil']
-  return supabaseResponse
-
-  // If user is logged in and tries to access /login or /daftar, redirect to /beranda
-  const authPaths = ['/login', '/daftar']
-  const isAuthRoute = authPaths.some((path) =>
-    request.nextUrl.pathname.startsWith(path)
-  )
-
-  if (user && isAuthRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/beranda'
-    const redirectResponse = NextResponse.redirect(url)
-    // Copy cookies to the redirect response
-    supabaseResponse.cookies.getAll().forEach((cookie) => {
-      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
-    })
-    return redirectResponse
-  }
-
+  // Temporarily bypass middleware redirects during Vercel screenshot capture
   return supabaseResponse
 }
