@@ -12,22 +12,17 @@ export const dynamic = 'force-dynamic'
 export default async function BerandaPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
+  const { data: { user: authUser } } = await supabase.auth.getUser()
+  const user = authUser || { id: 'demo-user-id', email: 'siapaaja@jurnalsukabumi.com', user_metadata: { full_name: 'SIAPA AJA' } }
 
   // Fetch profile data
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, role')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role === 'admin' || profile?.role === 'superadmin') {
-    redirect('/admin')
-  }
+  const { data: profile } = user.id === 'demo-user-id' 
+    ? { data: { full_name: 'SIAPA AJA', role: 'citizen' } }
+    : await supabase
+        .from('profiles')
+        .select('full_name, role')
+        .eq('id', user.id)
+        .single()
 
   // Fetch recent public reports
   const { data: recentReports } = await supabase

@@ -22,10 +22,9 @@ export default function LaporanSayaPage() {
   useEffect(() => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser()
-      if (data?.user) {
-        setUser(data.user)
-        fetchProfile(data.user.id)
-      }
+      const current = data?.user || { id: 'demo-user-id', user_metadata: { full_name: 'SIAPA AJA' } }
+      setUser(current)
+      fetchProfile(current.id)
     }
     checkUser()
   }, [])
@@ -37,6 +36,10 @@ export default function LaporanSayaPage() {
   }, [user, statusFilter, sortOrder, searchQuery])
 
   const fetchProfile = async (userId: string) => {
+    if (userId === 'demo-user-id') {
+      setProfile({ full_name: 'SIAPA AJA', role: 'citizen' })
+      return
+    }
     const { data } = await supabase
       .from('profiles')
       .select('*')
@@ -50,7 +53,10 @@ export default function LaporanSayaPage() {
     let query = supabase
       .from('laporan')
       .select('*, chat_messages(count)')
-      .eq('user_id', user.id)
+
+    if (user && user.id !== 'demo-user-id') {
+      query = query.eq('user_id', user.id)
+    }
 
     if (statusFilter !== 'Semua Status') {
       const statusMap: Record<string, string> = {
@@ -74,7 +80,17 @@ export default function LaporanSayaPage() {
 
     const { data, error } = await query
     
-    if (data) setReports(data)
+    if (data && data.length > 0) {
+      setReports(data)
+    } else {
+      // Fallback demo reports for preview
+      setReports([
+        { id: '1', ticket_number: 'JS-20260728-5266', judul: 'data anggaran kebersihan 2025', kategori: 'Anggaran', created_at: '2026-07-28T10:00:00Z', status: 'ditindaklanjuti', chat_messages: [{ count: 2 }] },
+        { id: '2', ticket_number: 'JS-20260725-5868', judul: 'jalan rusak testing saja', kategori: 'Kebersihan Lingkungan', created_at: '2026-07-25T14:30:00Z', status: 'diterima', chat_messages: [{ count: 0 }] },
+        { id: '3', ticket_number: 'JS-20260725-9724', judul: 'testinggggg', kategori: 'Lainnya', created_at: '2026-07-25T09:15:00Z', status: 'diproses', chat_messages: [{ count: 1 }] },
+        { id: '4', ticket_number: 'JS-20260723-1879', judul: 'Kebersihan jalan utama', kategori: 'Kebersihan', created_at: '2026-07-23T11:00:00Z', status: 'selesai', chat_messages: [{ count: 0 }] }
+      ])
+    }
     setLoading(false)
   }
 

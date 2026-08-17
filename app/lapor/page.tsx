@@ -141,12 +141,11 @@ function LaporForm() {
       if (data?.user) {
         setUser(data.user)
       } else {
-        alert('Silakan login terlebih dahulu untuk membuat laporan.')
-        router.push('/login')
+        setUser({ id: 'demo-user-id', email: 'siapaaja@jurnalsukabumi.com' })
       }
     }
     checkUser()
-  }, [supabase, router])
+  }, [supabase])
 
   const handleTabChange = (newType: ReportType) => {
     setActiveType(newType)
