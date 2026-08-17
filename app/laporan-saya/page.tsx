@@ -145,10 +145,11 @@ export default function LaporanSayaPage() {
           </nav>
         </aside>
 
-        {/* Main Content */}
-        <main className="lg:ml-[280px] flex-1 overflow-y-auto p-4 sm:p-5 md:p-[40px] pb-24">
-          <div className="max-w-6xl mx-auto">
-            {/* Header & Stats */}
+        {/* Main Content & Footer Wrapper */}
+        <div className="lg:ml-[280px] flex-1 flex flex-col min-h-[calc(100vh-80px)] min-w-0">
+          <main className="flex-1 p-4 sm:p-5 md:p-[40px] pb-12">
+            <div className="max-w-6xl mx-auto">
+              {/* Header & Stats */}
             <div className="mb-6 md:mb-10 mt-4 md:mt-0">
               <h1 className="font-['Libre_Franklin'] text-[24px] sm:text-[32px] font-bold text-[#1c1c19] mb-2">Laporan Saya</h1>
               <p className="text-[#574141] font-['Public_Sans'] text-[16px]">Pantau status aspirasi dan keluhan Anda secara real-time.</p>
@@ -325,11 +326,11 @@ export default function LaporanSayaPage() {
                 <div className="text-center py-8 text-[#574141]">Tidak ada laporan.</div>
               )}
             </div>
-          </div>
-        </main>
+            </div>
+          </main>
+          <Footer />
+        </div>
       </div>
-
-      <Footer />
     </div>
   )
 }

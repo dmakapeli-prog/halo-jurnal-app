@@ -379,8 +379,9 @@ function FeedPublikContent() {
           </div>
         )}
 
-        {/* Feed Canvas */}
-        <section className="flex-1 lg:ml-[280px] p-4 sm:p-5 md:p-[40px] bg-[#fcf9f4]">
+        {/* Feed Canvas & Footer Wrapper */}
+        <div className="flex-1 lg:ml-[280px] flex flex-col min-h-[calc(100vh-80px)] min-w-0">
+          <section className="flex-1 p-4 sm:p-5 md:p-[40px] bg-[#fcf9f4]">
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
               <div>
@@ -568,11 +569,11 @@ function FeedPublikContent() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </>
-  )
+        <Footer />
+      </div>
+    </main>
+  </>
+)
 }
 
 export default function FeedPublikPage() {
