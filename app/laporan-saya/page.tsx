@@ -81,15 +81,15 @@ export default function LaporanSayaPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'selesai':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-green-100 text-green-700">Selesai</span>
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-green-100 text-green-700 whitespace-nowrap">Selesai</span>
       case 'diproses':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-yellow-100 text-yellow-700">Diproses</span>
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-yellow-100 text-yellow-700 whitespace-nowrap">Diproses</span>
       case 'diterima':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-gray-100 text-gray-700">Diterima</span>
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-gray-100 text-gray-700 whitespace-nowrap">Diterima</span>
       case 'ditindaklanjuti':
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-purple-100 text-purple-700">Ditindaklanjuti</span>
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-purple-100 text-purple-700 whitespace-nowrap">Ditindaklanjuti</span>
       default:
-        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-gray-100 text-gray-700 capitalize">{status}</span>
+        return <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold bg-gray-100 text-gray-700 capitalize whitespace-nowrap">{status}</span>
     }
   }
 
@@ -155,27 +155,29 @@ export default function LaporanSayaPage() {
             </div>
 
             {/* Stats — 5 Clickable Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-8 md:mb-10">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4 mb-8 md:mb-10">
               {statusCards.map(card => {
                 const isActive = statusFilter === card.key
                 return (
                   <button
                     key={card.key}
                     onClick={() => setStatusFilter(card.key)}
-                    className={`p-4 md:p-5 rounded-xl border shadow-sm flex items-center gap-3 md:gap-4 transition-all cursor-pointer text-left ${
+                    className={`px-3 py-3 sm:px-3.5 sm:py-3.5 md:p-4 rounded-xl border shadow-sm flex items-center gap-2.5 sm:gap-3 md:gap-3.5 transition-all cursor-pointer text-left min-w-0 ${
                       isActive
                         ? `${card.activeBg} ${card.activeText} border-transparent shadow-md scale-[1.02]`
                         : 'bg-[#fcf9f4] border-[#debfbf] hover:border-[#6b0218] hover:shadow-md'
                     }`}
                   >
-                    <div className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center shrink-0 ${
+                    <div className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center shrink-0 ${
                       isActive ? 'bg-white/20' : card.bgIcon
                     }`}>
-                      <span className={`material-symbols-outlined ${isActive ? 'text-white' : card.textIcon}`}>{card.icon}</span>
+                      <span className={`material-symbols-outlined text-lg sm:text-xl md:text-2xl ${isActive ? 'text-white' : card.textIcon}`}>{card.icon}</span>
                     </div>
-                    <div>
-                      <p className={`text-[11px] font-bold uppercase tracking-wider ${isActive ? 'text-white/80' : 'text-[#574141]'}`}>{card.label}</p>
-                      <p className="text-xl md:text-2xl font-bold">{card.count}</p>
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <p className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-tight sm:tracking-normal truncate ${isActive ? 'text-white/90' : 'text-[#574141]'}`} title={card.label}>
+                        {card.label}
+                      </p>
+                      <p className="text-lg sm:text-xl md:text-2xl font-bold leading-tight truncate">{card.count}</p>
                     </div>
                   </button>
                 )

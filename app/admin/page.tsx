@@ -225,55 +225,55 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-xl border border-[#debfbf] shadow-sm">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-[#574141] uppercase tracking-wider">Total Laporan</span>
-              <div className="w-8 h-8 rounded-full bg-[#6b0218]/10 text-[#6b0218] flex items-center justify-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-8">
+          <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#debfbf] shadow-sm min-w-0">
+            <div className="flex justify-between items-start mb-2 gap-2">
+              <span className="text-[10px] sm:text-xs font-bold text-[#574141] uppercase tracking-wider truncate min-w-0" title="Total Laporan">Total Laporan</span>
+              <div className="w-8 h-8 rounded-full bg-[#6b0218]/10 text-[#6b0218] flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-base">assignment</span>
               </div>
             </div>
-            <p className="text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.total}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.total}</p>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-[#debfbf] shadow-sm">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-blue-700 uppercase tracking-wider">Diterima</span>
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center">
+          <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#debfbf] shadow-sm min-w-0">
+            <div className="flex justify-between items-start mb-2 gap-2">
+              <span className="text-[10px] sm:text-xs font-bold text-blue-700 uppercase tracking-wider truncate min-w-0" title="Diterima">Diterima</span>
+              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-base">inbox</span>
               </div>
             </div>
-            <p className="text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.diterima}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.diterima}</p>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-[#debfbf] shadow-sm">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-yellow-700 uppercase tracking-wider">Diproses</span>
-              <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-800 flex items-center justify-center">
+          <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#debfbf] shadow-sm min-w-0">
+            <div className="flex justify-between items-start mb-2 gap-2">
+              <span className="text-[10px] sm:text-xs font-bold text-yellow-700 uppercase tracking-wider truncate min-w-0" title="Diproses">Diproses</span>
+              <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-800 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-base">pending</span>
               </div>
             </div>
-            <p className="text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.diproses}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.diproses}</p>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-[#debfbf] shadow-sm">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-purple-700 uppercase tracking-wider">Ditindaklanjuti</span>
-              <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center">
+          <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#debfbf] shadow-sm min-w-0">
+            <div className="flex justify-between items-start mb-2 gap-2">
+              <span className="text-[10px] sm:text-xs font-bold text-purple-700 uppercase tracking-wider truncate min-w-0" title="Ditindaklanjuti">Ditindaklanjuti</span>
+              <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-base">gavel</span>
               </div>
             </div>
-            <p className="text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.ditindaklanjuti}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.ditindaklanjuti}</p>
           </div>
 
-          <div className="bg-white p-5 rounded-xl border border-[#debfbf] shadow-sm col-span-2 sm:col-span-1">
-            <div className="flex justify-between items-start mb-2">
-              <span className="text-xs font-bold text-green-700 uppercase tracking-wider">Selesai</span>
-              <div className="w-8 h-8 rounded-full bg-green-100 text-green-800 flex items-center justify-center">
+          <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#debfbf] shadow-sm col-span-2 sm:col-span-1 min-w-0">
+            <div className="flex justify-between items-start mb-2 gap-2">
+              <span className="text-[10px] sm:text-xs font-bold text-green-700 uppercase tracking-wider truncate min-w-0" title="Selesai">Selesai</span>
+              <div className="w-8 h-8 rounded-full bg-green-100 text-green-800 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-base">check_circle</span>
               </div>
             </div>
-            <p className="text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.selesai}</p>
+            <p className="text-2xl sm:text-3xl font-bold font-['Libre_Franklin'] text-[#1c1c19]">{stats.selesai}</p>
           </div>
         </div>
 
