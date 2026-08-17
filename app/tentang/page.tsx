@@ -57,7 +57,7 @@ export default async function TentangPage() {
               <div className="absolute inset-0 bg-[#755b00]/20 rounded-xl transform rotate-3 translate-x-4"></div>
               <div className="absolute inset-0 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20 shadow-2xl overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="w-full h-full object-cover" alt="Government building" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0NxRGWMRGlcGKuj76lq4BPkQ2zMcjy4N8QUJF7V9wkxp-s8VGMMY_r-cXLWcr8KNAnldnNkFi_sRzg-cUjw6O25bhl1JhLW4vTRmHx8lMrgc57yqrMUogGUL8ndy0NSwDsXulDMOZodFw6m6pGd_qsjqpDmjXOu24gsxLjHXqm54DLm1xJm4GIj-vdxdLh3f2pkz6TtoVrUp-slbY_WLMSQUOepv7Lo7aIWKXQk09Bl5YqK8DtsQuODm5Z24gj84EcIfLtmvclviI" />
+                <img className="w-full h-full object-cover" alt="PT Media Jurnal Sukabumi Banner" src="/hero-banner.jpg" />
               </div>
             </div>
           </div>

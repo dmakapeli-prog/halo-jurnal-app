@@ -300,7 +300,7 @@ export default function DaftarPage() {
             <div
               className="w-full h-full bg-contain bg-no-repeat"
               style={{
-                backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuB6XJq9pV2g1YVNAIMnhfoTDWXMkWbe20Phq7Q_7BzcovN652KHHZKLbZ-F_3ME72WHEkadxC2VL_iixg7HUXI1er2q-iZ1E3Ha1OBoyHCuS2RWdeMFcvr41lcpUViT6k8F0p6Y61CDwqDyoap_QilO8e6CNsoeq3gdNm2KcCQZmY6Rb7pIi1fKkdCZ7GLX_9lkkZaE4Vqu2Ja6JZaqJqWHT_-N6kuqHQlEl1ZA3q-4797UNc6azrHVL6FkRegcB6Box43HqWru0xoj')",
+                backgroundImage: "url('/hero-banner.jpg')",
               }}
             ></div>
           </div>

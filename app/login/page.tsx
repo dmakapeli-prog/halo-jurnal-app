@@ -66,7 +66,7 @@ function LoginPageContent() {
             <div
               className="w-full h-full bg-cover bg-center opacity-40 mix-blend-overlay"
               style={{
-                backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIYq5haBfbaEBOxtURRJ3ZvdALKSRDU7blMYR9t6tdrMx2rv4sNeh9sW1wTZrFSovfipp8whDu7PjF41rSbaiXGZtKMgDgAtJg-PnFs9Mz6Oib4KItBpQ_XH8DkCtuIxK_zinGd6CVRAZyJtyLUDFJWvH2MnIpEGk6utDrmAwPeIxNOkteNwYxfdLfyEWGVsym6s1SEG0bpjWsM9bGzrBknVzaLz-NGjK2e2ETYS6mQwJ_PNrNh8MSY6p7EJqiIE6bGOmDelZPSsse')",
+                backgroundImage: "url('/hero-banner.jpg')",
               }}
             ></div>
           </div>

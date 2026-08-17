@@ -68,8 +68,8 @@ export default async function BerandaPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="w-full h-full object-cover"
-              alt="A grand architectural view of a modern government building with clean lines and large glass facades, captured during a golden hour sunset."
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP1CNHWZGy7QLWsmshV7RosCgpACf3cjk1Z9XdfMJWMwCky6Z3PWCUDmw3Uw7qyT9CEoZgyiPOa3YdpyIl2jWtVeP0XDxcHK4qDHNpmZb9zgAaskVNKzzcuLur63mI4FfABgRY0JIk3y29DO7gcmIy3znNZGkgGVpwRxkWyq0mV0iMBwXBgvcTwacyygcNnw_pvDuzvmTqmNKufLzNOuok7LQcLrlxKOtlihXG6BnAx2apKgMo2CTIrbI6V0jTQUE05fLLRho3s9hF"
+              alt="PT Media Jurnal Sukabumi Banner"
+              src="/hero-banner.jpg"
             />
           </div>
           <div className="relative z-20 text-center px-5 sm:px-6 max-w-[56rem]">
