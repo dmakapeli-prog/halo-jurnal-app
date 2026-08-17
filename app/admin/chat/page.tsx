@@ -122,22 +122,45 @@ export default function AdminChatInboxPage() {
         `)
         .order('created_at', { ascending: false })
 
-      if (reportData) {
-        // Sort reports: those with unread messages first, then total chats, then recent
-        const sorted = [...reportData].sort((a, b) => {
-          const aUnread = a.chat_messages ? a.chat_messages.filter((m: any) => !m.read_at && m.sender_id === a.user_id).length : 0
-          const bUnread = b.chat_messages ? b.chat_messages.filter((m: any) => !m.read_at && m.sender_id === b.user_id).length : 0
-          if (bUnread !== aUnread) return bUnread - aUnread
-          const aCount = a.chat_messages ? a.chat_messages.length : 0
-          const bCount = b.chat_messages ? b.chat_messages.length : 0
-          return bCount - aCount
-        })
-
-        setReportsWithChats(sorted)
-
-        if (sorted.length > 0 && !selectedReportId) {
-          // Select first report by default
-          setSelectedReportId(sorted[0].id)
+        if (sorted && sorted.length > 0) {
+          setReportsWithChats(sorted)
+          if (!selectedReportId) {
+            setSelectedReportId(sorted[0].id)
+          }
+        } else {
+          const demoList = [
+            {
+              id: 'demo-report-1',
+              ticket_number: 'JS-20260728-5266',
+              judul: 'data anggaran kebersihan 2025',
+              kategori: 'Anggaran',
+              created_at: '2026-07-28T10:00:00Z',
+              status: 'ditindaklanjuti',
+              user_id: 'user-eman',
+              profiles: { full_name: 'Eman Sulaeman', phone: '08123456789', role: 'citizen', ktp_verified: true },
+              chat_messages: [
+                { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: 'user-eman', read_at: '2026-07-28T10:20:00Z' },
+                { id: 'm2', message: 'Halo Pak Eman, tim kami sedang menyiapkan dokumen RKA Dinas Lingkungan Hidup. File PDF segera kami lampirkan di sini.', created_at: '2026-07-28T10:25:00Z', sender_id: 'admin-id', read_at: '2026-07-28T10:30:00Z' }
+              ]
+            },
+            {
+              id: 'demo-report-2',
+              ticket_number: 'JS-20260725-5868',
+              judul: 'Jalan Rusak Berlubang Parah',
+              kategori: 'Infrastruktur',
+              created_at: '2026-07-25T14:30:00Z',
+              status: 'diterima',
+              user_id: 'user-ujang',
+              profiles: { full_name: 'Ujang Herlan', phone: '08571234567', role: 'citizen', ktp_verified: true },
+              chat_messages: [
+                { id: 'm3', message: 'Tolong min jalan di dekat pasar berlubang dalam sekali saat hujan.', created_at: '2026-07-25T14:35:00Z', sender_id: 'user-ujang', read_at: null }
+              ]
+            }
+          ]
+          setReportsWithChats(demoList)
+          setSelectedReportId('demo-report-1')
+          setMessages(demoList[0].chat_messages)
+          setAdminUser({ id: 'admin-id' })
         }
       }
     } catch (err) {

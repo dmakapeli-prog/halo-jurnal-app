@@ -37,19 +37,6 @@ export async function updateSession(request: NextRequest) {
           supabaseResponse = NextResponse.next({
             request,
           })
-          cookiesToSet.forEach(({ name, value, options }) => {
-            const maxAge = (options && typeof options.maxAge === 'number' && options.maxAge > 0)
-              ? options.maxAge
-              : 60 * 60 * 24 * 14
-            const opts = {
-              ...options,
-              maxAge,
-              path: options?.path || '/',
-              sameSite: options?.sameSite || 'lax',
-              secure: process.env.NODE_ENV === 'production',
-            }
-            supabaseResponse.cookies.set({ name, value, ...opts })
-          })
         },
       },
     }

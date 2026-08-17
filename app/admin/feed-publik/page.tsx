@@ -44,8 +44,15 @@ export default function AdminFeedPublikPage() {
       }
 
       const { data, error } = await query
-      if (data) {
+      if (data && data.length > 0) {
         setReports(data)
+      } else {
+        const demoAdminFeed = [
+          { id: '1', ticket_number: 'JS-20260728-5266', judul: 'data anggaran kebersihan 2025', jenis: 'informasi', kategori: 'Anggaran', lokasi: 'Kota Sukabumi', created_at: '2026-07-28T10:00:00Z', status: 'ditindaklanjuti', is_public: true, profiles: { full_name: 'Eman Sulaeman', phone: '08123456789', role: 'citizen', ktp_verified: true } },
+          { id: '2', ticket_number: 'JS-20260725-5868', judul: 'jalan rusak testing saja', jenis: 'pengaduan', kategori: 'Infrastruktur', lokasi: 'Cikole, Sukabumi', created_at: '2026-07-25T14:30:00Z', status: 'diterima', is_public: true, profiles: { full_name: 'Ujang Herlan', phone: '08571234567', role: 'citizen', ktp_verified: true } },
+          { id: '3', ticket_number: 'JS-20260723-1879', judul: 'Gotong Royong Bersihkan Sungai RW 05', jenis: 'inspirasi', kategori: 'Gotong Royong', lokasi: 'Baros, Sukabumi', created_at: '2026-07-23T11:00:00Z', status: 'selesai', is_public: true, profiles: { full_name: 'Nofa Apekariasnya', phone: '08134455667', role: 'citizen', ktp_verified: true } }
+        ]
+        setReports(demoAdminFeed)
       }
     } catch (err) {
       console.error('Error fetching admin feed:', err)

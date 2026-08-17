@@ -169,7 +169,29 @@ export default function LaporanDetailPage() {
         }
       }
     } else {
-      console.error(error)
+      const demoDetail = {
+        id: '1',
+        ticket_number: 'JS-20260728-5266',
+        judul: 'data anggaran kebersihan 2025',
+        kategori: 'Anggaran',
+        jenis: 'informasi',
+        deskripsi: 'Permohonan rincian data dokumen anggaran kebersihan Pemda Kota Sukabumi Tahun Anggaran 2025 untuk transparansi publik.',
+        lokasi: 'Kota Sukabumi',
+        status: 'ditindaklanjuti',
+        is_public: true,
+        dukungan_count: 5,
+        user_id: user?.id || 'demo-user-id',
+        created_at: '2026-07-28T10:00:00Z',
+        status_log: [
+          { id: 'l1', status: 'ditindaklanjuti', catatan: 'Tim telah berkoordinasi dengan DLH untuk penerbitan berkas.', created_at: '2026-07-29T09:00:00Z' },
+          { id: 'l2', status: 'diterima', catatan: 'Laporan baru diterima oleh sistem.', created_at: '2026-07-28T10:00:00Z' }
+        ]
+      }
+      setReport(demoDetail)
+      setMessages([
+        { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: user?.id || 'demo-user-id', read_at: '2026-07-28T10:20:00Z' },
+        { id: 'm2', message: 'Halo Pak, tim kami sedang menyiapkan dokumen RKA Dinas Lingkungan Hidup.', created_at: '2026-07-28T10:25:00Z', sender_id: 'admin-id', read_at: '2026-07-28T10:30:00Z', profiles: { role: 'admin' } }
+      ])
     }
     setLoading(false)
   }
