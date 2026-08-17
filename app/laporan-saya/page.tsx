@@ -162,22 +162,24 @@ export default function LaporanSayaPage() {
                   <button
                     key={card.key}
                     onClick={() => setStatusFilter(card.key)}
-                    className={`px-3 py-3 sm:px-3.5 sm:py-3.5 md:p-4 rounded-xl border shadow-sm flex items-center gap-2.5 sm:gap-3 md:gap-3.5 transition-all cursor-pointer text-left min-w-0 ${
+                    className={`p-3 sm:p-3.5 md:p-4 rounded-xl border shadow-sm flex flex-col justify-between transition-all cursor-pointer text-left min-w-0 ${
                       isActive
                         ? `${card.activeBg} ${card.activeText} border-transparent shadow-md scale-[1.02]`
                         : 'bg-[#fcf9f4] border-[#debfbf] hover:border-[#6b0218] hover:shadow-md'
                     }`}
                   >
-                    <div className={`w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center shrink-0 ${
-                      isActive ? 'bg-white/20' : card.bgIcon
-                    }`}>
-                      <span className={`material-symbols-outlined text-lg sm:text-xl md:text-2xl ${isActive ? 'text-white' : card.textIcon}`}>{card.icon}</span>
+                    <div className="flex items-center justify-between gap-2 w-full mb-2">
+                      <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0 ${
+                        isActive ? 'bg-white/20' : card.bgIcon
+                      }`}>
+                        <span className={`material-symbols-outlined text-base sm:text-lg ${isActive ? 'text-white' : card.textIcon}`}>{card.icon}</span>
+                      </div>
+                      <span className="text-xl sm:text-2xl font-bold">{card.count}</span>
                     </div>
-                    <div className="min-w-0 flex-1 overflow-hidden">
-                      <p className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-tight sm:tracking-normal truncate ${isActive ? 'text-white/90' : 'text-[#574141]'}`} title={card.label}>
+                    <div className="w-full">
+                      <p className={`text-[10px] sm:text-[11px] font-bold uppercase tracking-tight leading-tight whitespace-nowrap overflow-hidden text-ellipsis ${isActive ? 'text-white/90' : 'text-[#574141]'}`} title={card.label}>
                         {card.label}
                       </p>
-                      <p className="text-lg sm:text-xl md:text-2xl font-bold leading-tight truncate">{card.count}</p>
                     </div>
                   </button>
                 )
