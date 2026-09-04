@@ -122,7 +122,8 @@ export default function AdminChatInboxPage() {
         `)
         .order('created_at', { ascending: false })
 
-        if (sorted && sorted.length > 0) {
+      const sorted = reportData
+      if (sorted && sorted.length > 0) {
           setReportsWithChats(sorted)
           if (!selectedReportId) {
             setSelectedReportId(sorted[0].id)
@@ -162,7 +163,6 @@ export default function AdminChatInboxPage() {
           setMessages(demoList[0].chat_messages)
           setAdminUser({ id: 'admin-id' })
         }
-      }
     } catch (err) {
       console.error('Error fetching conversations:', err)
     }

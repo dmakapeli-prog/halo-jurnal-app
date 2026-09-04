@@ -62,20 +62,29 @@ body {
   background: #8b7171;
 }
 
-/* Focus ring for form inputs */
+/* Focus ring & highlight overrides to eliminate blue glow during screenshots */
+*:focus,
+*:focus-visible,
+*:focus-within,
 input:focus,
 textarea:focus,
-select:focus {
-  outline: none;
+select:focus,
+button:focus,
+a:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-/* Hide Next.js dev overlay indicator badge */
+/* Hide Next.js dev overlay indicator badge & toasts */
 nextjs-portal,
 [data-nextjs-toast],
 [class*="nextjs-portal"],
-#nextjs-dev-overlay {
+#nextjs-dev-overlay,
+button[aria-label*="Next.js"],
+[data-next-badge] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
+

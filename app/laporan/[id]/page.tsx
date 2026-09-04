@@ -137,40 +137,10 @@ export default function LaporanDetailPage() {
 
   const fetchReportDetail = async () => {
     setLoading(true)
-    
-    // Fetch report with relations
-    const { data, error } = await supabase
-      .from('laporan')
-      .select(`
-        *,
-        laporan_lampiran(*),
-        status_log(*)
-      `)
-      .eq('id', id)
-      .single()
-      
-    if (data) {
-      if (data.status_log) {
-        data.status_log.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      }
-      setReport(data)
 
-      // Check if user has liked
-      if (user) {
-        const { data: likeData } = await supabase
-          .from('dukungan')
-          .select('id')
-          .eq('laporan_id', id)
-          .eq('user_id', user.id)
-          .single()
-          
-        if (likeData) {
-          setHasLiked(true)
-        }
-      }
-    } else {
+    if (id === 'demo-1' || id.startsWith('demo')) {
       const demoDetail = {
-        id: '1',
+        id: 'demo-1',
         ticket_number: 'JS-20260728-5266',
         judul: 'data anggaran kebersihan 2025',
         kategori: 'Anggaran',
@@ -180,7 +150,7 @@ export default function LaporanDetailPage() {
         status: 'ditindaklanjuti',
         is_public: true,
         dukungan_count: 5,
-        user_id: user?.id || 'demo-user-id',
+        user_id: 'demo-user-id',
         created_at: '2026-07-28T10:00:00Z',
         status_log: [
           { id: 'l1', status: 'ditindaklanjuti', catatan: 'Tim telah berkoordinasi dengan DLH untuk penerbitan berkas.', created_at: '2026-07-29T09:00:00Z' },
@@ -189,11 +159,75 @@ export default function LaporanDetailPage() {
       }
       setReport(demoDetail)
       setMessages([
-        { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: user?.id || 'demo-user-id', read_at: '2026-07-28T10:20:00Z' },
+        { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: 'demo-user-id', read_at: '2026-07-28T10:20:00Z' },
         { id: 'm2', message: 'Halo Pak, tim kami sedang menyiapkan dokumen RKA Dinas Lingkungan Hidup.', created_at: '2026-07-28T10:25:00Z', sender_id: 'admin-id', read_at: '2026-07-28T10:30:00Z', profiles: { role: 'admin' } }
       ])
+      setUser({ id: 'demo-user-id' })
+      setLoading(false)
+      return
     }
-    setLoading(false)
+
+    try {
+      // Fetch report with relations
+      const { data, error } = await supabase
+        .from('laporan')
+        .select(`
+          *,
+          laporan_lampiran(*),
+          status_log(*)
+        `)
+        .eq('id', id)
+        .single()
+        
+      if (data) {
+        if (data.status_log) {
+          data.status_log.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        }
+        setReport(data)
+  
+        // Check if user has liked
+        if (user) {
+          const { data: likeData } = await supabase
+            .from('dukungan')
+            .select('id')
+            .eq('laporan_id', id)
+            .eq('user_id', user.id)
+            .single()
+            
+          if (likeData) {
+            setHasLiked(true)
+          }
+        }
+      } else {
+        const demoDetail = {
+          id: 'demo-1',
+          ticket_number: 'JS-20260728-5266',
+          judul: 'data anggaran kebersihan 2025',
+          kategori: 'Anggaran',
+          jenis: 'informasi',
+          deskripsi: 'Permohonan rincian data dokumen anggaran kebersihan Pemda Kota Sukabumi Tahun Anggaran 2025 untuk transparansi publik.',
+          lokasi: 'Kota Sukabumi',
+          status: 'ditindaklanjuti',
+          is_public: true,
+          dukungan_count: 5,
+          user_id: user?.id || 'demo-user-id',
+          created_at: '2026-07-28T10:00:00Z',
+          status_log: [
+            { id: 'l1', status: 'ditindaklanjuti', catatan: 'Tim telah berkoordinasi dengan DLH untuk penerbitan berkas.', created_at: '2026-07-29T09:00:00Z' },
+            { id: 'l2', status: 'diterima', catatan: 'Laporan baru diterima oleh sistem.', created_at: '2026-07-28T10:00:00Z' }
+          ]
+        }
+        setReport(demoDetail)
+        setMessages([
+          { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: user?.id || 'demo-user-id', read_at: '2026-07-28T10:20:00Z' },
+          { id: 'm2', message: 'Halo Pak, tim kami sedang menyiapkan dokumen RKA Dinas Lingkungan Hidup.', created_at: '2026-07-28T10:25:00Z', sender_id: 'admin-id', read_at: '2026-07-28T10:30:00Z', profiles: { role: 'admin' } }
+        ])
+      }
+    } catch (err) {
+      console.error('Error fetching detail:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleLike = async () => {
@@ -393,9 +427,9 @@ export default function LaporanDetailPage() {
       } />
 
       <main className="pt-16 md:pt-20 min-h-screen">
-        <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-80px)] h-auto">
+        <div className="flex flex-col lg:flex-row min-h-[calc(100vh-80px)] h-auto">
           {/* Left Column: Report Details */}
-          <section className="flex-grow overflow-y-auto p-4 sm:p-5 md:p-[40px] max-w-4xl lg:border-r border-[#debfbf] bg-[#fcf9f4] custom-scrollbar">
+          <section className="flex-grow p-4 sm:p-5 md:p-[40px] max-w-4xl lg:border-r border-[#debfbf] bg-[#fcf9f4]">
             {/* Breadcrumbs */}
             <nav className="flex items-center gap-2 mb-8 text-[#574141]">
               <Link href={isOwner ? "/laporan-saya" : "/feed-publik"} className="text-[14px] hover:underline">

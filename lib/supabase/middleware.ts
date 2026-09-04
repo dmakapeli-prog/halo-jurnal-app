@@ -42,6 +42,59 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  // Temporarily bypass middleware redirects during Vercel screenshot capture
+  const pathname = request.nextUrl.pathname
+
+  // Admin Route Protection Guard
+  if (pathname.startsWith('/admin')) {
+    try {
+      // Allow access to /admin/login, but redirect logged-in admins to dashboard
+      if (pathname === '/admin/login') {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', user.id)
+            .single()
+          if (profile?.role === 'admin' || profile?.role === 'superadmin') {
+            const url = request.nextUrl.clone()
+            url.pathname = '/admin'
+            return NextResponse.redirect(url)
+          }
+        }
+        return supabaseResponse
+      }
+
+      // Check user authentication for all other /admin routes
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/admin/login'
+        url.searchParams.set('next', pathname)
+        return NextResponse.redirect(url)
+      }
+
+      // Check role authorization in profiles table
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile || (profile.role !== 'admin' && profile.role !== 'superadmin')) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/admin/login'
+        url.searchParams.set('error', 'unauthorized')
+        return NextResponse.redirect(url)
+      }
+    } catch (err) {
+      console.error('Middleware admin auth error:', err)
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin/login'
+      return NextResponse.redirect(url)
+    }
+  }
+
   return supabaseResponse
 }
+

@@ -179,6 +179,46 @@ export default function AdminLaporanDetailPage() {
 
   const fetchReportDetail = async () => {
     setLoading(true)
+
+    if (id === 'demo-1' || id.startsWith('demo')) {
+      const demoDetail = {
+        id: 'demo-1',
+        ticket_number: 'JS-20260728-5266',
+        judul: 'data anggaran kebersihan 2025',
+        kategori: 'Anggaran',
+        jenis: 'informasi',
+        deskripsi: 'Permohonan rincian data dokumen anggaran kebersihan Pemda Kota Sukabumi Tahun Anggaran 2025 untuk transparansi publik.',
+        lokasi: 'Kota Sukabumi',
+        status: 'ditindaklanjuti',
+        is_public: true,
+        dukungan_count: 5,
+        user_id: 'user-eman',
+        created_at: '2026-07-28T10:00:00Z',
+        status_log: [
+          { id: 'l1', status: 'ditindaklanjuti', catatan: 'Tim telah berkoordinasi dengan DLH untuk penerbitan berkas.', created_at: '2026-07-29T09:00:00Z' },
+          { id: 'l2', status: 'diterima', catatan: 'Laporan baru diterima oleh sistem.', created_at: '2026-07-28T10:00:00Z' }
+        ]
+      }
+      setReport(demoDetail)
+      setNewStatus(demoDetail.status)
+      setIsPublic(demoDetail.is_public)
+      setReporterProfile({
+        id: 'user-eman',
+        full_name: 'Eman Sulaeman',
+        phone: '08123456789',
+        role: 'citizen',
+        ktp_verified: true,
+        ktp_photo_url: null
+      })
+      setMessages([
+        { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: 'user-eman', read_at: '2026-07-28T10:20:00Z' },
+        { id: 'm2', message: 'Halo Pak Eman, tim kami sedang menyiapkan dokumen RKA Dinas Lingkungan Hidup.', created_at: '2026-07-28T10:25:00Z', sender_id: 'admin-id', read_at: '2026-07-28T10:30:00Z', profiles: { role: 'admin' } }
+      ])
+      setAdminUser({ id: 'admin-id' })
+      setLoading(false)
+      return
+    }
+
     try {
       const { data, error } = await supabase
         .from('laporan')
@@ -214,7 +254,40 @@ export default function AdminLaporanDetailPage() {
           }
         }
       } else {
-        console.error(error)
+        const demoDetail = {
+          id: 'demo-1',
+          ticket_number: 'JS-20260728-5266',
+          judul: 'data anggaran kebersihan 2025',
+          kategori: 'Anggaran',
+          jenis: 'informasi',
+          deskripsi: 'Permohonan rincian data dokumen anggaran kebersihan Pemda Kota Sukabumi Tahun Anggaran 2025 untuk transparansi publik.',
+          lokasi: 'Kota Sukabumi',
+          status: 'ditindaklanjuti',
+          is_public: true,
+          dukungan_count: 5,
+          user_id: 'user-eman',
+          created_at: '2026-07-28T10:00:00Z',
+          status_log: [
+            { id: 'l1', status: 'ditindaklanjuti', catatan: 'Tim telah berkoordinasi dengan DLH untuk penerbitan berkas.', created_at: '2026-07-29T09:00:00Z' },
+            { id: 'l2', status: 'diterima', catatan: 'Laporan baru diterima oleh sistem.', created_at: '2026-07-28T10:00:00Z' }
+          ]
+        }
+        setReport(demoDetail)
+        setNewStatus(demoDetail.status)
+        setIsPublic(demoDetail.is_public)
+        setReporterProfile({
+          id: 'user-eman',
+          full_name: 'Eman Sulaeman',
+          phone: '08123456789',
+          role: 'citizen',
+          ktp_verified: true,
+          ktp_photo_url: null
+        })
+        setMessages([
+          { id: 'm1', message: 'Selamat siang min, permohonan data rincian anggaran kebersihan 2025 sudah sampai mana ya?', created_at: '2026-07-28T10:15:00Z', sender_id: 'user-eman', read_at: '2026-07-28T10:20:00Z' },
+          { id: 'm2', message: 'Halo Pak Eman, tim kami sedang menyiapkan dokumen RKA Dinas Lingkungan Hidup.', created_at: '2026-07-28T10:25:00Z', sender_id: 'admin-id', read_at: '2026-07-28T10:30:00Z', profiles: { role: 'admin' } }
+        ])
+        setAdminUser({ id: 'admin-id' })
       }
     } catch (err) {
       console.error('Fetch detail error:', err)
@@ -224,6 +297,7 @@ export default function AdminLaporanDetailPage() {
   }
 
   const fetchChatMessages = async () => {
+    if (id === 'demo-1' || id.startsWith('demo')) return
     try {
       const { data: chatData } = await supabase
         .from('chat_messages')

@@ -2,40 +2,80 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import LogoutButton from '@/app/beranda/LogoutButton'
 import UserAvatar from '@/components/UserAvatar'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [profile, setProfile] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
+  const isLoginPage = pathname === '/admin/login'
+
   useEffect(() => {
-    const fetchAdminProfile = async () => {
+    if (isLoginPage) {
+      setLoading(false)
+      return
+    }
+
+    const checkAdminAuth = async () => {
       try {
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          const { data: prof } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single()
-          if (prof) setProfile(prof)
+
+        if (!user) {
+          router.replace('/admin/login')
+          return
         }
+
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single()
+
+        if (!prof || (prof.role !== 'admin' && prof.role !== 'superadmin')) {
+          router.replace('/admin/login?error=unauthorized')
+          return
+        }
+
+        setProfile(prof)
       } catch (err) {
-        console.error(err)
+        console.error('Error verifying admin layout auth:', err)
+        router.replace('/admin/login')
+      } finally {
+        setLoading(false)
       }
     }
-    fetchAdminProfile()
-  }, [])
+
+    checkAdminAuth()
+  }, [pathname, router, isLoginPage])
 
   // Close mobile sidebar on route change
   useEffect(() => {
     setMobileSidebarOpen(false)
   }, [pathname])
+
+  // If viewing the admin login page, bypass the admin sidebar layout completely
+  if (isLoginPage) {
+    return <>{children}</>
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#1c1c19] flex flex-col items-center justify-center text-white font-['Public_Sans']">
+        <div className="w-12 h-12 rounded-2xl bg-[#6b0218] border border-[#ffe08e]/30 flex items-center justify-center text-[#ffe08e] mb-4 shadow-lg animate-pulse">
+          <span className="material-symbols-outlined text-2xl">shield</span>
+        </div>
+        <p className="text-sm font-semibold text-white/80">Memverifikasi Hak Akses Admin...</p>
+      </div>
+    )
+  }
+
 
   const navItems = [
     { href: '/admin', label: 'Dashboard Admin', icon: 'dashboard' },
@@ -46,6 +86,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-[#f4f1ec] text-[#1c1c19] flex font-['Public_Sans']">
+
       {/* Backdrop overlay for mobile drawer */}
       {mobileSidebarOpen && (
         <div
