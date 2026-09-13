@@ -79,6 +79,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: '/admin', label: 'Dashboard Admin', icon: 'dashboard' },
+    { href: '/admin/vibes', label: 'Jurnal Vibes & Reels', icon: 'auto_awesome' },
     { href: '/admin/chat', label: 'Pesan Chat Warga', icon: 'forum' },
     { href: '/admin/feed-publik', label: 'Feed Publik (Admin)', icon: 'public' },
     { href: '/tentang', label: 'Tentang Platform', icon: 'info' },
