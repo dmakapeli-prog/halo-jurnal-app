@@ -94,28 +94,28 @@ function AdminLoginPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141412] text-white flex flex-col justify-center items-center p-4 relative font-['Public_Sans'] overflow-hidden">
+    <div className="min-h-screen bg-[#fcf9f4] text-gray-900 flex flex-col justify-center items-center p-4 relative font-['Public_Sans'] overflow-hidden">
       {/* Background Decorative Gradient Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[400px] h-[400px] bg-[#6b0218]/30 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#ffe08e]/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] bg-red-100/50 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-amber-100/40 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="w-full max-w-md bg-[#1c1c19] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-2xl relative z-10 backdrop-blur-xl">
+      <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 md:p-10 shadow-xl relative z-10">
         {/* Header Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#6b0218] border border-[#ffe08e]/30 shadow-lg mb-4 text-[#ffe08e]">
-            <span className="material-symbols-outlined text-[36px]">shield</span>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-50 border border-red-100 shadow-sm mb-4 text-[#6b0218]">
+            <span className="material-symbols-outlined text-[32px]">shield</span>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-bold uppercase tracking-widest text-[#ffe08e] mb-3">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-[11px] font-semibold uppercase tracking-wider text-[#6b0218] mb-3">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
             Restricted Area • Admin Portal
           </div>
 
-          <h1 className="font-['Libre_Franklin'] text-2xl sm:text-3xl font-bold tracking-tight text-white mb-1">
+          <h1 className="font-['Libre_Franklin'] text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mb-1">
             Control Panel Admin
           </h1>
-          <p className="text-xs sm:text-sm text-white/60">
+          <p className="text-xs sm:text-sm text-gray-500 font-['Public_Sans']">
             PT Media Jurnal Sukabumi — Portal Administrasi Internal
           </p>
         </div>
@@ -124,19 +124,19 @@ function AdminLoginPageContent() {
         <form onSubmit={handleAdminLogin} className="space-y-5">
           {/* Error Banner */}
           {errorMsg && (
-            <div className="p-3.5 bg-red-950/80 border border-red-500/50 rounded-xl text-red-200 text-xs sm:text-sm leading-relaxed flex items-start gap-3">
-              <span className="material-symbols-outlined text-red-400 text-lg shrink-0 mt-0.5">error</span>
-              <div className="flex-1">{errorMsg}</div>
+            <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs sm:text-sm leading-relaxed flex items-start gap-3">
+              <span className="material-symbols-outlined text-red-600 text-lg shrink-0 mt-0.5">error</span>
+              <div className="flex-1 font-['Public_Sans']">{errorMsg}</div>
             </div>
           )}
 
           {/* Email Input */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-white/70 block">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 block">
               Email Administrator
             </label>
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-xl">
+              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">
                 admin_panel_settings
               </span>
               <input
@@ -146,18 +146,18 @@ function AdminLoginPageContent() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@jurnalsukabumi.com"
                 disabled={loading}
-                className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/15 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#ffe08e] focus:ring-1 focus:ring-[#ffe08e] transition-all disabled:opacity-50"
+                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all disabled:opacity-50"
               />
             </div>
           </div>
 
           {/* Password Input */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-white/70 block">
+            <label className="text-xs font-semibold uppercase tracking-wider text-gray-700 block">
               Password
             </label>
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-xl">
+              <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl">
                 lock
               </span>
               <input
@@ -167,13 +167,13 @@ function AdminLoginPageContent() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
                 disabled={loading}
-                className="w-full pl-11 pr-12 py-3 bg-white/5 border border-white/15 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#ffe08e] focus:ring-1 focus:ring-[#ffe08e] transition-all disabled:opacity-50"
+                className="w-full pl-11 pr-12 py-3 bg-gray-50 border border-gray-300 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all disabled:opacity-50"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={loading}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
                 title={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
               >
                 <span className="material-symbols-outlined text-lg">
@@ -187,7 +187,7 @@ function AdminLoginPageContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3.5 px-4 bg-[#6b0218] hover:bg-[#8b1e2c] text-white font-bold rounded-xl text-sm transition-all duration-200 shadow-lg hover:shadow-red-900/30 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.98]"
+            className="w-full mt-2 py-3.5 px-4 bg-[#6b0218] hover:bg-[#8b1e2c] text-white font-bold rounded-xl text-sm transition-all duration-200 shadow-md hover:shadow-lg hover:shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.98]"
           >
             {loading ? (
               <>
@@ -204,18 +204,18 @@ function AdminLoginPageContent() {
         </form>
 
         {/* Security Footer Notice */}
-        <div className="mt-8 pt-6 border-t border-white/10 text-center space-y-3">
-          <div className="flex items-center justify-center gap-2 text-white/40 text-xs">
-            <span className="material-symbols-outlined text-sm">lock_reset</span>
+        <div className="mt-8 pt-6 border-t border-gray-200 text-center space-y-4">
+          <div className="flex items-center justify-center gap-1.5 text-gray-500 text-xs">
+            <span className="material-symbols-outlined text-sm text-gray-400">lock_reset</span>
             <span>Seluruh aktivitas autentikasi dicatat untuk keamanan.</span>
           </div>
 
           <div>
             <Link
               href="/login"
-              className="text-xs text-[#ffe08e] hover:underline font-semibold flex items-center justify-center gap-1"
+              className="text-xs sm:text-sm text-gray-600 hover:text-red-600 font-medium flex items-center justify-center gap-1.5 transition-colors"
             >
-              <span className="material-symbols-outlined text-sm">arrow_back</span>
+              <span className="material-symbols-outlined text-base">arrow_back</span>
               <span>Kembali ke Halaman Login Publik / Warga</span>
             </Link>
           </div>
@@ -223,7 +223,7 @@ function AdminLoginPageContent() {
       </div>
 
       {/* Footer copyright */}
-      <div className="mt-8 text-center text-xs text-white/40">
+      <div className="mt-8 text-center text-xs text-gray-500">
         © {new Date().getFullYear()} PT Media Jurnal Sukabumi. Secure Admin Gateway.
       </div>
     </div>
@@ -234,8 +234,8 @@ export default function AdminLoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#141412] flex items-center justify-center text-white">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#ffe08e]"></div>
+        <div className="min-h-screen bg-[#fcf9f4] flex items-center justify-center text-gray-800">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#6b0218]"></div>
         </div>
       }
     >
