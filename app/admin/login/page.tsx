@@ -100,22 +100,19 @@ function AdminLoginPageContent() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-slate-200/50 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container / Card */}
-      <div className="w-full max-w-md bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 md:p-10 shadow-xl relative z-10">
+      <div className="w-full max-w-md bg-white border border-slate-100 rounded-2xl p-8 sm:p-10 shadow-xl relative z-10">
         {/* Header Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-50 border border-red-100 shadow-sm mb-4 text-red-700">
-            <span className="material-symbols-outlined text-[32px]">shield</span>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-[11px] font-semibold uppercase tracking-wider text-red-700 mb-3">
-            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-            Restricted Area • Admin Portal
+          <div className="mx-auto inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 text-red-700 border border-red-200/70 text-xs font-semibold shadow-sm mb-4">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse shrink-0"></span>
+            <span className="material-symbols-outlined text-base">shield</span>
+            <span className="uppercase tracking-wider">RESTRICTED AREA • ADMIN PORTAL</span>
           </div>
 
           <h1 className="font-['Libre_Franklin'] text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-1">
             Control Panel Admin
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 font-['Public_Sans']">
+          <p className="text-xs sm:text-sm text-slate-500 font-['Public_Sans'] mt-1">
             PT Media Jurnal Sukabumi — Portal Administrasi Internal
           </p>
         </div>
@@ -146,7 +143,7 @@ function AdminLoginPageContent() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@jurnalsukabumi.com"
                 disabled={loading}
-                className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all disabled:opacity-50"
+                className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-700/10 transition-all disabled:opacity-50"
               />
             </div>
           </div>
@@ -167,7 +164,7 @@ function AdminLoginPageContent() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
                 disabled={loading}
-                className="w-full pl-11 pr-12 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-600/20 transition-all disabled:opacity-50"
+                className="w-full pl-11 pr-12 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-700/10 transition-all disabled:opacity-50"
               />
               <button
                 type="button"
@@ -187,7 +184,7 @@ function AdminLoginPageContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3.5 px-4 bg-red-700 hover:bg-red-800 text-white font-semibold rounded-xl text-sm transition-all duration-200 shadow-md hover:shadow-lg hover:shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.98]"
+            className="w-full mt-2 py-3 px-4 bg-red-800 hover:bg-red-900 text-white font-medium rounded-xl text-sm transition-all duration-200 shadow-md shadow-red-900/10 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.98]"
           >
             {loading ? (
               <>
@@ -213,7 +210,7 @@ function AdminLoginPageContent() {
           <div>
             <Link
               href="/login"
-              className="text-xs sm:text-sm text-slate-600 hover:text-red-700 font-medium flex items-center justify-center gap-1.5 transition-colors"
+              className="text-xs sm:text-sm text-slate-600 hover:text-red-700 font-medium inline-flex items-center justify-center gap-2 transition-colors"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
               <span>Kembali ke Halaman Login Publik / Warga</span>
@@ -235,7 +232,7 @@ export default function AdminLoginPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-800">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-red-700"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-red-800"></div>
         </div>
       }
     >
