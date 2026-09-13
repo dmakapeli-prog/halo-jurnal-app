@@ -104,7 +104,6 @@ function AdminLoginPageContent() {
         {/* Header Branding */}
         <div className="text-center mb-8">
           <div className="mx-auto inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 text-red-700 border border-red-200/70 text-xs font-semibold shadow-sm mb-4">
-            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse shrink-0"></span>
             <span className="material-symbols-outlined text-base">shield</span>
             <span className="uppercase tracking-wider">RESTRICTED AREA • ADMIN PORTAL</span>
           </div>
@@ -143,7 +142,7 @@ function AdminLoginPageContent() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@jurnalsukabumi.com"
                 disabled={loading}
-                className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-700/10 transition-all disabled:opacity-50"
+                className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-700/10 transition-all disabled:opacity-50 [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:[box-shadow:0_0_0_1000px_white_inset]"
               />
             </div>
           </div>
@@ -164,7 +163,7 @@ function AdminLoginPageContent() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
                 disabled={loading}
-                className="w-full pl-11 pr-12 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-700/10 transition-all disabled:opacity-50"
+                className="w-full pl-11 pr-12 py-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-700/10 transition-all disabled:opacity-50 [&:-webkit-autofill]:bg-white [&:-webkit-autofill]:[box-shadow:0_0_0_1000px_white_inset]"
               />
               <button
                 type="button"
