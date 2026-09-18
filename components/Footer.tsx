@@ -36,8 +36,8 @@ export default function Footer() {
       <div className="text-center flex flex-col items-center gap-2">
         <p className="font-['Public_Sans'] text-[13px] md:text-[14px] leading-[20px] text-[#574141]">
           Halo Jurnal adalah inisiatif dari{' '}
-          <a href="https://jurnal-sukabumi-portal.vercel.app/" target="_blank" rel="noreferrer" className="font-bold text-[#6b0218] hover:underline">
-            Jurnal Sukabumi
+          <a href="https://jurnal-vibes-app.vercel.app/" target="_blank" rel="noreferrer" className="font-bold text-[#6b0218] hover:underline">
+            Jurnal Vibes
           </a>
         </p>
         <p className="font-['Public_Sans'] text-[11px] md:text-[12px] leading-[16px] text-[#8b7171]">
