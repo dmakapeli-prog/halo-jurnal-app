@@ -59,12 +59,12 @@ export default async function BerandaPage() {
         {/* Hero Section */}
         <section className="relative h-[300px] sm:h-[350px] md:h-[400px] flex items-center justify-center overflow-hidden mx-4 md:mx-[40px] rounded-[0.75rem] md:rounded-[1rem] shadow-lg max-w-[1280px] xl:mx-auto">
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[#6b0218]/40 mix-blend-multiply z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/40 z-10"></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="w-full h-full object-cover"
               alt="PT Media Jurnal Sukabumi Banner"
-              src="/hero-banner.jpg"
+              src="/hero-banner.jpg?v=2"
             />
           </div>
           <div className="relative z-20 text-center px-5 sm:px-6 max-w-[56rem]">
