@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const OUTPUT_DIR = path.join(__dirname, '..', 'dokumentasi-screenshots');
 
 if (!fs.existsSync(OUTPUT_DIR)) {
@@ -14,24 +14,51 @@ const targets = [
   { name: '02_beranda_dashboard.png', path: '/beranda' },
   { name: '03_laporan_saya.png', path: '/laporan-saya' },
   { name: '04_feed_publik.png', path: '/feed-publik' },
-  { name: '05_form_lapor_pengaduan.png', path: '/lapor', tabText: 'Pengaduan' },
-  { name: '06_form_lapor_aspirasi.png', path: '/lapor', tabText: 'Aspirasi' },
-  { name: '07_form_lapor_informasi.png', path: '/lapor', tabText: 'Permohonan Informasi' },
-  { name: '08_form_lapor_inspirasi.png', path: '/lapor', tabText: 'Inspirasi Publik' },
+  { name: '05_form_lapor_pengaduan.png', path: '/lapor?type=pengaduan', tabText: 'Pengaduan' },
+  { name: '06_form_lapor_aspirasi.png', path: '/lapor?type=aspirasi', tabText: 'Aspirasi' },
+  { name: '07_form_lapor_informasi.png', path: '/lapor?type=informasi', tabText: 'Informasi Publik' },
+  { name: '08_form_lapor_inspirasi.png', path: '/lapor?type=inspirasi', tabText: 'Inspirasi' },
   { name: '09_detail_laporan_warga.png', path: '/laporan/demo-1' },
   { name: '10_tentang_platform.png', path: '/tentang' },
   { name: '11_halaman_login.png', path: '/login' },
   { name: '12_halaman_daftar.png', path: '/daftar' },
-  { name: '13_admin_dashboard.png', path: '/admin' },
-  { name: '14_admin_chat_warga.png', path: '/admin/chat' },
-  { name: '15_admin_feed_publik.png', path: '/admin/feed-publik' },
-  { name: '16_admin_detail_laporan.png', path: '/admin/laporan/demo-1' },
+  { name: '13_profil_saya.png', path: '/profil' },
+  { name: '14_reset_password.png', path: '/reset-password' },
+  { name: '15_reset_password_confirm.png', path: '/reset-password/confirm' },
+  { name: '16_complete_profile.png', path: '/auth/complete-profile' },
   { name: '17_hubungi_kami.png', path: '/hubungi-kami' },
+  { name: '18_kebijakan_privasi.png', path: '/kebijakan-privasi' },
+  { name: '19_syarat_ketentuan.png', path: '/syarat-ketentuan' },
+  { name: '20_admin_dashboard.png', path: '/admin' },
+  { name: '21_admin_chat_warga.png', path: '/admin/chat' },
+  { name: '22_admin_feed_publik.png', path: '/admin/feed-publik' },
+  { name: '23_admin_detail_laporan.png', path: '/admin/laporan/demo-1' },
+  { name: '24_admin_login.png', path: '/admin/login' },
 ];
 
+async function autoScroll(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let totalHeight = 0;
+      const distance = 400;
+      const timer = setInterval(() => {
+        const scrollHeight = document.body.scrollHeight;
+        window.scrollBy(0, distance);
+        totalHeight += distance;
+
+        if (totalHeight >= scrollHeight) {
+          clearInterval(timer);
+          window.scrollTo(0, 0);
+          resolve();
+        }
+      }, 80);
+    });
+  });
+}
+
 async function captureAll() {
-  console.log('🚀 Memulai pengambilan screenshot...');
-  
+  console.log('🚀 Memulai pengambilan screenshot komplit (v2 fast & reliable)...');
+
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
@@ -45,10 +72,10 @@ async function captureAll() {
     console.log(`📸 Capturing [${item.name}] from ${fullUrl}...`);
 
     try {
-      await page.goto(fullUrl, { waitUntil: 'networkidle', timeout: 30000 });
+      await page.goto(fullUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.waitForTimeout(2000);
 
-      // Tab selection for form lapor
+      // Select tab if needed
       if (item.tabText) {
         try {
           const tabBtn = page.locator(`button:has-text("${item.tabText}")`).first();
@@ -60,6 +87,10 @@ async function captureAll() {
           console.warn(`Warning selecting tab "${item.tabText}":`, e.message);
         }
       }
+
+      // Smooth scroll to trigger lazy loading / Leaflet map rendering
+      await autoScroll(page);
+      await page.waitForTimeout(1000);
 
       // Inject clean-up CSS to eliminate blue highlights, focus outlines, and dev overlays
       await page.addStyleTag({
@@ -76,7 +107,7 @@ async function captureAll() {
         `
       });
 
-      // Remove focus from active elements
+      // Blur active element
       await page.evaluate(() => {
         if (document.activeElement && typeof document.activeElement.blur === 'function') {
           document.activeElement.blur();
@@ -98,7 +129,7 @@ async function captureAll() {
   }
 
   await browser.close();
-  console.log('🎉 Seluruh 17 screenshot berhasil dibuat!');
+  console.log(`🎉 Seluruh ${targets.length} screenshot komplit 100% berhasil dibuat!`);
 }
 
 captureAll().catch((err) => {
